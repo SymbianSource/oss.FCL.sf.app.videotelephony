@@ -1,0 +1,39 @@
+/*
+* Copyright (c) 2004 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Captions for Video Telephone application.
+*
+*/
+
+
+
+//  INCLUDES
+#include    <apcaptionfile.rh>
+#include    "videotelui.loc"
+
+//  RESOURCE DEFINITIONS 
+
+// -----------------------------------------------------------------------------
+//   
+// CAPTION_DATA
+// Captions for Video Telephone application.
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE CAPTION_DATA
+    {
+    caption = qtn_apps_videophone_grid;
+    shortcaption = qtn_apps_videophone_grid;
+    }
+
+// End of File

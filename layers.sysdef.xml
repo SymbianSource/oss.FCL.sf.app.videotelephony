@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE SystemDefinition SYSTEM "sysdef_1_4_0.dtd" [
+  <!ENTITY layer_real_source_path "sf/app/videotelephony" >
+]>
+
+<SystemDefinition name="videotelephony" schema="1.4.0">
+  <systemModel>
+    <layer name="app_layer">
+      <module name="videotelephony">
+        <unit name="videotelephony_plat" unitID="tedo.videotelephony_plat" bldFile="&layer_real_source_path;/videotelephony_plat/group" mrp="" />
+        <unit name="PacketVideoEngineBinaries" unitID="tedo.PacketVideoEngineBinaries" bldFile="&layer_real_source_path;/packetvideoengine/PacketVideoEngineBinaries/group" mrp="" filter="!sf_build" /> 
+        <unit name="vtprotocolsstub" unitID="tedo.vtprotocolsstub" bldFile="&layer_real_source_path;/vtprotocolsstub/group" mrp="" filter="sf_build" />  
+        <unit name="vtprotocols" unitID="tedo.vtprotocols" bldFile="&layer_real_source_path;/vtprotocols/group" mrp="" filter="!sf_build" />
+        <unit name="DisplaySink" unitID="tedo.DisplaySink" bldFile="&layer_real_source_path;/vtprotocolplugins/DisplaySink/group" mrp="" /> 
+        <unit name="VideoSource" unitID="tedo.VideoSource" bldFile="&layer_real_source_path;/vtprotocolplugins/VideoSource/group" mrp="" />
+        <unit name="videoteleng" unitID="tedo.videoteleng" bldFile="&layer_real_source_path;/vtengines/videoteleng/Group" mrp="" />  
+        <unit name="videotelui" unitID="tedo.videotelui" bldFile="&layer_real_source_path;/vtuis/videotelui/group" mrp="" /> 
+	<unit name="vtmediatorplugin" unitID="tedo.vtmediatorplugin" bldFile="&layer_real_source_path;/vtengines/vtmediatorplugin/group" mrp="" />
+      </module>
+    </layer>
+  </systemModel>
+</SystemDefinition>

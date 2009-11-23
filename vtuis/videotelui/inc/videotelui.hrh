@@ -1,0 +1,159 @@
+/*
+* Copyright (c) 2004-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Header for constants.
+*
+*/
+
+
+#ifndef VIDEOTELUI_HRH
+#define VIDEOTELUI_HRH
+
+// CONSTANTS
+
+// Video Telephone application UID.
+#define KVtUiAppUidValue 0x101F8681
+
+// Enumerates commands
+enum
+    {
+    // Enable submenu
+    EVtUiCmdEnableMain = 5000,
+    // Enable video
+    EVtUiCmdEnableVideo, //5001
+    // Enable audio
+    EVtUiCmdEnableAudio, //5002
+    // Enable both video and audio
+    EVtUiCmdEnableBoth, //5003
+    // Disable submenu
+    EVtUiCmdDisableMain, //5004
+    // Disable video
+    EVtUiCmdDisableVideo, //5005
+    // Disable audio
+    EVtUiCmdDisableAudio, //5006
+    // Disable both video and audio
+    EVtUiCmdDisableBoth, //5007
+    // Deactivate BT handsfree
+    EVtUiCmdDeactivateBT, //5008
+    // Deactivet BT and activate HF (used in toolbar)
+    EVtUiCmdSwitchFromBTToIHF, //5009
+    // Activate BT handsfree
+    EVtUiCmdActivateBT, //5010
+    // Activate loudspeaker
+    EVtUiCmdActivateLoudspeaker, //5011
+    // Deactivate loudspeaker
+    EVtUiCmdDeactivateLoudspeaker, //5012
+    // End active call
+    EVtUiCmdEndActiveCall, //5013
+    // Use primary camera
+    EVtUiCmdUsePrimaryCamera, //5014
+    // Use secondary camera
+    EVtUiCmdUseSecondaryCamera, //5015
+    // Swap images' places
+    EVtUiCmdSwapImagesPlaces, //5016
+    // Zoom
+    EVtUiCmdZoom, //5017
+    // Send DTMF
+    EVtUiCmdSendDTMF, //5018
+    // Switch to voice call
+    EVtUiCmdCreateVoice, //5019
+    // Enable capture mode
+    EVtUiCmdSnapshot, //5020
+    // Freeze outgoing video
+    EVtUiCmdCapture, //5021
+    // Disable capture mode
+    EVtUiCmdCancelCapture, //5022
+    // Go to Idle.
+    EVtUiCmdGoToIdle, //5023
+    // Other items
+    EVtUiCmdOkOptions = 6000,
+    // Dial emergency
+    EVtUiCmdDialEmergency,
+    // Share object image
+    EVtUiCmdShareObjectImage = 6100,
+    // Share object video clip
+    EVtUiCmdShareObjectVideoClip, //6101
+    // Stop sharing image object
+    EVtUiCmdStopSharingObjectImage, //6102
+    // Stop sharing video clip object
+    EVtUiCmdStopSharingObjectVideoClip, //6103
+    // Activates zoom mode
+    EVtUiCmdToolbarActivateZoomMode, //6104
+    // Toggles disable video/ enable video
+    EVtUiCmdToolbarToggleVideo,             //6105
+    // Toggles mute audio/ unmute audi
+    EVtUiCmdToolbarToggleMicrophone,  //6106
+    // Changes audio routing
+    EVtUiCmdToolbarAudioRouting,  //6107
+    // Toggles primary/secondary camera
+    EVtUiCmdToolbarToggleCamera, //6108
+    // Adjust video submenu
+    EVtUiCmdAdjustVideo, //6109
+    // Adjust video preferences
+    EVtUiCmdAdjustVideoVideoQuality, //6110
+    // Adjust video white balance
+    EVtUiCmdAdjustVideoWhiteBalance, //6111
+    // Adjust video brightness
+    EVtUiCmdAdjustVideoBrightness, //6112
+    // Adjust video contrast
+    EVtUiCmdAdjustVideoContrast, //6113
+    // Adjust video colour tone
+    EVtUiCmdAdjustVideoColourTone, //6114
+    // Dialer close
+    EVtUiDialerExit //6115
+    };
+
+// Enumerates bitmap identifiers
+enum TVtUiBitmapId
+    {
+    // Reserved to indicate no bitmap.
+    EVtUiBitmapNone,
+    // Viewfinder background.
+    EVtUiBitmap_qgn_graf_call_video_out_bg,
+    // Viewfinder background mask.
+    EVtUiBitmap_qgn_graf_call_video_out_bg_mask,
+    // Blind in icon.
+    EVtUiBitmap_qgn_indi_call_video_blind_in,
+    // Blind out icon.
+    EVtUiBitmap_qgn_indi_call_video_blind_out,
+    // Earpiece icon.
+    EVtUiBitmap_qgn_indi_earpiece,
+    // Earpiece icon mask.
+    EVtUiBitmap_qgn_indi_earpiece_mask,
+    // Loudspeaker icon.
+    EVtUiBitmap_qgn_indi_speaker,
+    // Loudspeaker icon mask.
+    EVtUiBitmap_qgn_indi_speaker_mask,
+    // Zoom area mask.
+    EVtUiBitmap_qgn_graf_zoom_area,
+    // Zoom direction bitmap.
+    EVtUiBitmap_qgn_indi_zoom_dir,
+    // Zoom direction bitmap mask.
+    EVtUiBitmap_qgn_indi_zoom_dir_mask,
+    // Zoom area minimum icon.
+    EVtUiBitmap_qgn_indi_zoom_min,
+    // Zoom area maximum icon.
+    EVtUiBitmap_qgn_indi_zoom_max,
+    // Scalable blind in icon soft mask,
+    EVtUiBitmap_qgn_indi_call_video_blind_in_mask_icon,
+    // Scalable blind out icon soft mask,
+    EVtUiBitmap_qgn_indi_call_video_blind_out_mask_icon,
+    // Current active list item indicator
+    EVtUiBitmap_qgn_prop_sub_current,
+    // Current active list item indicator mask
+    EVtUiBitmap_qgn_prop_sub_current_mask
+    };
+
+#endif    // VIDEOTELUI_HRH
+
+// End of File

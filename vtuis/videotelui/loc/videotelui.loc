@@ -1,0 +1,396 @@
+/*
+* Copyright (c) 2004 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Localisation texts for Video Telephone application.
+*
+*/
+
+
+// LOCALISATION STRINGS
+
+// d: Text shown in fast swap window while there is active video call.
+// l: cell_app_pane_t1
+// r: 2.6
+//
+#define qtn_apps_videophone_grid "Video tel"
+
+// d: It is text for menu option. If it is selected,
+// d: then submenu is opened containing Video / Audio / Both
+// d: items.
+// l: list_single_pane_t1_cp2/opt3
+// r: 2.6
+//
+#define qtn_incal_enable_main_option "Enable"
+
+// d: It is text for submenu option. It enables / disables
+// d: video.
+// l: list_single_popup_submenu_pane_t1
+// r: 2.6
+//
+#define qtn_incal_change_video_option "Video"
+
+// d: It is text for submenu option. It enables / disables
+// d: audio.
+// l: list_single_popup_submenu_pane_t1
+// r: 2.6
+//
+#define qtn_incal_change_audio_option "Audio"
+
+// d: It is text for submenu option. It enables / disables
+// d: both audio and video.
+// l: list_single_popup_submenu_pane_t1
+// r: 2.6
+//
+#define qtn_incal_change_both_option "Both"
+
+// d: It is text for menu option. If it is selected,
+// d: then submenu is opened containing Video / Audio / Both
+// d: items.
+// l: list_single_pane_t1_cp2/opt3
+// r: 2.6
+//
+#define qtn_incal_disable_main_option "Disable"
+
+// d: It is text for menu option. If it is selected,
+// d: then zoom mode is activated.
+// l: list_single_pane_t1_cp2
+// r: 2.6
+//
+#define qtn_incal_zoom_own_video "Zoom"
+
+// d: It is the prompt in confirmation query shown when
+// d: incoming video call is answered.
+// l: popup_note_window
+// r: 3.2
+//
+#define qtn_incal_send_video_image "Allow video image?"
+
+// d: It is text for options menu list item.
+// d: It opens touch input window for sending DTMF tones
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_send_dtmf_tone_option "Activate keypad"
+
+// d: It it text shown in title pane during active
+// d: video call. %N is replaced with call index.
+// l: title_pane_t2/opt9
+// r: 2.6
+//
+#define qtn_call_number_video "Call %N"
+
+// d: It is text shown in main pane until the first image
+// d: is received.
+// l: main_list_empty_pane
+// r: 2.6
+//
+#define qtn_incal_waiting_image "Waiting image..."
+
+// d: It is text shown in a note when video call is
+// d: answered and camera activation fails, because
+// d: camera is in use in other application.
+// l: popup_note_window
+// r: 2.6
+//
+#define qtn_incal_close_camcorder "Camera already in use an other application."
+
+// d: It is text in softkey to enable audio (unmute microphone).
+// l: control_pane_t1/opt7
+// r: 2.6
+//
+#define qtn_incal_softk_enable_audio "Enable audio"
+
+// d: It is text for menu option. If it is selected,
+// d: then swaps locations of uplink and downlink
+// d: video streams.
+// l: list_single_pane_t1_cp2
+// r: 2.8
+//
+#define qtn_incal_swap_vt_images "Swap images' places"
+
+// d: It is text shown in a note when "use primary
+// d: camera" or "use secondary camera" operations fails.
+// l: popup_note_window
+// r: 2.6
+//
+#define qtn_err_cam_swap "Other camera wasn't usable"
+
+// d: It is text for menu option. If it is selected,
+// d: then new softkeys are now Capture and Cancel.
+// l: list_single_pane_t1_cp2
+// r: 3.1
+//
+#define qtn_incal_snapshot_option "Snapshot"
+
+// d: It is text for right softkey in freeze mode.
+// l: control_pane_t1/opt7
+// r: 3.1
+//
+#define qtn_softk_capture "Capture"
+
+// d: It is text for switch
+// d: to voice query dialog.
+// l: popup_note_window
+// r: 3.1
+#define qtn_query_create_voice_call "End active call and create voice call to the same contact?"
+
+// d: It is text for menu option.
+// d: It switches video to voice call.
+// l: list_single_pane_t1_cp2
+// r: 3.1
+#define qtn_incal_video_to_voice "Switch to voice call"
+
+// d: It is text for menu option.
+// d: It opens dialog for selecting image to be shared with peer.
+// l: list_single_pane_t1_cp2
+// r: 3.1
+#define qtn_incal_video_call_share_file "Share file"
+
+// d: It is text for softkey option.
+// d: It stops sending selected image to peer.
+// l: control_pane_t1/opt7
+// r: 3.1
+#define qtn_softk_disable_share "Disable share"
+
+//d: Error note text when user selects image that cannot be opened.
+//d: Corrupted or unsupported image selected.
+//l: popup_note_window
+//r:3.1
+//
+#define qtn_tel_info_unable_open_image "Unable to open image"
+
+//d: Error note text when user selects multiframe image that is corrupted.
+//d: Corrupted image selected.
+//l: popup_note_window
+//r: 5.0
+//
+#define qtn_incal_note_decoding_failed "Unable to animate image"
+
+//d: Error note text when user selects a DRM protected image.
+//d: DRM protected media gallery object selected.
+//l: popup_note_window
+//r:3.1
+//
+#define qtn_drm_not_allowed "Unable to select protected objects"
+
+//d: Text for image initializing wait note
+//d: Shown when image to be shared is being initialized.
+//l: popup_note_wait_window
+//r:3.1
+//
+#define qtn_vt_progress_decoding_image "Decoding image"
+
+//d: Toolbar tooltip for disable video.
+//l: popup_preview_text_window_t1
+//r:3.2
+//
+#define qtn_vt_tooltip_disable_video "Disable video sending"
+
+//d: Toolbar tooltip for enable video.
+//l: popup_preview_text_window_t1
+//r:3.2
+//
+#define qtn_vt_tooltip_enable_video "Enable video sending"
+
+
+//d: Toolbar tooltip for mute microphone.
+//l: popup_preview_text_window_t1
+//r:3.2
+//
+#define qtn_vt_tooltip_mute_microphone "Mute microphone"
+
+//d: Toolbar tooltip for unmute microphone.
+//l: popup_preview_text_window_t1
+//r:3.2
+//
+#define qtn_vt_tooltip_unmute_microphone "Unmute microphone"
+
+//d: Toolbar tooltip for swap images.
+//l: popup_preview_text_window_t1
+//r:3.2
+//
+#define qtn_vt_tooltip_swap_images "Change image order"
+
+//d: Toolbar tooltip for secondary camera.
+//l: popup_preview_text_window_t1
+//r:3.2
+//
+#define qtn_vt_tooltip_secondary_cam "Use secondary camera"
+
+//d: Toolbar tooltip for primary camera.
+//l: popup_preview_text_window_t1
+//r:3.2
+//
+#define qtn_vt_tooltip_primary_cam "Use primary camera"
+
+//d: Toolbar tooltip for zoom.
+//l: popup_preview_text_window_t1
+//r:3.2
+//
+#define qtn_vt_tooltip_zoom "Activate zoom mode"
+
+//d: Toolbar tooltip for share.
+//l: popup_preview_text_window_t1
+//r:3.2
+//
+#define qtn_vt_tooltip_share "Share file"
+
+//d: Toolbar tooltip for send snapshot.
+//l: popup_preview_text_window_t1
+//r:3.2
+//
+#define qtn_vt_tooltip_send_snapshot "Send snapshot"
+
+// d: It is text for menu option.
+// d: It opens submenu with Received video quality / White balance /
+// d: Brightness / Contrast / Colour tone
+// l: list_single_pane_t1_cp2/opt3
+// r: 5.0
+#define qtn_incal_video_adjust_option "Adjust video"
+
+// d: It is text for submenu option.
+// d: It opens list query dialog with options Normal / Details / Motion.
+// l: list_single_popup_submenu_pane_t1
+// r: 5.0
+#define qtn_incal_video_prefer_option "Received video quality"
+
+// d: It is text for list query option.
+// d: It adjusts incoming video frame rate to 10 frames per second.
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_normal_list_option "Normal"
+
+// d: It is text for list query option.
+// d: It adjusts incoming video frame rate to 5 frames per second.
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_details_list_option "Details"
+
+// d: It is text for list query option.
+// d: It adjusts incoming video frame rate to 15 frames per second.
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_motion_list_option "Motion"
+
+// d: It is text for submenu option.
+// d: It opens list query dialog with options Automatic / Sunny / Cloudy /
+// d: Incandescent / Fluorescent
+// l: list_single_popup_submenu_pane_t1
+// r: 5.0
+#define qtn_incal_video_white_balance_option "White balance"
+
+// d: It is text for list query option.
+// d: It adjusts incoming video frame rate to 15 frames per second.
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_automatic_option "Automatic"
+
+// d: It is text for list query option.
+// d: It adjusts white balance of outgoing video.
+// d: It sets white balance to Sunny.
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_sunny_option "Sunny"
+
+// d: It is text for list query option.
+// d: It adjusts white balance of outgoing video.
+// d: It sets white balance to Cloudy.
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_cloudy_option "Cloudy"
+
+// d: It is text for list query option.
+// d: It adjusts white balance of outgoing video.
+// d: It sets white balance to Incandescent.
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_incandescent_option "Incandescent"
+
+// d: It is text for list query option.
+// d: It adjusts white balance of outgoing video.
+// d: It sets white balance to Fluorescent.
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_fluorescent_option "Fluorescent"
+
+// d: It is text for submenu option.
+// d: It shows control for adjusting outgoing video Brightness.
+// l: list_single_popup_submenu_pane_t1
+// r: 5.0
+#define qtn_incal_video_brightness_option "Brightness"
+
+// d: It is text for submenu option.
+// d: It shows control for adjusting outgoing video Contrast.
+// l: list_single_popup_submenu_pane_t1
+// r: 5.0
+#define qtn_incal_video_contrast_option "Contrast"
+
+// d: It is text for submenu option.
+// d: It opens list query dialog with options Normal / Sepia /
+// d: Black and white / Negative
+// l: list_single_popup_submenu_pane_t1
+// r: 5.0
+#define qtn_incal_video_colour_tone_option "Colour tone"
+
+// d: It is text for list query option.
+// d: It adjusts colour tone of outgoing video.
+// d: It sets colour tone to Normal.
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_ct_normal_option "Normal"
+
+// d: It is text for list query option.
+// d: It adjusts colour tone of outgoing video.
+// d: It sets colour tone to Sepia.
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_sepia_option "Sepia"
+
+// d: It is text for list query option.
+// d: It adjusts colour tone of outgoing video.
+// d: It sets colour tone to Black and white.
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_b_and_w_option "Black and white"
+
+// d: It is text for list query option.
+// d: It adjusts colour tone of outgoing video.
+// d: It sets colour tone to Negative.
+// l: list_single_pane_t1_cp2
+// r: 5.0
+#define qtn_incal_negative_option "Negative"
+
+// d: Toolbar tooltip for changing audio routing to handset.
+// l: popup_preview_text_window_t1
+// r: 5.0
+//
+#define qtn_vt_tooltip_audio_handset "Audio to handset"
+
+// d: Toolbar tooltip for changing audio routing to loudspeaker.
+// l: popup_preview_text_window_t1
+// r: 5.0
+//
+#define qtn_vt_tooltip_audio_loudspeaker "Audio to loudspeaker"
+
+// d: Toolbar tooltip for changing audio routing to bluetooth handsfree.
+// l: popup_preview_text_window_t1
+// r: 5.0
+//
+#define qtn_vt_tooltip_audio_bthf "Audio to Bluetooth handsfree"
+
+// d: It is text in softkey to open dialer (for dtmf sending).
+// l: control_pane_t1/opt7
+// r: 5.0
+//
+#define qtn_incal_softk_dialer "Dialer"
+
+// End of File
