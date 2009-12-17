@@ -426,8 +426,7 @@ void CVtEngDrawNGA::RunL()
         {
         iCallBackTable[surfaceno]->iStatus = KRequestPending;
         iCallBackTable[surfaceno]->SetActive();
-        TTimeStamp timeStamp;
-        iSurfaceUpdateSession.NotifyWhenDisplayed(iCallBackTable[surfaceno]->iStatus, timeStamp);
+        iSurfaceUpdateSession.NotifyWhenDisplayed(iCallBackTable[surfaceno]->iStatus, iTimeStamp);
         iSubmitPending = ETrue;
         iSurfaceUpdateSession.SubmitUpdate(0, iSurfaceId, surfaceno, NULL); 
         buffer.UnSet();
@@ -761,8 +760,7 @@ TBool CVtEngDrawNGA::DoSurfaceBuffer0Ready()
         __VTPRINT2( DEBUG_MEDIA, "RVD(NGA).DoSurfaceBuffer0Ready, surface buffer %d is in waitingqueue", surfaceno )
         iCallBackTable[surfaceno]->iStatus = KRequestPending;
         iCallBackTable[surfaceno]->SetActive();
-        TTimeStamp  timeStamp;
-        iSurfaceUpdateSession.NotifyWhenDisplayed(iCallBackTable[surfaceno]->iStatus, timeStamp);
+        iSurfaceUpdateSession.NotifyWhenDisplayed(iCallBackTable[surfaceno]->iStatus, iTimeStamp);
         iSubmitPending = ETrue;
         iSurfaceUpdateSession.SubmitUpdate(0, iSurfaceId, surfaceno, NULL); 
         iWaitingBuffers.Remove(*buffer);
@@ -795,8 +793,7 @@ TBool CVtEngDrawNGA::DoSurfaceBuffer1Ready()
         __VTPRINT2( DEBUG_MEDIA, "RVD(NGA).DoSurfaceBuffer0Ready, surface buffer %d is in waitingqueue", surfaceno )
         iCallBackTable[surfaceno]->iStatus = KRequestPending;
         iCallBackTable[surfaceno]->SetActive();
-        TTimeStamp  timeStamp;
-        iSurfaceUpdateSession.NotifyWhenDisplayed(iCallBackTable[surfaceno]->iStatus, timeStamp);
+        iSurfaceUpdateSession.NotifyWhenDisplayed(iCallBackTable[surfaceno]->iStatus, iTimeStamp);
         iSubmitPending = ETrue;
         iSurfaceUpdateSession.SubmitUpdate(0, iSurfaceId, surfaceno, NULL); 
         iWaitingBuffers.Remove(*buffer);

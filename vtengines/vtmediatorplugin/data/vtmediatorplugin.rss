@@ -21,7 +21,7 @@
 
 // INCLUDES
 #include <registryinfov2.rh>
-#include <mediatoruids.hrh>
+#include <MediatorUids.hrh>
 
 
 // -----------------------------------------------------------------------------

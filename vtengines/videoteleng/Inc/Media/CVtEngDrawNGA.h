@@ -445,9 +445,11 @@ NONSHARABLE_CLASS( CVtEngDrawNGA ) :
         TSglQue<TVtEngBuffer> iWaitingBuffers; // buffers waiting to be submitted
         TBool iSubmitPending;
 
-        //configuration
+        // Configuration
         TVtEngRenderConfigNGA iConfig;
         
+        // Time stamp for surface update
+        TTimeStamp iTimeStamp;
     };
 
 #endif // CVTENGDRAWDSA_H

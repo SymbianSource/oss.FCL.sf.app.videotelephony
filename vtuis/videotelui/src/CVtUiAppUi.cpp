@@ -1886,6 +1886,18 @@ void CVtUiAppUi::ProcessCommandL(
         TInt aCommand )
     {
     __VTPRINTENTER( "VtUi.ProcessCommandL" )
+    
+    // delay mute cmd received during layout change
+    if ( aCommand == EAknSoftkeyOptions )
+        {
+        if ( iLayoutChg )
+            {
+            iDelayedCmd = EAknSoftkeyOptions;
+            __VTPRINTEXIT( "VtUi.ProcessCommandL mute delayed due to LayoutChange" )
+            return;
+            }
+        }
+    
     MVtEngCommandHandler& command = Model().CommandHandler();
     command.ExecuteL( KVtEngRequestLastRemoteFrame, NULL );
     
@@ -2186,6 +2198,15 @@ void CVtUiAppUi::HandleCommandL(
             CleanupPushEnableBlindL();
             iUiStates->SetDisableBlindSetting( ETrue );
             CmdSwapImagesPlacesL();
+            
+                        
+            MVtEngMedia& media = Model().Media();
+            if ( VtUiUtility::GetFreezeState( media ) )
+                {
+                TBool isViewFinderInContextPane = IsViewFinderInContextPane();
+                iUiStates->SetViewFindersInitialPlaceContextPane( isViewFinderInContextPane );
+                }
+                
             CleanupStack::PopAndDestroy(); // CleanupPushEnableBlindL
             break;
 
@@ -4891,7 +4912,14 @@ void CVtUiAppUi::DoHandleLayoutChangedL()
     if ( iDelayedCmd != 0 )
         {
         __VTPRINT2( DEBUG_GEN, "VtUi.DoLayoutChg reexecute the delayed cmd=%d", iDelayedCmd);
-        HandleCommandL( iDelayedCmd );
+        if( iDelayedCmd == EAknSoftkeyOptions )
+            {
+            ProcessCommandL( iDelayedCmd );
+            }
+        else
+            {
+            HandleCommandL( iDelayedCmd );
+            }
         iDelayedCmd = 0;
         }
     __VTPRINTEXIT( "VtUi.DoLayoutChg" )
