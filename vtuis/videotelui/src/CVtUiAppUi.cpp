@@ -1811,6 +1811,9 @@ void CVtUiAppUi::UpdateRenderingParametersL()
         }
     ExecuteCmdL( KVtEngStopRenderRemote );
 
+    // Re-layout the remote video
+    iDownlinkWindow->LayoutRemoteVideo();
+    
     const TBool uplinkWindowEqualsContextControl =
         ( iUplinkWindow == iInstance->iContextControl );
 
@@ -2198,7 +2201,6 @@ void CVtUiAppUi::HandleCommandL(
             CleanupPushEnableBlindL();
             iUiStates->SetDisableBlindSetting( ETrue );
             CmdSwapImagesPlacesL();
-            
                         
             MVtEngMedia& media = Model().Media();
             if ( VtUiUtility::GetFreezeState( media ) )

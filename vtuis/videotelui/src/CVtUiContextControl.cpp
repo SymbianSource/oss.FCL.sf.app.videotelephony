@@ -90,7 +90,12 @@ void CVtUiContextControl::HandlePointerEventL(
             else if( iOkToSwapOnButtonUp )
                 {
                  if ( !iUiStates.IsWhiteBalanceModeOn() &&
-                       !iUiStates.IsColorToneModeOn() )
+                      !iUiStates.IsColorToneModeOn() &&
+                      !iUiStates.IsZoomModeOn() &&
+                      !iUiStates.IsCaptureModeOn() &&
+                      !iUiStates.IsContrastModeOn() &&
+                      !iUiStates.IsBrightnessModeOn() &&
+                      !iUiStates.IsVolumeModeOn() )
                         {
                         if ( !( iAppUi.CanSwapImagePlaces() ) )
                             {

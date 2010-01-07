@@ -401,11 +401,12 @@ void CVtUiVideoControlBase::Reset()
 void CVtUiVideoControlBase::SetBlind( TBool aBlindStatus )
     {
     __VTPRINTENTER( "VidCtrlBase.SetBlind" )
-    if ( iBlindStatus != aBlindStatus )
-        {
+    /* Once SetBlind called, re-draw the control anyway */
+//    if ( iBlindStatus != aBlindStatus )
+//        {
         iBlindStatus = aBlindStatus;
         DrawNow();
-        }
+//        }
     __VTPRINTEXITR( "VidCtrlBase.SetBlind %d", iBlindStatus )
     }
 

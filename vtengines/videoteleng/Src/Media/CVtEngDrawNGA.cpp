@@ -356,6 +356,103 @@ void CVtEngDrawNGA::BaseRequestLastFrame()
 void CVtEngDrawNGA::BaseVideoFrameSizeChangedL( const TSize& /*aTo*/ )
     {
     __VTPRINTENTER( "RVD(NGA).BaseVideoFrameSizeChangedL" )
+    BaseConstructL();
+    
+    TInt err;
+    
+    iConfig.iRemoteWindow->RemoveBackgroundSurface(ETrue);
+    iConfig.iWsSession->UnregisterSurface(0, iSurfaceId);
+    
+    iSurfaceChunk->Close();
+    delete iSurfaceChunk;
+    iSurfaceChunk = NULL;
+    iSurfaceManager->CloseSurface(iSurfaceId);
+    iSurfaceUpdateSession.CancelAllUpdateNotifications();
+    iSurfaceUpdateSession.Close();
+    
+    /* Close the surface manager handle */
+    iSurfaceManager->Close();
+    delete iSurfaceManager;
+    iSurfaceManager = 0;
+    
+    for ( TInt i = KVtEngMaxSurfaceBuffers-1; i >= 0 ; i-- )
+        {
+            if (iCallBackTable[i])
+                {
+                iCallBackTable[i]->Cancel();
+                delete iCallBackTable[i];
+                iCallBackTable[i] = NULL;
+                }
+        }
+    iSurfaceBuffers[ 0 ].UnSet();
+    iSurfaceBuffers[ 1 ].UnSet();
+    iSurfaceBuffer0.UnSet();
+    iSurfaceBuffer1.UnSet();
+    iWaitingBuffers.Reset();
+    
+    err = iSurfaceUpdateSession.Connect();    
+    User::LeaveIfError(err);
+    
+    iSurfaceManager = new RSurfaceManager();
+    
+    User::LeaveIfNull(iSurfaceManager); 
+    err = iSurfaceManager->Open();
+    User::LeaveIfError(err);
+    
+    RSurfaceManager::TSurfaceCreationAttributesBuf attributes;
+    attributes().iPixelFormat           = iSurfaceFormat; 
+    attributes().iSize                  = iSourceSize;
+    attributes().iBuffers               = KVtEngMaxSurfaceBuffers;
+    
+    //attributes().iStride                = iSourceSize.iWidth*2;
+    attributes().iStride                = iSourceSize.iWidth*3/2;
+    
+    attributes().iOffsetToFirstBuffer   = 0;
+    attributes().iAlignment             = 4;
+    attributes().iContiguous            = EFalse;
+    attributes().iMappable              = ETrue;
+    
+    err = iSurfaceManager->CreateSurface(attributes, iSurfaceId);
+    User::LeaveIfError(err);  
+    
+    // Map to chunk
+    iSurfaceChunk = new RChunk();
+    User::LeaveIfNull(iSurfaceChunk);    
+    err = iSurfaceManager->MapSurface(iSurfaceId, *iSurfaceChunk);
+    User::LeaveIfError(err);    
+    
+    // Get the info from the surfaceManager
+    RSurfaceManager::TInfoBuf info;
+    err = iSurfaceManager->SurfaceInfo(iSurfaceId, info);
+    User::LeaveIfError(err);    
+    
+    TInt offset;
+    iSurfaceManager->GetBufferOffset(iSurfaceId, 0, offset);
+    iSurfaceBuffer0.Set(iSurfaceChunk->Base() + offset, 0 );
+    iSurfaceManager->GetBufferOffset(iSurfaceId, 1, offset);
+    iSurfaceBuffer1.Set(iSurfaceChunk->Base() + offset, 1 );
+    
+    iConfig.iWsSession->RegisterSurface(0, iSurfaceId);   
+    iConfig.iRemoteWindow->SetBackgroundSurface(iSurfaceId);
+    
+    iCallBackTable[0] = new(ELeave) CActiveCallBack(
+            TCallBack(SurfaceBuffer0Ready, this), 
+            CActive::EPriorityStandard-1);
+    CActiveScheduler::Add(iCallBackTable[0]);
+    
+    iCallBackTable[1] = new(ELeave) CActiveCallBack(
+            TCallBack(SurfaceBuffer1Ready, this), 
+            CActive::EPriorityStandard-1);
+    CActiveScheduler::Add(iCallBackTable[1]);
+    
+    iSurfaceCreated = ETrue;    
+    
+    ClearFlag( EInitializePostingSurfaceCalled );   
+    
+    // set the params for DS
+    UpdateSinkParamsL();
+    ClearFlag( EFirstFrameReceived );  
+
     __VTPRINTEXIT( "RVD(NGA).BaseVideoFrameSizeChangedL" )
     }
 
@@ -553,27 +650,35 @@ void CVtEngDrawNGA::DoCreateSurfaceL()
                 
         if (iSurfaceManager)
             {
-            return;
-            
-            // Last return statement is for fixing an error causes
-            // green screen of remote video when swapping image after
-            // remote peer disabled video.
-            // So we return here to prevent recreate the surface object
-            // at this moment, codes below should NOT be removed due to
-            // potential future uses.
+            /* Change log for recreate surface objects
+             * Surface staffs should NOT be recreated once created,
+             * but unregister and register needs to be done since the 
+             * bounding window change its position and size. At this
+             * moment, reset the iWaitingBuffers and reset the callbacks
+             * are recommended.
+             */
             iConfig.iRemoteWindow->RemoveBackgroundSurface(ETrue);
             iConfig.iWsSession->UnregisterSurface(0, iSurfaceId);
+            
+            /* Comment out below code to prevent delete the surface objects 
+             * at this current stage, code below should NOT be removed due to
+             * potential future uses.
+             */
+            /*
             iSurfaceChunk->Close();
             delete iSurfaceChunk;
             iSurfaceChunk = NULL;
             iSurfaceManager->CloseSurface(iSurfaceId);
             iSurfaceUpdateSession.CancelAllUpdateNotifications();
             iSurfaceUpdateSession.Close();
-                              
+            */
+            
             /* Close the surface manager handle */
+            /*
             iSurfaceManager->Close();
             delete iSurfaceManager;
             iSurfaceManager = 0;
+            */
             }
         for ( TInt i = KVtEngMaxSurfaceBuffers-1; i >= 0 ; i-- )
             {
@@ -584,61 +689,77 @@ void CVtEngDrawNGA::DoCreateSurfaceL()
                     iCallBackTable[i] = NULL;
                     }
             }
+        /* Comment out below code to prevent delete the surface buffers, 
+         * otherwise the last buffer would not store the last frame. 
+         * Code below should NOT be removed due to potential future uses.
+         */
+        /*
         iSurfaceBuffers[ 0 ].UnSet();
         iSurfaceBuffers[ 1 ].UnSet();
         iSurfaceBuffer0.UnSet();
         iSurfaceBuffer1.UnSet();
+        */
         iWaitingBuffers.Reset();
         }
-    
-    err = iSurfaceUpdateSession.Connect();    
-    User::LeaveIfError(err);
-    
-    iSurfaceManager = new RSurfaceManager();
-    
-    User::LeaveIfNull(iSurfaceManager); 
-    err = iSurfaceManager->Open();
-    User::LeaveIfError(err);
-    
-    RSurfaceManager::TSurfaceCreationAttributesBuf attributes;
-    attributes().iPixelFormat           = iSurfaceFormat; 
-    attributes().iSize                  = iSourceSize;
-    attributes().iBuffers               = KVtEngMaxSurfaceBuffers;
-
-    //attributes().iStride                = iSourceSize.iWidth*2;
-    attributes().iStride                = iSourceSize.iWidth*3/2;
-
-    attributes().iOffsetToFirstBuffer   = 0;
-    attributes().iAlignment             = 4;
-    attributes().iContiguous            = EFalse;
-    attributes().iMappable              = ETrue;
+    /* Add else branch to escape the recreate of the surface objects, 
+     * it could be changed in future.
+     */
+    else
+        {
+        err = iSurfaceUpdateSession.Connect();    
+        User::LeaveIfError(err);
         
-    err = iSurfaceManager->CreateSurface(attributes, iSurfaceId);
-    User::LeaveIfError(err);  
-    
-    // Map to chunk
-    iSurfaceChunk = new RChunk();
-    User::LeaveIfNull(iSurfaceChunk);    
-    err = iSurfaceManager->MapSurface(iSurfaceId, *iSurfaceChunk);
-    User::LeaveIfError(err);    
-
-    // Get the info from the surfaceManager
-    RSurfaceManager::TInfoBuf info;
-    err = iSurfaceManager->SurfaceInfo(iSurfaceId, info);
-    User::LeaveIfError(err);    
-
-    TInt offset;
-    iSurfaceManager->GetBufferOffset(iSurfaceId, 0, offset);
-    iSurfaceBuffer0.Set(iSurfaceChunk->Base() + offset, 0 );
-    iSurfaceManager->GetBufferOffset(iSurfaceId, 1, offset);
-    iSurfaceBuffer1.Set(iSurfaceChunk->Base() + offset, 1 );
+        iSurfaceManager = new RSurfaceManager();
         
+        User::LeaveIfNull(iSurfaceManager); 
+        err = iSurfaceManager->Open();
+        User::LeaveIfError(err);
+        
+        RSurfaceManager::TSurfaceCreationAttributesBuf attributes;
+        attributes().iPixelFormat           = iSurfaceFormat; 
+        attributes().iSize                  = iSourceSize;
+        attributes().iBuffers               = KVtEngMaxSurfaceBuffers;
+        
+        //attributes().iStride                = iSourceSize.iWidth*2;
+        attributes().iStride                = iSourceSize.iWidth*3/2;
+        
+        attributes().iOffsetToFirstBuffer   = 0;
+        attributes().iAlignment             = 4;
+        attributes().iContiguous            = EFalse;
+        attributes().iMappable              = ETrue;
+        
+        err = iSurfaceManager->CreateSurface(attributes, iSurfaceId);
+        User::LeaveIfError(err);  
+        
+        // Map to chunk
+        iSurfaceChunk = new RChunk();
+        User::LeaveIfNull(iSurfaceChunk);    
+        err = iSurfaceManager->MapSurface(iSurfaceId, *iSurfaceChunk);
+        User::LeaveIfError(err);    
+        
+        // Get the info from the surfaceManager
+        RSurfaceManager::TInfoBuf info;
+        err = iSurfaceManager->SurfaceInfo(iSurfaceId, info);
+        User::LeaveIfError(err);    
+        
+        TInt offset;
+        iSurfaceManager->GetBufferOffset(iSurfaceId, 0, offset);
+        iSurfaceBuffer0.Set(iSurfaceChunk->Base() + offset, 0 );
+        iSurfaceManager->GetBufferOffset(iSurfaceId, 1, offset);
+        iSurfaceBuffer1.Set(iSurfaceChunk->Base() + offset, 1 );
+        }
+    
     iConfig.iWsSession->RegisterSurface(0, iSurfaceId);   
     iConfig.iRemoteWindow->SetBackgroundSurface(iSurfaceId);
     
-    iCallBackTable[0] = new(ELeave) CActiveCallBack(TCallBack(SurfaceBuffer0Ready, this), CActive::EPriorityStandard-1);
+    iCallBackTable[0] = new(ELeave) CActiveCallBack(
+            TCallBack(SurfaceBuffer0Ready, this), 
+            CActive::EPriorityStandard-1);
     CActiveScheduler::Add(iCallBackTable[0]);
-    iCallBackTable[1] = new(ELeave) CActiveCallBack(TCallBack(SurfaceBuffer1Ready, this), CActive::EPriorityStandard-1);
+    
+    iCallBackTable[1] = new(ELeave) CActiveCallBack(
+            TCallBack(SurfaceBuffer1Ready, this), 
+            CActive::EPriorityStandard-1);
     CActiveScheduler::Add(iCallBackTable[1]);
     
     iSurfaceCreated = ETrue;    
