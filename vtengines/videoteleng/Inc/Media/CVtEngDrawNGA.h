@@ -21,7 +21,7 @@
 
 //  INCLUDES
 //#include <videorenderer.h>
-#include <posting_surface.h>
+#include <Posting_Surface.h>
 #include <posting_surface_factory.h>
 #include <pixelformats.h>
 //#include <videoframebuffer.h>

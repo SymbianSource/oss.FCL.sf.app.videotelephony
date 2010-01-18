@@ -20,7 +20,7 @@
 #define C_VTMEDIATORPLUGIN_H
 
 // INCLUDES
-#include <mediatorpluginbase.h>
+#include <MediatorPluginBase.h>
 #include <mediatornotifications.h>
 #include <mediatoreventconsumer.h>
 #include <mediatoreventprovider.h>

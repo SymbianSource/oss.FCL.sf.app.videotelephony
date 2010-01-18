@@ -16,7 +16,7 @@
 */
 
 
-#include <aknutils.h>
+#include <AknUtils.h>
 #include <peninputcmdparam.h>
 #include <cvtlogger.h>
 

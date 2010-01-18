@@ -25,7 +25,7 @@
 #include    "VtEngUtils.h"
 #include    "CVtEngSettings.h"
 #include    <cvtlogger.h>
-#include    <mediatorcommandresponder.h>
+#include    <MediatorCommandResponder.h>
 #include    <mediatordomainuids.h>
 #include    <videotelcontrolmediatorapi.h> 
 #include    <videoteltophonecommandsapi.h>

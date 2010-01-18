@@ -28,7 +28,7 @@
 #include    <tvtengrenderingdsa.h>
 #include    <tvtengrenderingdp.h>
 #include    <tvtengrenderingnga.h>
-#include    <aknprogressdialog.h>
+#include    <AknProgressDialog.h>
 #include    <mvtengaudio.h>
 #include    <remconcoreapi.h>
 

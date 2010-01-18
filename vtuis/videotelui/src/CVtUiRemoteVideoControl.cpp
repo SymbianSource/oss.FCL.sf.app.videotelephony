@@ -20,7 +20,7 @@
 // INCLUDE FILES
 #include    <cvtlogger.h>
 #include   <eikdef.h>
-#include    <aknincallbubblenotify.h>
+#include    <AknIncallBubbleNotify.h>
 #include    <aknslayeredbackgroundcontrolcontext.h>
 #include    <aknutils.h>
 #include    <aknnavi.h>

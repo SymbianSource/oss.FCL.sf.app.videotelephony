@@ -21,7 +21,7 @@
 #include    <cvtlogger.h>
 #include    <akntoolbar.h>
 #include    <featmgr.h>
-#include    <stringloader.h>
+#include    <StringLoader.h>
 #include    <videotelui.rsg>
 #include    "videotelui.hrh"
 #include    "cvtuitoolbarbase.h"

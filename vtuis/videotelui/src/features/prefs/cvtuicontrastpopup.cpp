@@ -17,7 +17,7 @@
 
 
 
-#include    <aknvolumepopup.h>
+#include    <AknVolumePopup.h>
 #include    "cvtuicontrastpopup.h"
 #include    <cvtlogger.h>
 #include	"tvtuilocalvariation.h"

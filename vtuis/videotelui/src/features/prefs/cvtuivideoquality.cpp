@@ -17,7 +17,7 @@
 
 
 #include    <badesca.h>
-#include    <akniconarray.h>
+#include    <AknIconArray.h>
 #include    <aknsutils.h>
 #include    <stringloader.h>
 #include    <aknlists.h>

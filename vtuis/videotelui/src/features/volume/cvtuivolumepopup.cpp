@@ -16,7 +16,7 @@
 */
 
 
-#include    <aknvolumepopup.h>
+#include    <AknVolumePopup.h>
 #include    <cvtlogger.h>
 #include    "cvtuivolumepopup.h"
 #include    "cvtuifeaturemanager.h"

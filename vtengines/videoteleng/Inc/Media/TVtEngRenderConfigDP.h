@@ -23,7 +23,7 @@
 //  INCLUDES
 #include "TVtEngRenderConfig.h"
 #include "TVtEngRenderingDP.h"
-#include <posting_surface.h>
+#include <Posting_Surface.h>
 
 // FORWARD DECLARATIONS
 

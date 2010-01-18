@@ -17,7 +17,7 @@
 
 
 #include    <cvtlogger.h>
-#include    <aknutils.h>
+#include    <AknUtils.h>
 #include    <aknvolumepopup.h>
 #include    <fbs.h>
 

@@ -21,7 +21,7 @@
 #define CVTUIACTIVATEBTHFDIALOG_H
 
 //  INCLUDES
-#include    <aknwaitdialog.h>
+#include    <AknWaitDialog.h>
 #include    <mvtengcommandobserver.h>
 #include    <mvtengaudio.h>
 

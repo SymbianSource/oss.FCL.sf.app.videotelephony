@@ -22,7 +22,7 @@
 #include <bautils.h>
 #include <imageconversion.h>
 #include <cvtimageconverter.h>
-#include <rphcltserver.h>
+#include <RPhCltServer.h>
 #include <cphcltimagehandler.h>
 #include <w32std.h>
 

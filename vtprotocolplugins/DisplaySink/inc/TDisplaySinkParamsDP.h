@@ -22,7 +22,7 @@
 // INCLUDE FILES
 
 #include "mdisplaysink.h"
-#include <posting_surface.h>
+#include <Posting_Surface.h>
 
 // CLASS DECLARATION
 

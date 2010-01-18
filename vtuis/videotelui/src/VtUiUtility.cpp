@@ -23,7 +23,7 @@
 #include    <featmgr.h>
 #include    <mvtengmedia.h>
 #include    <cvtlogger.h>
-#include    <aknutils.h>
+#include    <AknUtils.h>
 #include 	"tVtuifeaturevariation.h"
 
 // Characters to open number entry.

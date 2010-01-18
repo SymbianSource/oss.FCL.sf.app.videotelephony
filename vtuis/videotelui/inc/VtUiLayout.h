@@ -24,7 +24,7 @@
 //  INCLUDES
 #include    "videotelui.hrh"
 #include    <e32base.h>
-#include    <aknutils.h>
+#include    <AknUtils.h>
 
 // FORWARD DECLARATIONS
 class TAknsItemID;

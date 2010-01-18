@@ -19,7 +19,7 @@
 #ifndef C_VTUIPEFSETTINGLISTBASE_H
 #define C_VTUIPEFSETTINGLISTBASE_H
 
-#include    <akntransparentcamerasettingpage.h>
+#include    <AknTransparentCameraSettingPage.h>
 #include    "mvtuicommandui.h"
 #include    "cvtuifeaturebase.h"
 #include    "mvtuicomponent.h"

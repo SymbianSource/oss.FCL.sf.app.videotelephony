@@ -21,7 +21,7 @@
 #define CVTUIALLOWVIDEODIALOG_H
 
 //  INCLUDES
-#include    <aknquerydialog.h>
+#include    <AknQueryDialog.h>
 
 // CLASS DECLARATION
 

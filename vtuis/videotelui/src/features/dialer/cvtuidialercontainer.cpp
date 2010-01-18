@@ -18,7 +18,7 @@
 
 #include    <cvtlogger.h>
 #include    <cvideodtmfdialer.h>
-#include    <aknsdrawutils.h>
+#include    <AknsDrawUtils.h>
 #include    <aknsutils.h>
 #include    <aknlayoutscalable_apps.cdl.h>
 #include    <aknlayoutscalable_avkon.cdl.h>

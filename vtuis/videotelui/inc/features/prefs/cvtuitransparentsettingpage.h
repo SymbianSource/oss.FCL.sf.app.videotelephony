@@ -19,7 +19,7 @@
 #ifndef CVTUITRANSPARENTSETTINGPAGE_H
 #define CVTUITRANSPARENTSETTINGPAGE_H
 
-#include <akntransparentcamerasettingpage.h>
+#include <AknTransparentCameraSettingPage.h>
 
 class MVtUiSettingPageObserver;
 class CAknsBasicBackgroundControlContext;

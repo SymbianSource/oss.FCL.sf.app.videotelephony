@@ -22,7 +22,7 @@
 //  INCLUDES
 
 //#include <e32cmn.h>
-#include <mediatorcommandresponder.h>
+#include <MediatorCommandResponder.h>
 #include <mediatoreventconsumer.h>
 #include "MVtEngEventObserver.h"
 #include  "CVtEngStateManager.h"

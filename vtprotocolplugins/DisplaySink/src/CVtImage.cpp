@@ -59,6 +59,7 @@ CVtImage::TVtDisplayMode CVtImage::DisplayModeToVtDisplayMode(
             break;
 
         case EColor16MA:
+        case EColor16MAP:
             mode = EVtColor16MA;
             break;
 

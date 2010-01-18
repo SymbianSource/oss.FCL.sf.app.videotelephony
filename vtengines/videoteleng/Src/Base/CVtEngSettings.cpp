@@ -24,7 +24,7 @@
 #include    "VtEngUtils.h"
 #include    "VtEngPanic.h"
 #include    <telincallvolcntrlcrkeys.h>
-#include    <rphcltserver.h>
+#include    <RPhCltServer.h>
 #include    <cphcltimagehandler.h>
 #include    <videotelephonyinternalcrkeys.h>
 #include    <logsdomaincrkeys.h>

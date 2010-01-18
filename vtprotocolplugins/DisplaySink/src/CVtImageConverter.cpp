@@ -163,6 +163,19 @@ TRgb VSReadColor16MA( TAny*& aSource )
 	return rgb;
 	}
 
+// -----------------------------------------------------------------------------
+// VSReadColor16MAP( TAny*& aSource )
+// (other items were commented in a header).
+// -----------------------------------------------------------------------------
+//
+TRgb VSReadColor16MAP( TAny*& aSource )
+  {
+	TUint32* s = static_cast< TUint32* >( aSource );
+	TRgb rgb( TRgb::Color16MAP( *s++ ) );
+	aSource = s;
+	return rgb;
+  }
+
 // ============================ MEMBER FUNCTIONS ===============================
 
 /**
@@ -1766,6 +1779,10 @@ EXPORT_C void CVSFbsBitmapIYUVConverter::ProcessL()
         case EColor16MA:
 			DoProcess( VSReadColor16MA );
 			break;
+			
+        case EColor16MAP:
+        	DoProcess( VSReadColor16MAP );
+        	break;
 
 		default:
 			User::Leave( KErrNotSupported );
@@ -1808,7 +1825,8 @@ void CVSFbsBitmapIYUVConverter::ReConstructL( const CFbsBitmap& aBitmap )
 	    ( iSource->DisplayMode() != EColor64K ) &&
 	    ( iSource->DisplayMode() != EColor16M ) &&
 	    ( iSource->DisplayMode() != EColor16MU ) &&
-	    ( iSource->DisplayMode() != EColor16MA ) )
+	    ( iSource->DisplayMode() != EColor16MA ) &&
+	    ( iSource->DisplayMode() != EColor16MAP ) )
 		{
 		User::Leave( KErrNotSupported );
 		}

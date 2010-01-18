@@ -22,7 +22,7 @@
 
 //  INCLUDES
 #include    <e32base.h>
-#include    <accpolaccessorymode.h>
+#include    <AccPolAccessoryMode.h>
 #include    <accessoryserver.h>
 #include    <accessorymode.h>
 

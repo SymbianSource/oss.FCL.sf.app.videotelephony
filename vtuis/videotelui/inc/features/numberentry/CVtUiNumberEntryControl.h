@@ -22,7 +22,7 @@
 
 //  INCLUDES
 #include    <coecntrl.h>
-#include    <aknutils.h>
+#include    <AknUtils.h>
 
 #include    "mvtuicomponent.h"
 #include    "tvtuicomponentstate.h"

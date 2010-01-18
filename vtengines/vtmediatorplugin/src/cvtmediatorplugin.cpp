@@ -22,7 +22,7 @@
 #include <apacmdln.h>
 #include <apaflrec.h>
 #include <apgcli.h>
-#include <mediatordomainuids.h>
+#include <MediatorDomainUIDs.h>
 #include <eikdll.h>
 #include <apgcli.h>
 #include <apgwgnam.h>

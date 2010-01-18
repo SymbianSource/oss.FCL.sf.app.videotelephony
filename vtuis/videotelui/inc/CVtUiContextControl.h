@@ -21,7 +21,7 @@
 #define CVTUICONTEXTCONTROL_H
 
 //  INCLUDES
-#include    <aknwseventobserver.h>
+#include    <AknWsEventObserver.h>
 #include    "cvtuivideocontrolbase.h"
 
 // FORWARDS

@@ -19,7 +19,7 @@
 
 // INCLUDE FILES
 #include    "CVtUiBlankControl.h"
-#include    <aknsutils.h>
+#include    <AknsUtils.h>
 
 // ============================ MEMBER FUNCTIONS ===============================
 

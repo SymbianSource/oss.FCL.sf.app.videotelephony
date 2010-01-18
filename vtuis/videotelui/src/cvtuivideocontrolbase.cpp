@@ -18,7 +18,7 @@
 
 #include    <cvtlogger.h>
 #include    <featmgr.h>
-#include    <aknsdrawutils.h>
+#include    <AknsDrawUtils.h>
 #include    <aknsutils.h>
 #include    <aknbiditextutils.h>
 #include    <stringloader.h>

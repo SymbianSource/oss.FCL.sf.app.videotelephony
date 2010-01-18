@@ -20,7 +20,7 @@
 #define C_VTUIVIDEOCONTROLBASE_H
 
 #include    <coecntrl.h>
-#include    <aknutils.h>
+#include    <AknUtils.h>
 #include    <babitflags.h>
 
 #include    "MVtUiVideoWindow.h"
