@@ -2580,12 +2580,12 @@ void CVtUiAppUi::ShutdownL()
     CVtUiColorTone* ct = static_cast< CVtUiColorTone* >(
             iFeatureManager->GetFeatureById( EVtUiFeatureIdColourTone ) );
     
-    if ( wb->State() == MVtUiFeature::EActive )
+    if ( wb && wb->State() == MVtUiFeature::EActive )
         {
         __VTPRINT( DEBUG_GEN, "CVtUiWhiteBalance::DoDeactivateL" );
         wb->DoDeactivateL ();
         }
-    if ( ct->State() == MVtUiFeature::EActive )
+    if ( ct && ct->State() == MVtUiFeature::EActive )
         {
         __VTPRINT( DEBUG_GEN, "CVtUiColorTone::DoDeactivateL" );
         ct->DoDeactivateL( );            
@@ -4818,9 +4818,9 @@ void CVtUiAppUi::StopWhiteBalanceOrColortone()
             }
         if( currentCamId == MVtEngMedia::ESecondaryCamera )
             {
-            if( wb->IsPendingCmd() )
+            if( wb && wb->IsPendingCmd() )
                 wb->HandlePendingCmdL();
-            if( ct->IsPendingCmd() )
+            if( ct && ct->IsPendingCmd() )
                 ct->HandlePendingCmdL();
             }
         }

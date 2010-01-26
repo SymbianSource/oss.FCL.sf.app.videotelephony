@@ -292,11 +292,14 @@ EXPORT_C void CVtLogger::Uninitialize()
     if ( tls )
         {
         CVtLogger* logger = CVtLogger::Logger();
-        TInt count( --(logger->iAccessCount) );
-        if ( !count )
+        if( logger )
             {
-            delete reinterpret_cast<CVtLogger*>( tls );
-            Dll::SetTls( NULL );
+            TInt count( --(logger->iAccessCount) );
+            if ( !count )
+                {
+                delete reinterpret_cast<CVtLogger*>( tls );
+                Dll::SetTls( NULL );
+                }
             }
         }
 
