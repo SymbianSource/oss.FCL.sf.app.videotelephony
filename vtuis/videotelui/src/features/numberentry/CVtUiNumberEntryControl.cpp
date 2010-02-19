@@ -27,7 +27,7 @@
 #include    "mvtuinumberentrycontrolobserver.h"
 #include    "cvtuidtmfbuffer.h"
 
-#include    <aknsutils.h>
+#include    <AknsUtils.h>
 #include    <cvtlogger.h>
 #include    <eikenv.h>
 

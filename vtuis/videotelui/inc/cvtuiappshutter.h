@@ -22,8 +22,8 @@
 #include <babitflags.h>
 
 #include 	<MPhCltEmergencyCallObserver.h>
-#include    <cphcltemergencycall.h>
-#include    <rphcltserver.h>
+#include    <CPhCltEmergencyCall.h>
+#include    <RPhCltServer.h>
 
 class CAsyncCallBack;
 class MVtUiShutterObserver;

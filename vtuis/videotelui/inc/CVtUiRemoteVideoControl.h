@@ -19,7 +19,7 @@
 #define CVTUIREMOTEVIDEOCONTROL_H_
 
 #include    <coecntrl.h>
-#include    <aknwseventobserver.h>
+#include    <AknWsEventObserver.h>
 
 class CVtUiVideoControlBase;
 class CVtUiAppUi;

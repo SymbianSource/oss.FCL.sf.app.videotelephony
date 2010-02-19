@@ -23,8 +23,8 @@
 #include "videotelui.hrh"
 #include <cvtlogger.h>
 #include <vtengevents.h>
-#include <stringloader.h>
-#include <aknquerydialog.h>
+#include <StringLoader.h>
+#include <AknQueryDialog.h>
 #include <videotelui.rsg>
 
 TVtUiStateRunning* TVtUiStateRunning::iInstance = NULL;

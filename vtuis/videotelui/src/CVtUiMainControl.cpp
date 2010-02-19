@@ -20,13 +20,12 @@
 // INCLUDE FILES
 #include    "CVtUiMainControl.h"
 #include    "VtUiLayout.h"
-#include    <aknsutils.h>
-#include    <aknsdrawutils.h>
+#include    <AknsUtils.h>
+#include    <AknsDrawUtils.h>
 #include    <cvtlogger.h>
 #include    <featmgr.h>
 #include    "CVtUiAppUi.h"
 #include    "tvtuistates.h"
-#include    <aknsutils.h>
 #include	"tVtuifeaturevariation.h"
 
 // ============================ MEMBER FUNCTIONS ===============================
@@ -234,7 +233,7 @@ void CVtUiMainControl::SupportSQCif( TBool aIsSupported )
 void CVtUiMainControl::LayoutRemoteVideo( )
     {    
     __VTPRINTENTER( "MainCtrl.LayoutRemoteVideo" )
-    if ( NULL != iRemoteVideoControl )
+    if ( NULL != iRemoteVideoControl && iRemoteVideoControl->IsVisible() )
         {
         TRect rectRemoteVideo(StreamClippingRect());
         rectRemoteVideo.Move(PositionRelativeToScreen());

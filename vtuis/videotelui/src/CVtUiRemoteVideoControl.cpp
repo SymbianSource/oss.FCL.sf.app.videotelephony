@@ -21,11 +21,11 @@
 #include    <cvtlogger.h>
 #include   <eikdef.h>
 #include    <AknIncallBubbleNotify.h>
-#include    <aknslayeredbackgroundcontrolcontext.h>
-#include    <aknutils.h>
+#include    <AknsLayeredBackgroundControlContext.h>
+#include    <AknUtils.h>
 #include    <aknnavi.h>
 #include    <akntitle.h>
-#include    <akndlgshut.h>
+#include    <AknDlgShut.h>
 #include    <aknnotedialog.h>
 #include    <aknnotewrappers.h>
 #include    <akncontext.h>
@@ -37,8 +37,8 @@
 #include    <videotelui.rsg>
 #include    <hlplch.h>
 #include    <apgwgnam.h>
-#include    <stringloader.h>
-#include    <akndef.h>
+#include    <StringLoader.h>
+#include    <AknDef.h>
 #include    <aknconsts.h>
 #include    "CVtUiRemoteVideoControl.h"
 #include    "CVtUiAppUi.h"

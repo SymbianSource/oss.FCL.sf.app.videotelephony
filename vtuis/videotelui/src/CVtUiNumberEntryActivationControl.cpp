@@ -23,8 +23,8 @@
 #include    "CVtUiAppUi.h"
 #include    "VtUiUtility.h"
 
-#include    <aknutils.h>
-#include    <aknsutils.h>
+#include    <AknUtils.h>
+#include    <AknsUtils.h>
 #include    <eikenv.h>
 #include    <cvtlogger.h>
 

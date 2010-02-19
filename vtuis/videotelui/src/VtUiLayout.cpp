@@ -23,10 +23,10 @@
 #include    <fbs.h>
 #include    <avkon.mbg>
 #include    <videotelui.mbg>
-#include    <aknsconstants.h>
+#include    <AknsConstants.h>
 #include    <aknconsts.h>
-#include    <akniconutils.h>
-#include    <aknutils.h>
+#include    <AknIconUtils.h>
+#include    <AknUtils.h>
 
 #include    <aknlayout.cdl.h>
 #include    <applayout.cdl.h>

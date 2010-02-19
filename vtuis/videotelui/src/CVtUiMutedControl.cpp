@@ -21,9 +21,9 @@
 #include    "CVtUiMutedControl.h"
 #include    "VtUiLayout.h"
 #include    <eiklabel.h>
-#include    <aknsutils.h>
-#include    <aknsdrawutils.h>
-#include    <stringloader.h>
+#include    <AknsUtils.h>
+#include    <AknsDrawUtils.h>
+#include    <StringLoader.h>
 #include    <videotelui.rsg>
 
 // ============================ MEMBER FUNCTIONS ===============================

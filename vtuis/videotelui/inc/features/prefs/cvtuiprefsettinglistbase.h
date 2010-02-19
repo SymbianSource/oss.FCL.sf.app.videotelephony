@@ -193,12 +193,16 @@ private:
     CVtUiAppUi& iAppUi;
     
     // Window priority for context control
-    TInt iWindowPriority;
+    TInt iContextControlWindowPriority;
     
     // Window position for context control
-    TInt iWindowPosition;
-
+    TInt iContextControlWindowPosition;
     
+    // Window priority for context control
+    TInt iRemoteVideoControlWindowPriority;
+    
+    // Window position for context control
+    TInt iRemoteVideoControlWindowPosition;
     };
 
 #endif // CVTUIPEFSETTINGLISTBASE_H

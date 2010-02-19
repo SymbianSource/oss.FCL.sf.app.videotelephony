@@ -18,7 +18,7 @@
 
 #include    <cvtlogger.h>
 #include    <AknUtils.h>
-#include    <aknvolumepopup.h>
+#include    <AknVolumePopup.h>
 #include    <fbs.h>
 
 #include    "cvtuipopupbase.h"

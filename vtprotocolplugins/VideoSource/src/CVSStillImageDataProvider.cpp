@@ -23,7 +23,7 @@
 #include <imageconversion.h>
 #include <cvtimageconverter.h>
 #include <RPhCltServer.h>
-#include <cphcltimagehandler.h>
+#include <CPhCltImageHandler.h>
 #include <w32std.h>
 
 #include "CVSStillImageDataProvider.h"

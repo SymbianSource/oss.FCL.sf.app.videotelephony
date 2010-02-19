@@ -24,7 +24,7 @@
 #include    <cvtlogger.h>
 #include    <featmgr.h>
 #include    <mmf/server/sounddevice.h>
-#include    <audiopreference.h>
+#include    <AudioPreference.h>
 #include    "VtEngUtils.h"
 #include    "CVtEngStateManager.h"
 #include    "MVtEngSessionInfo.h"

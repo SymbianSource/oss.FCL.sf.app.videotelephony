@@ -22,7 +22,7 @@
 //  INCLUDES
 //#include <videorenderer.h>
 #include <Posting_Surface.h>
-#include <posting_surface_factory.h>
+#include <Posting_Surface_Factory.h>
 #include <pixelformats.h>
 //#include <videoframebuffer.h>
 // GCE Surface

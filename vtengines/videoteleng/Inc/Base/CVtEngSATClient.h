@@ -24,7 +24,7 @@
 #include <e32base.h>
 #include <e32std.h>
 #include <RSatRefresh.h>
-#include <rsatsession.h>
+#include <RSatSession.h>
 
 
 // CLASS DECLARATION

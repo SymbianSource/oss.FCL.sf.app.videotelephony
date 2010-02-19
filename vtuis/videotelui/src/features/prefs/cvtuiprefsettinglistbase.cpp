@@ -27,6 +27,7 @@
 #include    "cvtuitransparentsettingpage.h"
 #include    "CVtUiMainControl.h"
 #include    "CVtUiContextControl.h"
+#include    "CVtUiRemoteVideoControl.h"
 #include    "cvtuifeaturemanager.h"
 #include    "VtUiLayout.h"
 
@@ -156,15 +157,27 @@ void CVtUiPrefSettingListBase::StartSettingPageL()
     iAppUi.SwitchViewFinderToMainPaneL();
 	    
     // Get context control's window priority and position
-    iWindowPriority = iAppUi.ContextControl().DrawableWindow()
+    iContextControlWindowPriority = iAppUi.ContextControl().DrawableWindow()
         ->OrdinalPriority();
-    iWindowPosition = iAppUi.ContextControl().DrawableWindow()
+    iContextControlWindowPosition = iAppUi.ContextControl().DrawableWindow()
         ->OrdinalPosition();
+    
+    // Get remote video control's window priority and position
+    iRemoteVideoControlWindowPriority = 
+            iAppUi.RemoteVideoControl().DrawableWindow()->OrdinalPriority();
+    iRemoteVideoControlWindowPosition = 
+            iAppUi.RemoteVideoControl().DrawableWindow()->OrdinalPosition();
     
     // Rise context control's window priority othwerwise setting page will be
     // drawn partially over the context control window.
     iAppUi.ContextControl().DrawableWindow()->SetOrdinalPosition( 
-        iWindowPosition, iWindowPriority + 1 );
+        iContextControlWindowPosition, iContextControlWindowPriority + 1 );
+    
+    // Rise remote video control's window priority othwerwise setting page 
+    // will be drawn partially over the context control window.
+    iAppUi.RemoteVideoControl().DrawableWindow()->SetOrdinalPosition(
+        iRemoteVideoControlWindowPosition, 
+        iRemoteVideoControlWindowPriority + 2 );
 
     // Creates setting page
     CreateSettingPageL();
@@ -192,9 +205,17 @@ void CVtUiPrefSettingListBase::StopSettingPageL()
         iSettingPage->OfferKeyEventL( keyEvent, EEventKey );
         }
         
-    // Set contex control's window priority and position back to orginal value.
+    // Set remote video control's window priority and position back to 
+    // orginal value.
+    iAppUi.RemoteVideoControl().DrawableWindow()->SetOrdinalPosition(
+            iRemoteVideoControlWindowPosition, 
+            iRemoteVideoControlWindowPriority );
+    
+    // Set contex control's window priority and position back to 
+    // orginal value.
     iAppUi.ContextControl().DrawableWindow()->SetOrdinalPosition( 
-       iWindowPosition, iWindowPriority );
+        iContextControlWindowPosition, iContextControlWindowPriority );
+    
     __VTPRINTEXIT( "CVtUiPrefSettingListBase.StopSettingPageL" )
     }
 

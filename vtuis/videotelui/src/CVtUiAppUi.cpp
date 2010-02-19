@@ -37,12 +37,12 @@
 #include    <csxhelp/incl.hlp.hrh>
 
 
-#include    <aknincallbubblenotify.h>
-#include    <aknslayeredbackgroundcontrolcontext.h>
-#include    <aknutils.h>
+#include    <AknIncallBubbleNotify.h>
+#include    <AknsLayeredBackgroundControlContext.h>
+#include    <AknUtils.h>
 #include    <aknnavi.h>
 #include    <akntitle.h>
-#include    <akndlgshut.h>
+#include    <AknDlgShut.h>
 #include    <aknnotedialog.h>
 #include    <aknnotewrappers.h>
 #include    <akncontext.h>
@@ -54,15 +54,15 @@
 #include    <videotelui.rsg>
 #include    <hlplch.h>
 #include    <apgwgnam.h>
-#include    <stringloader.h>
-#include    <akndef.h>
+#include    <StringLoader.h>
+#include    <AknDef.h>
 #include    <aknconsts.h>
 
 
 #include    <e32property.h>
 #include    <ecom/ecom.h>
 #include    <coreapplicationuisdomainpskeys.h>
-#include    <uikoninternalpskeys.h>
+#include    <UikonInternalPSKeys.h>
 #include    <centralrepository.h>
 #include    <videotelephonyinternalcrkeys.h>
 #include    <settingsinternalcrkeys.h>
@@ -72,8 +72,8 @@
 #include    <activeidle2domainpskeys.h>
 #include 	<ctsydomainpskeys.h>
 
-#include    <aknquerydialog.h>
-#include 	<aknglobalnote.h>
+#include    <AknQueryDialog.h>
+#include 	<AknGlobalNote.h>
 #include 	<aknsoundsystem.h>
 
 
@@ -90,8 +90,8 @@
 
 #include    "CVtUiBitmapManager.h"
 
-#include    <mgfetch.h>
-#include    <mmgfetchverifier.h>
+#include    <MGFetch.h>
+#include    <MMGFetchVerifier.h>
 #include    <caf/manager.h>
 #include    <caf/virtualpathptr.h>
 
@@ -1493,6 +1493,7 @@ void CVtUiAppUi::HandleWsEventL(
             }
             break;
 
+        case EEventFocusGained:
         case KAknFullOrPartialForegroundGained:
             {
             SetIncallBubbleAllowedInUsualL( EFalse );
@@ -4781,6 +4782,7 @@ void CVtUiAppUi::StopWaitingImage()
         iDownlinkWindow->SetWaiting( EFalse );
         iUiStates->SetWaitingForFirstFrame( EFalse );
         RemoteVideoControl().MakeVisible(ETrue);
+        iDownlinkWindow->LayoutRemoteVideo();
         }
     }
 

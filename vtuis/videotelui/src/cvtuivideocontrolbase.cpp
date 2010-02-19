@@ -19,13 +19,13 @@
 #include    <cvtlogger.h>
 #include    <featmgr.h>
 #include    <AknsDrawUtils.h>
-#include    <aknsutils.h>
-#include    <aknbiditextutils.h>
-#include    <stringloader.h>
+#include    <AknsUtils.h>
+#include    <AknBidiTextUtils.h>
+#include    <StringLoader.h>
 #include    <videotelui.rsg>
 
-#include     <aknsbasicbackgroundcontrolcontext.h>
-#include    <aknstatuspaneutils.h>
+#include    <AknsBasicBackgroundControlContext.h>
+#include    <AknStatuspaneUtils.h>
 #include    "cvtuivideocontrolbase.h"
 #include    "mvtuicomponentmanager.h"
 #include    "VtUiLayout.h"

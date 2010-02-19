@@ -21,8 +21,8 @@
 #include    "CVtUiNaviPaneControl.h"
 #include    "CVtUiNaviPane.h"
 #include    "VtUiLayout.h"
-#include    <aknsutils.h>
-#include    <aknsdrawutils.h>
+#include    <AknsUtils.h>
+#include    <AknsDrawUtils.h>
 
 // CONSTANTS
 

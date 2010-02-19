@@ -26,8 +26,8 @@
 #include    "vtengcommands.h"
 #include    "CVtEngStateManager.h"
 #include    "VtEngPanic.h"
-#include    <mediatorcommandinitiator.h>
-#include    <mediatordomainuids.h> 
+#include    <MediatorCommandInitiator.h>
+#include    <MediatorDomainUIDs.h> 
 #include    <mediatorcommandstotelephonyapi.h>
 #include    <mediatoraudiocommandstotelephonyapi.h>
 #include    <videoteltophonecommandsapi.h>

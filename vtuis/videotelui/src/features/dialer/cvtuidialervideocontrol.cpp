@@ -144,11 +144,10 @@ TAknTextLineLayout CVtUiDialerVideoControl::WaitingTextLayout( TInt aLine )
 void CVtUiDialerVideoControl::LayoutRemoteVideo( )
     {    
     __VTPRINTENTER( "DialCtrl.LayoutRemoteVideo" )
-    if ( NULL != iRemoteVideoControl )
+    if ( NULL != iRemoteVideoControl && iRemoteVideoControl->IsVisible() )
         {
         TRect rectRemoteVideo(StreamClippingRect());
-        rectRemoteVideo.Move(PositionRelativeToScreen());
-        iRemoteVideoControl->SetExtent(rectRemoteVideo.iTl,rectRemoteVideo.Size());
+        iRemoteVideoControl->SetExtent( PositionRelativeToScreen(),rectRemoteVideo.Size() );
         }
     __VTPRINTEXIT( "DialCtrl.LayoutRemoteVideo" )
     }

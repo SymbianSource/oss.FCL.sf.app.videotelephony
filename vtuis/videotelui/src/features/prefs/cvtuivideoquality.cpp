@@ -18,10 +18,10 @@
 
 #include    <badesca.h>
 #include    <AknIconArray.h>
-#include    <aknsutils.h>
-#include    <stringloader.h>
+#include    <AknsUtils.h>
+#include    <StringLoader.h>
 #include    <aknlists.h>
-#include    <aknpopup.h>
+#include    <aknPopup.h>
 #include    <aknselectionlist.h>
 #include    <mvtengmedia.h>
 #include    <cvtengmodel.h>

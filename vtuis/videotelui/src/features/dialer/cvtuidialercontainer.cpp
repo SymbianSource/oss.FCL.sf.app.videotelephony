@@ -19,12 +19,12 @@
 #include    <cvtlogger.h>
 #include    <cvideodtmfdialer.h>
 #include    <AknsDrawUtils.h>
-#include    <aknsutils.h>
+#include    <AknsUtils.h>
 #include    <aknlayoutscalable_apps.cdl.h>
 #include    <aknlayoutscalable_avkon.cdl.h>
 #include    <layoutmetadata.cdl.h>
 #include    <featmgr.h>
-#include    <aknsbasicbackgroundcontrolcontext.h>
+#include    <AknsBasicBackgroundControlContext.h>
 
 #include    "VtUiUtility.h"
 #include    "VtUiLayout.h"
@@ -379,12 +379,12 @@ void CVtUiDialerContainer::LayoutDialerContainer()
     if ( Layout_Meta_Data::IsLandscapeOrientation() )
         {
         // Landscape: Option11 (thin status pane, lsc)
-        mainPaneLL = AknLayoutScalable_Avkon::main_pane( 9 ).LayoutLine();
+        mainPaneLL = AknLayoutScalable_Apps::main_pane( 15 ).LayoutLine();
         }
     else
         {
         // Portrait: main pane with status pane off, control pane on
-        mainPaneLL = AknLayoutScalable_Avkon::main_pane( 7 ).LayoutLine();
+        mainPaneLL = AknLayoutScalable_Apps::main_pane( 12 ).LayoutLine();
         }
 
     TRect appWinRect;
