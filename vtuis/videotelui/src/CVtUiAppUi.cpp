@@ -34,6 +34,7 @@
 #include    "VtUiPanic.h"
 #include    "CVtUiActivateBtHfDialog.h"
 #include    "CVtUiRemoteVideoControl.h"
+#include    "CVtUiEndCallButtonPane.h"
 #include    <csxhelp/incl.hlp.hrh>
 
 
@@ -540,6 +541,12 @@ class CVtUiAppUi::CInstance
 
         // Owned number entry activation control.
         CVtUiNumberEntryActivationControl* iNumberEntryActivation;
+        
+        // Owned button pane control
+        CVtUiEndCallButtonPane* iEndCallButtonPane;
+        
+        // ETrue if iButtonPane has been added to stack.
+        TBool iButtonPaneInStack;
 
     };
 
@@ -830,6 +837,8 @@ void CVtUiAppUi::ConstructL()
 
     FeatureManager::InitializeLibL();
     BaseConstructL( EAknEnableSkin | EAknEnableMSK );
+    
+    iIsLandScapeOrientation = VtUiLayout::IsLandscapeOrientation();
 
     iCba = Cba();
     // Must be done before creating features
@@ -3206,6 +3215,20 @@ void CVtUiAppUi::SetZoomFactorL( TInt aZoomStep )
     __VTPRINTEXIT( "VtUi.SetZoomFactorL" )
     }
 
+// -----------------------------------------------------------------------------
+// CVtUiAppUi::CmdSimulateKeyEvent
+// -----------------------------------------------------------------------------
+//
+void CVtUiAppUi::CmdSimulateKeyEvent( TInt aScanCode )
+   {
+   TRawEvent lEventDown;
+   lEventDown.Set( TRawEvent::EKeyDown, aScanCode );
+   UserSvr::AddEvent( lEventDown );
+   User::After( 100000 );
+   TRawEvent lEventUp;
+   lEventUp.Set( TRawEvent::EKeyUp, aScanCode );
+   UserSvr::AddEvent( lEventUp );
+   }
 
 // -----------------------------------------------------------------------------
 // CVtUiAppUi::CmdUpdateVolumeL
@@ -3634,13 +3657,23 @@ TBool CVtUiAppUi::ActiveExecInitExecuteL(
             break;
 
         case EVtUiAppUiAnsweredQuerySetupStill:
-            ActiveExecInitSetSourceL( MVtEngMedia::EMediaStillImage, aRequest );
+            {
+            if ( iIsLandScapeOrientation == VtUiLayout::IsLandscapeOrientation() )
+                {
+                ActiveExecInitSetSourceL( MVtEngMedia::EMediaStillImage, aRequest );
+                }
             aNextState = EVtUiAppUiAnsweredQuerySetupStart;
+            }
             break;
 
         case EVtUiAppUiAnsweredQuerySetupNone:
-            ActiveExecInitSetSourceL( MVtEngMedia::EMediaNone, aRequest );
+            {
+            if ( iIsLandScapeOrientation == VtUiLayout::IsLandscapeOrientation() )
+                {
+                ActiveExecInitSetSourceL( MVtEngMedia::EMediaNone, aRequest );
+                }
             aNextState = EVtUiAppUiAnsweredQuerySetupStart;
+            }
             break;
 
         case EVtUiAppUiAnsweredQuerySetupStart:
@@ -3790,6 +3823,11 @@ TBool CVtUiAppUi::ActiveExecInitExecuteL(
                 ShowCameraInUseNoteL();
                 }
 
+            if ( iIsLandScapeOrientation != VtUiLayout::IsLandscapeOrientation() )
+                {
+                (void) HandleLayoutChanged();
+                }
+            
             if ( aState != EVtUiAppUiAnsweredQueryFinish )
                 {
                 ChangeApplicationFocus( ETrue );
@@ -4550,6 +4588,17 @@ CVtUiRemoteVideoControl& CVtUiAppUi::RemoteVideoControl()
    __VTPRINTENTER( "VtUi.RemoteVideoControl" )
    __VTPRINTEXIT( "VtUi.RemoteVideoControl" )
    return *iInstance->iRemoteVideoControl;
+   }
+
+// -----------------------------------------------------------------------------
+// CVtUiAppUi::EndCallButtonPane
+// -----------------------------------------------------------------------------
+//
+CVtUiEndCallButtonPane& CVtUiAppUi::EndCallButtonPane()
+   {
+   __VTPRINTENTER( "VtUi.EndCallButtonPane" )
+   __VTPRINTEXIT( "VtUi.EndCallButtonPane" )
+   return *iInstance->iEndCallButtonPane;
    }
 
 // -----------------------------------------------------------------------------
@@ -6318,6 +6367,14 @@ void CVtUiAppUi::CInstance::ConstructL()
     iAppUi.AddToStackL( iContextControl );
     iContextControlInStack = ETrue;
 
+    iEndCallButtonPane = CVtUiEndCallButtonPane::NewL( parent );
+        
+    VtUiLayout::GetButtonPaneLayout( control );
+    
+    AknLayoutUtils::LayoutControl( iEndCallButtonPane, parent, control );
+    iAppUi.AddToStackL( iEndCallButtonPane );
+    iButtonPaneInStack = ETrue;
+    
     iNaviPane =
         CVtUiNaviPane::NewL(
             *( iAppUi.NaviPaneL() ),
@@ -6342,6 +6399,10 @@ void CVtUiAppUi::CInstance::LayoutChanged()
     AknLayoutUtils::LayoutControl( iNumberEntryActivation, parent, control );
     VtUiLayout::GetFirstWindowBackgroundLayout( control );
     AknLayoutUtils::LayoutControl( iContextControl, parent, control );
+    
+    VtUiLayout::GetButtonPaneLayout( control );
+    AknLayoutUtils::LayoutControl( iEndCallButtonPane, parent, control );
+    
     if(iContextControl)
         iContextControl->LayoutRemoteVideo();
     
@@ -6413,12 +6474,17 @@ CVtUiAppUi::CInstance::~CInstance()
         {
         iAppUi.RemoveFromStack( iRemoteVideoControl );
         }
+    if( iEndCallButtonPane && iButtonPaneInStack )
+        {
+        iAppUi.RemoveFromStack( iEndCallButtonPane );
+        }
     delete iMainControl;
     delete iContextControl;
     delete iRemoteVideoControl;
     delete iNumberEntryActivation;
     delete iNaviPane;
     delete iBitmapManager;
+    delete iEndCallButtonPane;
     }
 
 // Implementation of CVtUiAppUi::CEventObserver

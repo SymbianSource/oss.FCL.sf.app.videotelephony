@@ -226,6 +226,13 @@ class VtUiLayout
         * EFalse otherwise.
         */
         static TBool IsLandscapeOrientation();
+        
+        /**
+        * Returns end call button pane layout.
+        * @param aLayout end call button pane layout.
+        */
+        static void GetButtonPaneLayout(
+            TAknWindowLineLayout& aLayout );
 
     };
 

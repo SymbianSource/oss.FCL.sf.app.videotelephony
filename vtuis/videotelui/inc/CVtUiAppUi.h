@@ -57,6 +57,7 @@ class CVtUiBitmapManager;
 class CVtUiVolumeControl;
 class CAknIncallBubble;
 class CVtUiRemoteVideoControl;
+class CVtUiEndCallButtonPane;
 
 // CLASS DECLARATION
 
@@ -195,6 +196,11 @@ class CVtUiAppUi
         * @param aZoomStep New zoom step to be set.
         */
         void SetZoomFactorL( TInt aZoomStep );
+        
+        /*
+        * Simulate key event
+        */
+        void CmdSimulateKeyEvent( TInt aScanCode );
 
     public: // Functions from base classes
 
@@ -362,6 +368,12 @@ class CVtUiAppUi
         * @return reference to remote video control.
         */        
         CVtUiRemoteVideoControl& RemoteVideoControl();
+
+        /**
+        * Gets reference to end call pane.
+        * @return reference to end call pane.
+        */
+        CVtUiEndCallButtonPane& EndCallButtonPane();
 
         /**
         * Switches viewfinder to main pane if it is currently in context

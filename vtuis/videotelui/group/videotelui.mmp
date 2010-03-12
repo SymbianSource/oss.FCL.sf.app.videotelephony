@@ -53,6 +53,8 @@ SOURCE          CVtUiActivateBtHfDialog.cpp
 SOURCE          TVtUiCallParameters.cpp
 SOURCE          CVtUiNumberEntryActivationControl.cpp
 SOURCE          CVtUiBitmapManager.cpp
+SOURCE		CVtUiEndCallButton.cpp
+SOURCE          CVtUiEndCallButtonPane.cpp
 
 SOURCE          tvtuiappstatebase.cpp
 SOURCE          tvtuistatestarting.cpp

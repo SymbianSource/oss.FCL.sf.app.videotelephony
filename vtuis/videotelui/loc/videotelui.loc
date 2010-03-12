@@ -393,4 +393,9 @@
 //
 #define qtn_incal_softk_dialer "Dialer"
 
+// d: End call button's text
+// l: vidtel_button_pane_t1
+// r: 5.0
+//
+#define qtn_vt_button_end_call "End Call"
 // End of File

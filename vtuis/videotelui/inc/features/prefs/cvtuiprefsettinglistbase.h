@@ -203,6 +203,12 @@ private:
     
     // Window position for context control
     TInt iRemoteVideoControlWindowPosition;
+    
+    // Window priority for context control
+    TInt iEndCallButtonPanePriority;
+    
+    // Window position for context control
+    TInt iEndCallButtonPanePosition;
     };
 
 #endif // CVTUIPEFSETTINGLISTBASE_H

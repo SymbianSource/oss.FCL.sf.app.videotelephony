@@ -104,11 +104,13 @@ void CVtUiMainControl::HandleSizeChanged()
     {
     __VTPRINTENTER( "MainCtrl.HandleSizeChanged" )
     const TRect mainPaneRect( Rect() );
+    TRect screen;
+    VtUiLayout::GetApplicationParentRect( screen );
 
     // blind icon and mask
     TAknWindowLineLayout blind;
     VtUiLayout::GetSecondWindowDisabledIconLayout( blind );
-    iBlindLayout.LayoutRect( mainPaneRect, blind );
+    iBlindLayout.LayoutRect( screen, blind );
     const TSize blindSize( iBlindLayout.Rect().Size() );
     BitmapManager().SetSize( iBlindId, blindSize );
     BitmapManager().SetSize( iBlindMaskId, blindSize );

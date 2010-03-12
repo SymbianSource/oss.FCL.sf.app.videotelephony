@@ -30,6 +30,7 @@
 #include    "CVtUiRemoteVideoControl.h"
 #include    "cvtuifeaturemanager.h"
 #include    "VtUiLayout.h"
+#include    "CVtUiEndCallButtonPane.h"
 
 #include    <layoutmetadata.cdl.h>
 
@@ -168,6 +169,12 @@ void CVtUiPrefSettingListBase::StartSettingPageL()
     iRemoteVideoControlWindowPosition = 
             iAppUi.RemoteVideoControl().DrawableWindow()->OrdinalPosition();
     
+    // Get end call button pane priority and position
+    iEndCallButtonPanePriority = 
+            iAppUi.EndCallButtonPane().DrawableWindow()->OrdinalPriority();
+    iEndCallButtonPanePosition = 
+            iAppUi.EndCallButtonPane().DrawableWindow()->OrdinalPosition();
+    
     // Rise context control's window priority othwerwise setting page will be
     // drawn partially over the context control window.
     iAppUi.ContextControl().DrawableWindow()->SetOrdinalPosition( 
@@ -178,6 +185,12 @@ void CVtUiPrefSettingListBase::StartSettingPageL()
     iAppUi.RemoteVideoControl().DrawableWindow()->SetOrdinalPosition(
         iRemoteVideoControlWindowPosition, 
         iRemoteVideoControlWindowPriority + 2 );
+    
+    // Rise end call button pane priority othwerwise setting page 
+    // will be drawn partially over the context control window.
+    iAppUi.EndCallButtonPane().DrawableWindow()->SetOrdinalPosition(
+            iEndCallButtonPanePosition, 
+        iEndCallButtonPanePriority + 1 );
 
     // Creates setting page
     CreateSettingPageL();
@@ -204,6 +217,11 @@ void CVtUiPrefSettingListBase::StopSettingPageL()
         keyEvent.iCode =  EKeyEscape;
         iSettingPage->OfferKeyEventL( keyEvent, EEventKey );
         }
+    
+    // Set end call button pane priority and position back to 
+    // orginal value.
+    iAppUi.EndCallButtonPane().DrawableWindow()->SetOrdinalPosition( 
+            iEndCallButtonPanePosition, iEndCallButtonPanePriority );
         
     // Set remote video control's window priority and position back to 
     // orginal value.

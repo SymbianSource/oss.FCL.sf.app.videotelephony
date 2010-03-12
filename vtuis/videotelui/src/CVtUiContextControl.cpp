@@ -299,7 +299,11 @@ void CVtUiContextControl::HandleWsEventL( const TWsEvent& aEvent,
         // Touch outside of volume popup, close volume popup
         if ( aEvent.Pointer()->iType == TPointerEvent::EButton1Down )
             {
-            if ( aDestination == this )
+            if ( iAppUi.IsDisplayingMenuOrDialog() )
+                {
+                iOkToSwapOnButtonUp = EFalse;
+                }
+            else if ( aDestination == this )
                 {
                 iOkToSwapOnButtonUp = !iUiStates.IsZoomModeOn() &&
                     !iUiStates.IsCaptureModeOn() &&

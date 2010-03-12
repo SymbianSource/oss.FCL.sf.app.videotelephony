@@ -1278,7 +1278,12 @@ TBool CVtEngLocalVideo::SelectSourceL( TVtEngProviderType aSource )
            aSource == KVtEngProviderCam2 ||
            aSource == KVtEngProviderImage ) )
         {
-        aSource = iDelayedSelect.DelayedSelectTarget();
+        TVtEngProviderType delayedSelect( iDelayedSelect.DelayedSelectTarget() );
+        if ( delayedSelect != KVtEngProviderNone && 
+             delayedSelect != KVtEngProviderDefaultStillImage )
+            {
+            aSource = delayedSelect;
+            }
         }
 
     if( IsProviderWaiting( aSource ) )

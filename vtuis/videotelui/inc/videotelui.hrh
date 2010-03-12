@@ -126,6 +126,10 @@ enum TVtUiBitmapId
     EVtUiBitmap_qgn_indi_call_video_blind_in,
     // Blind out icon.
     EVtUiBitmap_qgn_indi_call_video_blind_out,
+    // End call button icon
+    EVtUiBitmap_qgn_indi_button_end_active_call,
+    // End call button icon mask
+    EVtUiBitmap_qgn_indi_button_end_active_call_mask,
     // Earpiece icon.
     EVtUiBitmap_qgn_indi_earpiece,
     // Earpiece icon mask.

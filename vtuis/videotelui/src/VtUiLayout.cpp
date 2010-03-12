@@ -107,11 +107,11 @@ void VtUiLayout::GetFirstWindowBackgroundLayout(
     {
     //aLayout = AppLayout::Uplink_video_image__large__Line_1();
     TInt main_pane_variety( 0 );
-    TInt vid_upl_variety( 14 );
+    TInt vid_upl_variety( 18 );
     if ( Layout_Meta_Data::IsLandscapeOrientation() )
         {
         main_pane_variety = 4;
-        vid_upl_variety = 0;
+        vid_upl_variety = 17;
         }
 
     TAknWindowComponentLayout layout1 =
@@ -137,11 +137,11 @@ void VtUiLayout::GetFirstWindowStreamLayout(
         TAknWindowLineLayout& aLayout )
     {
     TInt main_pane_variety( 0 );
-    TInt vid_upl_variety( 14 );
+    TInt vid_upl_variety( 18 );
     if ( Layout_Meta_Data::IsLandscapeOrientation() )
         {
         main_pane_variety = 4;
-        vid_upl_variety = 0;
+        vid_upl_variety = 17;
         }
 
     TAknWindowComponentLayout layout1 =
@@ -168,11 +168,11 @@ void VtUiLayout::GetFirstWindowStreamDisabledIconLayout(
     {
     //aLayout = AppLayout::Uplink_video_image__large__Line_3();
     TInt main_pane_variety( 0 );
-    TInt vid_upl_variety( 14 );
+    TInt vid_upl_variety( 18 );
     if ( Layout_Meta_Data::IsLandscapeOrientation() )
         {
         main_pane_variety = 4;
-        vid_upl_variety = 0;
+        vid_upl_variety = 17;
         }
 
     TAknWindowComponentLayout layout1 =
@@ -215,14 +215,8 @@ void VtUiLayout::GetSecondWindowStreamLayout(
         {
         if ( aIsToolbar )
             {
-            // non touch
-            TInt varietyPr = 8; // portrait
-	        TInt varietyLs = 10; // landscape
-            if ( AknLayoutUtils::PenEnabled() )
-                {
-                varietyPr = 11; // portrait
-	            varietyLs = 12; // landscape
-                }
+            TInt varietyPr = 27; // portrait
+            TInt varietyLs = 26; // landscape
 
             TInt varietyIndex = Layout_Meta_Data::IsLandscapeOrientation()
 	           ? varietyLs : varietyPr ;
@@ -257,14 +251,8 @@ void VtUiLayout::GetSecondWindowStreamWholeLayout(
         {
         if ( aIsToolbar )
             {
-            // non touch
-            TInt varietyPr = 5; // portrait
-	        TInt varietyLs = 7; // landscape
-            if ( AknLayoutUtils::PenEnabled() )
-                {
-                varietyPr = 8; // portrait
-	            varietyLs = 1; // landscape
-                }
+            TInt varietyPr = 24; // portrait
+            TInt varietyLs = 22; // landscape
 
             TInt varietyIndex = Layout_Meta_Data::IsLandscapeOrientation()
 	           ? varietyLs : varietyPr;
@@ -288,7 +276,21 @@ void VtUiLayout::GetSecondWindowStreamWholeLayout(
 void VtUiLayout::GetSecondWindowDisabledIconLayout(
         TAknWindowLineLayout& aLayout )
     {
-    aLayout = AppLayout::Downlink_video_image_Line_3();
+    TInt blind_icon_variety( 4 );
+    if ( Layout_Meta_Data::IsLandscapeOrientation() )
+        {
+        blind_icon_variety = 3;
+        }
+
+    TAknWindowComponentLayout layout2 =
+        AknLayoutScalable_Apps::main_video_tele_pane();
+    TAknWindowComponentLayout layout4 =
+        AknLayoutScalable_Apps::
+        call_video_g2( blind_icon_variety );
+    
+    aLayout =
+        DoCompose( layout2 , layout4 ).LayoutLine();
+    
     }
 
 // -----------------------------------------------------------------------------
@@ -309,8 +311,8 @@ void VtUiLayout::GetSecondWindowWaitingTextLayout(
 
         TAknTextComponentLayout layout2 =
             aFirstLine ?
-                AknLayoutScalable_Apps::call_video_pane_t1() :
-                AknLayoutScalable_Apps::call_video_pane_t2();
+                AknLayoutScalable_Apps::call_video_pane_t1(2) :
+                AknLayoutScalable_Apps::call_video_pane_t2(2);
 
         aLayout =
             TAknWindowComponentLayout::ComposeText(
@@ -325,11 +327,11 @@ void VtUiLayout::GetSecondWindowWaitingTextLayout(
         TAknTextComponentLayout l2;
         if ( !line )
             {
-            l2 = AknLayoutScalable_Apps::call_video_pane_t1( 1 );
+            l2 = AknLayoutScalable_Apps::call_video_pane_t1( 3 );
             }
         else
             {
-            l2 = AknLayoutScalable_Apps::call_video_pane_t2( 1 );
+            l2 = AknLayoutScalable_Apps::call_video_pane_t2( 3 );
             }
         aLayout = TAknWindowComponentLayout::ComposeText( l1, l2 );
         }
@@ -534,6 +536,11 @@ TAknsItemID VtUiLayout::MapBitmapToSkinId( TVtUiBitmapId aId )
         case EVtUiBitmap_qgn_prop_sub_current_mask:
             skinId = KAknsIIDQgnPropSubCurrent;
             break;
+            
+        case EVtUiBitmap_qgn_indi_button_end_active_call:
+        case EVtUiBitmap_qgn_indi_button_end_active_call_mask:
+            skinId = KAknsIIDQgnIndiButtonEndCall;
+            break;
 
         default:
             // Default value is OK.
@@ -665,6 +672,13 @@ void VtUiLayout::Resolve(
             file = EVtUiAvkonBitmapFile;
             index = EMbmAvkonQgn_prop_sub_current_mask;
             break;
+        case EVtUiBitmap_qgn_indi_button_end_active_call:
+            index = EMbmVideoteluiQgn_indi_button_end_active_call;
+            break;
+            
+        case EVtUiBitmap_qgn_indi_button_end_active_call_mask:
+            index = EMbmVideoteluiQgn_indi_button_end_active_call_mask;
+            break;
 
         default:
             VtUiPanic::Panic( EVtUiPanicInvalidBitmapId );
@@ -697,4 +711,26 @@ TBool VtUiLayout::IsLandscapeOrientation()
     return Layout_Meta_Data::IsLandscapeOrientation();
     }
 
+// -----------------------------------------------------------------------------
+// VtUiLayout::GetButtonPaneLayout
+// -----------------------------------------------------------------------------
+//
+void VtUiLayout::GetButtonPaneLayout( TAknWindowLineLayout& aLayout )
+    {
+//    TInt main_pane_variety = IsLandscapeOrientation() ? 1 : 2;
+    TInt main_pane_variety( 0 );
+    TInt vid_btn_variety( 2 );
+    if ( Layout_Meta_Data::IsLandscapeOrientation() )
+        {
+        main_pane_variety = 4;
+        vid_btn_variety = 1;
+        }
+    
+    
+    TAknWindowComponentLayout layout1 = AknLayoutScalable_Apps::main_pane( main_pane_variety );
+    
+    TAknWindowComponentLayout layout2 = AknLayoutScalable_Apps::vidtel_button_pane( vid_btn_variety );
+    
+    aLayout = DoCompose( layout1, layout2 ).LayoutLine();
+    }
 //  End of File

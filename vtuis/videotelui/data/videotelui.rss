@@ -1910,4 +1910,23 @@ RESOURCE CBA r_videotelui_softkeys_dialer
         };
     }
 
+// -----------------------------------------------------------------------------
+//
+// r_videotelui_end_call_button
+// End call button
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE AVKON_BUTTON r_videotelui_end_call_button
+        {
+        flags = 0;
+        states =
+            {
+            AVKON_BUTTON_STATE
+                {
+                flags = 0;
+                txt = qtn_vt_button_end_call;
+                }
+            };                
+        }
 // End of File

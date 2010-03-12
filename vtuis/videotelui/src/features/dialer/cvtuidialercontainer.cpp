@@ -109,6 +109,9 @@ void CVtUiDialerContainer::HandleResourceChangeL( TInt aType )
     default:
         break;
         }
+
+    CCoeControl::HandleResourceChange( aType );
+	
     __VTPRINTEXIT( "DialContainer.HandleResourceChangeL" )
     }
 
@@ -384,7 +387,7 @@ void CVtUiDialerContainer::LayoutDialerContainer()
     else
         {
         // Portrait: main pane with status pane off, control pane on
-        mainPaneLL = AknLayoutScalable_Apps::main_pane( 12 ).LayoutLine();
+        mainPaneLL = AknLayoutScalable_Apps::main_pane( 9 ).LayoutLine();
         }
 
     TRect appWinRect;

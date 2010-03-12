@@ -85,13 +85,13 @@ void CVtUiTransparentSettingPage::SetSettingPageEventStateObserver(
 void CVtUiTransparentSettingPage::GetTheLayoutData()
     {
     // Varieties
-    TInt labelVariety = 0;
-    TInt listboxVariety = 0;
+    TInt labelVariety = 6;
+    TInt listboxVariety = 6;
 
     if ( Layout_Meta_Data::IsLandscapeOrientation() )
         {
-        labelVariety = 1;
-        listboxVariety = 1;
+        labelVariety = 5;
+        listboxVariety = 5;
         }
        
     // Rect for label and shadow text   
