@@ -20,7 +20,7 @@
 
 //  INCLUDES
 #include    <e32std.h>
-#include    <accpolaccessorymode.h>
+#include    <AccPolAccessoryMode.h>
 
 // CLASS DECLARATION
 

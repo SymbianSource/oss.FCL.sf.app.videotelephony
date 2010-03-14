@@ -29,7 +29,7 @@
 #include    <aknnavide.h>
 #include    <featmgr.h>
 #include	"tVtuifeaturevariation.h"
-#include    <stringloader.h>
+#include    <StringLoader.h>
 #include    <videotelui.rsg>
 
 // CONSTANTS

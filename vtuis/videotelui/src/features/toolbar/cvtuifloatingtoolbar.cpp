@@ -32,7 +32,7 @@
 #include    <videotelui.rsg>
 #include    <cvtlogger.h>
 #include    <akntoolbar.h>
-#include    <aknutils.h>
+#include    <AknUtils.h>
 #include    <aknlayoutscalable_apps.cdl.h>
 #include    <layoutmetadata.cdl.h>
 #include    <gfxtranseffect/gfxtranseffect.h>

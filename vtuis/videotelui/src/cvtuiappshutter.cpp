@@ -23,9 +23,9 @@
 #include "tvtuilocalvariation.h"
 #include <cvtlogger.h>
 #include <eikenv.h>
-#include <aknutils.h>
+#include <AknUtils.h>
 #include <aknnotewrappers.h>
-#include <stringloader.h>
+#include <StringLoader.h>
 
 // singleton instance
 static CVtUiAppShutter* iAppShutter = NULL;

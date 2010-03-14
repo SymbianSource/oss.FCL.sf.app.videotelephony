@@ -752,6 +752,9 @@ void CVtEngDrawNGA::DoCreateSurfaceL()
     iConfig.iWsSession->RegisterSurface(0, iSurfaceId);   
     iConfig.iRemoteWindow->SetBackgroundSurface(iSurfaceId);
     
+    iConfig.iRemoteWindow->BeginRedraw();
+    iConfig.iRemoteWindow->EndRedraw();
+    
     iCallBackTable[0] = new(ELeave) CActiveCallBack(
             TCallBack(SurfaceBuffer0Ready, this), 
             CActive::EPriorityStandard-1);

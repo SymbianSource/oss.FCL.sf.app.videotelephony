@@ -21,13 +21,13 @@
 
 // INCLUDES
 #include <MediatorPluginBase.h>
-#include <mediatornotifications.h>
-#include <mediatoreventconsumer.h>
-#include <mediatoreventprovider.h>
-#include <mediatorcommandresponder.h>
+#include <MediatorNotifications.h>
+#include <MediatorEventConsumer.h>
+#include <MediatorEventProvider.h>
+#include <MediatorCommandResponder.h>
 #include <vtinternalmediatorapi.h>
 #include <mediatoreventsfromtelephonyapi.h>
-#include <mediatorcommandinitiator.h>
+#include <MediatorCommandInitiator.h>
 #include <w32std.h>
 
 

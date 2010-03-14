@@ -29,9 +29,9 @@
 #include    "CVtEngAccessoryHandler.h"
 #include    "MVtEngAccessoryObserver.h"
 // new audio routing
-#include    "telephonyaudiorouting.h"
-#include    "mtelephonyaudioroutingobserver.h"
-#include    <rphcltserver.h>
+#include    "TelephonyAudioRouting.h"
+#include    "MTelephonyAudioRoutingObserver.h"
+#include    <RPhCltServer.h>
 #include    <mmf/server/sounddevice.h>
 
 // FORWARD DECLARATIONS

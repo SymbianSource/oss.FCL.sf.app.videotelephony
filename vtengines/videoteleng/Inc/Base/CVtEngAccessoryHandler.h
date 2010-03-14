@@ -23,8 +23,8 @@
 //  INCLUDES
 #include    <e32base.h>
 #include    <AccPolAccessoryMode.h>
-#include    <accessoryserver.h>
-#include    <accessorymode.h>
+#include    <AccessoryServer.h>
+#include    <AccessoryMode.h>
 
 // FORWARD DECLARATIONS
 class MVtEngAccessoryObserver;

@@ -23,7 +23,7 @@
 
 //#include <e32cmn.h>
 #include <MediatorCommandResponder.h>
-#include <mediatoreventconsumer.h>
+#include <MediatorEventConsumer.h>
 #include "MVtEngEventObserver.h"
 #include  "CVtEngStateManager.h"
 #include  "MVtEngSessionInfo.h"

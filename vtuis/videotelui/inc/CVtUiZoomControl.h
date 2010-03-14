@@ -23,7 +23,7 @@
 
 //  INCLUDES
 #include    <coecntrl.h>
-#include    <aknutils.h>
+#include    <AknUtils.h>
 #include    "CVtUiBitmapManager.h"
 
 // CLASS DECLARATION

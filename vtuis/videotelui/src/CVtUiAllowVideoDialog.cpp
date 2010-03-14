@@ -19,7 +19,7 @@
 
 // INCLUDE FILES
 #include    "CVtUiAllowVideoDialog.h"
-#include    <stringloader.h>
+#include    <StringLoader.h>
 #include    <videotelui.rsg>
 
 // CONSTANTS

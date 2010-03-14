@@ -20,8 +20,8 @@
 // INCLUDE FILES
 #include    "CVtUiZoomControl.h"
 #include    "VtUiLayout.h"
-#include    <aknsutils.h>
-#include    <aknsdrawutils.h>
+#include    <AknsUtils.h>
+#include    <AknsDrawUtils.h>
 #include    "videotelui.hrh"
 
 #include    <cvtlogger.h>

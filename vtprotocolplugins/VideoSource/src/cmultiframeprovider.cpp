@@ -20,7 +20,7 @@
 #include <imageconversion.h>
 #include <cvtimageconverter.h>
 #include <RPhCltServer.h>
-#include <cphcltimagehandler.h>
+#include <CPhCltImageHandler.h>
 #include <bautils.h>
 
 #include "cmultiframeprovider.h"

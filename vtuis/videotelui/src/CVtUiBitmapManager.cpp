@@ -22,8 +22,8 @@
 #include    "VtUiLayout.h"
 #include    "VtUiPanic.h"
 
-#include    <aknsutils.h>
-#include    <akniconutils.h>
+#include    <AknsUtils.h>
+#include    <AknIconUtils.h>
 #include    <fbs.h>
 
 // CONSTANTS

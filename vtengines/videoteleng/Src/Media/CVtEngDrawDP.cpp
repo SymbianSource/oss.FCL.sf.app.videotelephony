@@ -26,7 +26,7 @@
 #include    <videotelephonyvariant.hrh>
 #include    <tdisplaysinkparamsdp.h>
 #include    <cvtlogger.h>
-#include    <posting_surface_factory.h>
+#include    <Posting_Surface_Factory.h>
 
 #include <cvtimagebitmap.h>
 

@@ -22,8 +22,8 @@
 #include "cvtuiappshutter.h"
 #include "mvtuistatecontext.h"
 #include <videotelui.rsg>
-#include <aknquerydialog.h>
-#include <stringloader.h>
+#include <AknQueryDialog.h>
+#include <StringLoader.h>
 #include <cvtlogger.h>
 #include <cvtengmodel.h>
 #include <vtengevents.h>
