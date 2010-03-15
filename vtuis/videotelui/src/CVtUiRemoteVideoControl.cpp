@@ -68,6 +68,10 @@ CVtUiRemoteVideoControl* CVtUiRemoteVideoControl::NewL( CVtUiAppUi& aAppUi)
 //
 CVtUiRemoteVideoControl::~CVtUiRemoteVideoControl()
     {    
+    if ( iAppUi.EventMonitor() )
+        {
+        iAppUi.EventMonitor()->RemoveObserver( this );
+        }
     __VTPRINTENTER( "RemoteVideoControl.~" )
     __VTPRINTEXIT( "RemoteVideoControl.~" )
     }
@@ -93,7 +97,18 @@ void CVtUiRemoteVideoControl::ConstructL()
     CreateWindowL();
     SetExtent( TPoint(), TSize() );
     ActivateL();
-    //Window().SetNonFading( ETrue );    
+	    
+    // Disable fading when using DP (eliminates nasty color error)
+    if ( FeatureManager::FeatureSupported( KFeatureIdDisplayPost ) )
+        {
+        Window().SetNonFading( ETrue );
+        }    
+  
+    if ( iAppUi.EventMonitor() )
+        {
+        iAppUi.EventMonitor()->AddObserverL( this );
+        }	
+	
     __VTPRINTEXIT( "RemoteVideoControl.ConstructL" )
     }
 

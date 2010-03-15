@@ -24,6 +24,7 @@
 #include    "cvtuivideocontrolbase.h"
 
 // CLASS DECLARATION
+class CVtUiAppUi;
 class TVtUiStates;
 class TAknTextLineLayout;
 
@@ -43,7 +44,8 @@ class CVtUiMainControl : public CVtUiVideoControlBase
         * @param aUiStates Ui states class.
         */
         static CVtUiMainControl* NewL( CVtUiBitmapManager& aBitmapManager,
-            TVtUiStates& aUiStates );
+                CVtUiAppUi& aAppUi,
+                TVtUiStates& aUiStates );
 
         /**
         * C++ destructor.
@@ -62,6 +64,13 @@ class CVtUiMainControl : public CVtUiVideoControlBase
          * LayoutRemoteVideo
          */
         void LayoutRemoteVideo();
+
+    public: // from CCoeControl
+
+        /**
+        * @see CCoeControl::HandlePointerEventL
+        */
+        void HandlePointerEventL( const TPointerEvent& aPointerEvent );
 
     private: // from CVtUiVideoControlBase
 
@@ -111,7 +120,8 @@ class CVtUiMainControl : public CVtUiVideoControlBase
         * Private constructor.
         */
         CVtUiMainControl( CVtUiBitmapManager& aBitmapManager,
-            TVtUiStates& aUiStates );
+                CVtUiAppUi& aAppUi,
+                TVtUiStates& aUiStates );
 
         /**
         * C++ constructor.
@@ -143,6 +153,9 @@ class CVtUiMainControl : public CVtUiVideoControlBase
 
         // ETrue if sqcif is used in remote video.
         TBool iSQCifRemote;
+
+        // Reference to application UI.
+        CVtUiAppUi& iAppUi;
 
         // reference to uistates
         TVtUiStates& iUiStates;

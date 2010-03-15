@@ -22,6 +22,7 @@
 #include    <AknsSkinInstance.h>
 #include    <videotelui.rsg>
 #include    <cvtlogger.h>
+#include    <featmgr.h>
 
 #include    "CVtUiEndCallButton.h"
 #include    "CVtUiEndCallButtonPane.h"
@@ -73,6 +74,13 @@ void CVtUiEndCallButtonPane::ConstructL( const TRect& aRect )
     
     // Activate the window, which makes it ready to be drawn
     ActivateL();
+    
+    // Disable fading when using DP (eliminates nasty color error)
+    if ( FeatureManager::FeatureSupported( KFeatureIdDisplayPost ) )
+        {
+        Window().SetNonFading( ETrue );
+        }
+    
     __VTPRINTEXIT( "CVtUiEndCallButtonPane.ConstructL" )
     }
 

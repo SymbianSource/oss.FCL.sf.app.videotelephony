@@ -836,10 +836,8 @@ void CVtUiAppUi::ConstructL()
     __VTPRINTENTER( "VtUi.ConstructL" )
 
     FeatureManager::InitializeLibL();
-    BaseConstructL( EAknEnableSkin | EAknEnableMSK );
+    BaseConstructL( EAknEnableSkin | EAknEnableMSK | EAknSingleClickCompatible );
     
-    iIsLandScapeOrientation = VtUiLayout::IsLandscapeOrientation();
-
     iCba = Cba();
     // Must be done before creating features
     iVTVariation.ReadL();
@@ -1031,14 +1029,14 @@ void CVtUiAppUi::SwitchLayoutToFlatStatusPaneL( TBool aSwitch )
             {
             __VTPRINT( DEBUG_GEN,
                 "VtUi.SwitchLayoutToFlatStatusPaneL LAYOUT USUAL" );
-            NaviPaneL()->Pop();
+//            NaviPaneL()->Pop();
             statusPane->SwitchLayoutL( idleResId );
             }
         else if ( !isStatusPaneFlat && !VtUiLayout::IsLandscapeOrientation() )
             {
             __VTPRINT( DEBUG_GEN,
                 "VtUi.SwitchLayoutToFlatStatusPaneL USUAL FLAT" );
-            NaviPaneL()->PushDefaultL();
+//            NaviPaneL()->PushDefaultL();
             statusPane->SwitchLayoutL( R_AVKON_STATUS_PANE_LAYOUT_USUAL_FLAT );
             }
         }
@@ -1048,7 +1046,7 @@ void CVtUiAppUi::SwitchLayoutToFlatStatusPaneL( TBool aSwitch )
             {
             __VTPRINT( DEBUG_GEN,
                 "VtUi.SwitchLayoutToFlatStatusPaneL LAYOUT IDLE" );
-            NaviPaneL()->Pop();
+//            NaviPaneL()->Pop();
             statusPane->SwitchLayoutL( idleResId );
             }
         }
@@ -3657,23 +3655,13 @@ TBool CVtUiAppUi::ActiveExecInitExecuteL(
             break;
 
         case EVtUiAppUiAnsweredQuerySetupStill:
-            {
-            if ( iIsLandScapeOrientation == VtUiLayout::IsLandscapeOrientation() )
-                {
-                ActiveExecInitSetSourceL( MVtEngMedia::EMediaStillImage, aRequest );
-                }
+            ActiveExecInitSetSourceL( MVtEngMedia::EMediaStillImage, aRequest );
             aNextState = EVtUiAppUiAnsweredQuerySetupStart;
-            }
             break;
 
         case EVtUiAppUiAnsweredQuerySetupNone:
-            {
-            if ( iIsLandScapeOrientation == VtUiLayout::IsLandscapeOrientation() )
-                {
-                ActiveExecInitSetSourceL( MVtEngMedia::EMediaNone, aRequest );
-                }
+            ActiveExecInitSetSourceL( MVtEngMedia::EMediaNone, aRequest );
             aNextState = EVtUiAppUiAnsweredQuerySetupStart;
-            }
             break;
 
         case EVtUiAppUiAnsweredQuerySetupStart:
@@ -3821,11 +3809,6 @@ TBool CVtUiAppUi::ActiveExecInitExecuteL(
             if ( iUiStates->IsExecShowCameraInUse() )
                 {
                 ShowCameraInUseNoteL();
-                }
-
-            if ( iIsLandScapeOrientation != VtUiLayout::IsLandscapeOrientation() )
-                {
-                (void) HandleLayoutChanged();
                 }
             
             if ( aState != EVtUiAppUiAnsweredQueryFinish )
@@ -6294,15 +6277,16 @@ TBool CVtUiAppUi::CanSwapImagePlaces()
     if ( now.MicroSecondsFrom( iLastSwapTime ).Int64() >= KVtUiMaxSwapImagesFreq ) 
         {
         __VTPRINT( DEBUG_GEN, "VtUi.Swap can swap image" )
-        iLastSwapTime = now;  
+        iLastSwapTime = now;
+        __VTPRINTEXIT( "VtUi.CanSwapImagePlaces" )
         return ETrue;
         }
     else
         {
         __VTPRINT( DEBUG_GEN, "VtUi.Swap can not swap image" )
+        __VTPRINTEXIT( "VtUi.CanSwapImagePlaces" )
         return EFalse;
         }
-    __VTPRINTEXIT( "VtUi.CanSwapImagePlaces" )
     }
 
 // Implementation of CVtUiAppUi::CInstance
@@ -6342,7 +6326,8 @@ void CVtUiAppUi::CInstance::ConstructL()
 
     VtUiLayout::GetApplicationParentRect( parent );
     iMainControl = CVtUiMainControl::NewL( *iBitmapManager,
-         *iAppUi.iUiStates  );
+            iAppUi,
+            *iAppUi.iUiStates  );
 
     VtUiLayout::GetMainPaneLayout( control );
     AknLayoutUtils::LayoutControl( iMainControl, parent, control );

@@ -1732,8 +1732,8 @@ RESOURCE CBA r_videotelui_softkeys_select_cancel
         {
         CBA_BUTTON
             {
-            id = EAknSoftkeySelect;
-            txt= text_softkey_select;
+            id = EAknSoftkeyEmpty;
+            txt= text_softkey_empty;
             },
         CBA_BUTTON
             {

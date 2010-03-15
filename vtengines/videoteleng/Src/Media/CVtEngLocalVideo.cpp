@@ -625,7 +625,6 @@ void CVtEngLocalVideo::vsProviderSwitchDone( CVSDataProvider* aOldProvider )
              item.iProviderState != ERefreshing )
             {
             DeleteProvider( item );
-            TRAP_IGNORE( item.iProvider = CreateDataProviderL( item.iType ) );
             }
         }
 

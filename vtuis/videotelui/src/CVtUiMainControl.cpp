@@ -24,9 +24,10 @@
 #include    <AknsDrawUtils.h>
 #include    <cvtlogger.h>
 #include    <featmgr.h>
-#include    "CVtUiAppUi.h"
 #include    "tvtuistates.h"
-#include	"tVtuifeaturevariation.h"
+#include    "tVtuifeaturevariation.h"
+#include    "CVtUiAppUi.h"
+#include    "CVtUiContextControl.h"
 
 // ============================ MEMBER FUNCTIONS ===============================
 
@@ -34,11 +35,12 @@
 // CVtUiMainControl::NewL
 // -----------------------------------------------------------------------------
 CVtUiMainControl* CVtUiMainControl::NewL( CVtUiBitmapManager& aBitmapManager,
-    TVtUiStates& aUiStates )
+        CVtUiAppUi& aAppUi,
+        TVtUiStates& aUiStates )
     {
     __VTPRINTENTER( "MainCtrl.NewL" )
     CVtUiMainControl* self =
-        new ( ELeave ) CVtUiMainControl( aBitmapManager, aUiStates );
+        new ( ELeave ) CVtUiMainControl( aBitmapManager, aAppUi, aUiStates );
     CleanupStack::PushL( self );
     self->ConstructL();
     CleanupStack::Pop(); // self
@@ -53,8 +55,9 @@ CVtUiMainControl* CVtUiMainControl::NewL( CVtUiBitmapManager& aBitmapManager,
 // -----------------------------------------------------------------------------
 //
 CVtUiMainControl::CVtUiMainControl( CVtUiBitmapManager& aBitmapManager,
-    TVtUiStates& aUiStates ) : CVtUiVideoControlBase( aBitmapManager ),
-    iUiStates ( aUiStates )
+        CVtUiAppUi& aAppUi, TVtUiStates& aUiStates ) : 
+        CVtUiVideoControlBase( aBitmapManager ), iAppUi( aAppUi ),
+        iUiStates ( aUiStates )
     {
     __VTPRINTENTER( "MainCtrl.Ctor" )
     SetRenderingHint( ESkinnedBackground );
@@ -94,6 +97,19 @@ CVtUiMainControl::~CVtUiMainControl()
     BitmapManager().RemoveBitmap( iBlindId );
     BitmapManager().RemoveBitmap( iBlindMaskId );
     __VTPRINTEXIT( "MainCtrl.~" )
+    }
+
+// -----------------------------------------------------------------------------
+// CVtUiMainControl::HandlePointerEventL
+// -----------------------------------------------------------------------------
+//
+void CVtUiMainControl::HandlePointerEventL( const TPointerEvent& aPointerEvent )
+    {
+    __VTPRINTENTER( "MainCtrl.HandlePointerEventL" )
+    // Let context control handle this first
+    iAppUi.ContextControl().HandlePointerEventL( aPointerEvent );
+    CCoeControl::HandlePointerEventL( aPointerEvent );
+    __VTPRINTEXIT( "MainCtrl.HandlePointerEventL" )
     }
 
 // -----------------------------------------------------------------------------

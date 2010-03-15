@@ -157,6 +157,9 @@ class CVtUiContextControl : public CVtUiVideoControlBase,
         // ETrue if it is ok to swap images on button up
         TBool iOkToSwapOnButtonUp;
 
+        // ETrue if the pointer down inside of context control window
+        TBool iPointerButton1DownInside;
+
     };
 
 #endif      // CVTUICONTEXTCONTROL_H

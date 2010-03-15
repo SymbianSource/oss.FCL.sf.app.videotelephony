@@ -77,17 +77,41 @@ void CVtUiContextControl::HandlePointerEventL(
     __VTPRINT2( DEBUG_GEN, "CtxCtrl.HandlePtr  ok= %d", iOkToSwapOnButtonUp )
     if ( AknLayoutUtils::PenEnabled() )
         {
-        if ( aPointerEvent.iType == TPointerEvent::EButton1Up )
+        __VTPRINT2( DEBUG_GEN, "CtxCtrl.HandlePtr.Position.iX = %d", aPointerEvent.iPosition.iX )
+        __VTPRINT2( DEBUG_GEN, "CtxCtrl.HandlePtr.Position.iY = %d", aPointerEvent.iPosition.iY )
+        if ( aPointerEvent.iType == TPointerEvent::EButton1Down )
             {
             TRect window( Size() );
             if ( !window.Contains( aPointerEvent.iPosition ) )
                 {
+                __VTPRINT( DEBUG_GEN, "CtxCtrl.HandlePtr.Button1Down outside" )
+                // Down outside of Ctx ctrl, set inside false
+                iPointerButton1DownInside = EFalse;
+                }
+            else
+                {
+                __VTPRINT( DEBUG_GEN, "CtxCtrl.HandlePtrButton1Down inside" )
+                // Only true here
+                iPointerButton1DownInside = ETrue;
+                }
+            }
+        else if ( aPointerEvent.iType == TPointerEvent::EButton1Up )
+            {
+            TRect window( Size() );
+            if ( !window.Contains( aPointerEvent.iPosition ) )
+                {
+                __VTPRINT( DEBUG_GEN, "CtxCtrl.HandlePtr.Button1Up outside" )
+                
+                // Up outside of Ctx ctrl, set inside false
+                iPointerButton1DownInside = EFalse;
+                
                 iOkToSwapOnButtonUp = ETrue;
                 SetGloballyCapturing( EFalse );
-                SetPointerCapture( EFalse); 
+                SetPointerCapture( EFalse ); 
                 }
             else if( iOkToSwapOnButtonUp )
                 {
+                __VTPRINT( DEBUG_GEN, "CtxCtrl.HandlePtr.Button1Up inside" )
                  if ( !iUiStates.IsWhiteBalanceModeOn() &&
                       !iUiStates.IsColorToneModeOn() &&
                       !iUiStates.IsZoomModeOn() &&
@@ -96,18 +120,26 @@ void CVtUiContextControl::HandlePointerEventL(
                       !iUiStates.IsBrightnessModeOn() &&
                       !iUiStates.IsVolumeModeOn() )
                         {
-                        if ( !( iAppUi.CanSwapImagePlaces() ) )
+                        if ( !iPointerButton1DownInside ||
+                                !( iAppUi.CanSwapImagePlaces() ) )
                             {
+                            // Set the flag back
+                            iPointerButton1DownInside = EFalse;
                             return;
-                            }	
+                            }
+                        // Set the flag back
+                        iPointerButton1DownInside = EFalse;
                         iAppUi.HandleCommandL( EVtUiCmdSwapImagesPlaces );
                         }
                 }
             else
                 {
+                __VTPRINT( DEBUG_GEN, "CtxCtrl.HandlePtr.Button1Up inside" )
                 SetGloballyCapturing( EFalse );
                 SetPointerCapture( EFalse); 
                 iOkToSwapOnButtonUp = ETrue;
+                // Set the flag back
+                iPointerButton1DownInside = EFalse;
                 }
             }
         }
@@ -283,6 +315,9 @@ void CVtUiContextControl::ConstructL()
         }
         
     iOkToSwapOnButtonUp = ETrue;
+    
+    ClaimPointerGrab( ETrue );
+    
     __VTPRINTEXIT( "CtxCtrl.ConstructL" )
     }
 
@@ -299,11 +334,18 @@ void CVtUiContextControl::HandleWsEventL( const TWsEvent& aEvent,
         // Touch outside of volume popup, close volume popup
         if ( aEvent.Pointer()->iType == TPointerEvent::EButton1Down )
             {
-            if ( iAppUi.IsDisplayingMenuOrDialog() )
+            __VTPRINT( DEBUG_GEN, "CtxCtrl.WsEvent.Button1Down inside" )
+            iOkToSwapOnButtonUp = !iUiStates.IsZoomModeOn() &&
+                    !iUiStates.IsContrastModeOn() &&
+                    !iUiStates.IsBrightnessModeOn() &&
+                    !iUiStates.IsVolumeModeOn();
+            
+            if( iUiStates.IsZoomModeOn() && iUiStates.IsCaptureModeOn() )
                 {
-                iOkToSwapOnButtonUp = EFalse;
-                }
-            else if ( aDestination == this )
+                iOkToSwapOnButtonUp = ETrue;
+                }            
+            
+            if ( aDestination == this )
                 {
                 iOkToSwapOnButtonUp = !iUiStates.IsZoomModeOn() &&
                     !iUiStates.IsCaptureModeOn() &&
@@ -313,7 +355,11 @@ void CVtUiContextControl::HandleWsEventL( const TWsEvent& aEvent,
                     SetGloballyCapturing( ETrue );
                     SetPointerCapture( ETrue ); 
                 }
-            }             
+            }
+        else if ( aEvent.Pointer()->iType == TPointerEvent::EButton1Up )
+            {
+            __VTPRINT( DEBUG_GEN, "CtxCtrl.WsEvent.Button1Up inside" )
+            }
         }
     __VTPRINTEXIT( "CVtUiContextControl.HandleWsEventL" )
     }
