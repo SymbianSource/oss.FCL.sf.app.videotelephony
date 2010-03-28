@@ -58,7 +58,7 @@ private: // from CVtUiFeatureCmdBase
     /**
     * @see CVtUiFeatureCmdBase::IsEnabled
     */
-    TBool CVtUiCmdCloseDialer::IsEnabled() const;
+    TBool IsEnabled() const;
 
 private:
 
