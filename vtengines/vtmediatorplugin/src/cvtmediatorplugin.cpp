@@ -154,8 +154,6 @@ CVtMediatorPlugin::~CVtMediatorPlugin()
         {
         delete iAppDeathActive;
         iAppThread.Close();
-        iWsSession.Close();
-        
         }
 
     TRACE("CVtMediatorPlugin::~CVtMediatorPlugin>")
@@ -528,7 +526,9 @@ void CVtMediatorPlugin::LaunchVtAppL()
 
     iAppDeathActive = new ( ELeave ) CAppDeathActive( *this, iAppThread );
        
-    User::LeaveIfError( iWsSession.Connect() );
+    RWsSession wsSession;
+    User::LeaveIfError( wsSession.Connect() );
+    CleanupClosePushL( wsSession );
 
     TInt wgId = 0;
     TBool found = EFalse;
@@ -539,10 +539,10 @@ void CVtMediatorPlugin::LaunchVtAppL()
         {
         CApaWindowGroupName::FindByAppUid( 
             KVtCmVideoTelUiUid, 
-            iWsSession, 
+            wsSession, 
             wgId );
 
-        TApaTask task( iWsSession );
+        TApaTask task( wsSession );
         task.SetWgId( wgId );
         if ( task.Exists() )
             {
@@ -563,7 +563,8 @@ void CVtMediatorPlugin::LaunchVtAppL()
             iAppThread.Close();
              }
         }
-
+    CleanupStack::PopAndDestroy(); // CleanupClosePushL
+    
     // If application was not found, then launch new application.
     if ( !found )
         {
@@ -931,7 +932,6 @@ void CVtMediatorPlugin::StopDeathActiveL()
     TRACE("CVtMediatorPlugin.StopDeathActive<")
     delete iAppDeathActive;
     iAppThread.Close();
-    iWsSession.Close();
     //if there is a waiting call, check if we need to launch it
     TRACE2("CVtMediatorPlugin.StopDeathActive WaitintCallID=%d>",
             iWaitingVideoCallInfo.iCallId)

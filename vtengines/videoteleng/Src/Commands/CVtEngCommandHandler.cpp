@@ -53,7 +53,8 @@ const TInt KVtEngCommandPoolCommands = 1;
 CVtEngCommandHandler::CVtEngCommandHandler(
     CVtEngHandlerContainer& aHandlers ) :
     iObservers( 1 ),
-    iHandlers( aHandlers )
+    iHandlers( aHandlers ),
+    iInvalidCommandId( KVtEngCommandNone )
     {
     }
 
@@ -262,6 +263,16 @@ TVtEngCommandId CVtEngCommandHandler::PendingCommand()
         return iActiveOp->Command();
         }
     return KVtEngCommandNone;
+    }
+
+// -----------------------------------------------------------------------------
+// CVtEngCommandHandler::InvalidCommand
+//
+// -----------------------------------------------------------------------------
+//
+TVtEngCommandId CVtEngCommandHandler::InvalidCommand()
+    {
+    return iInvalidCommandId;
     }
 
 // -----------------------------------------------------------------------------
@@ -483,6 +494,7 @@ void CVtEngCommandHandler::CheckState(
     const TVtEngCommandId aCommandId,
     TInt& aCaps )
     {
+    iInvalidCommandId = KVtEngCommandNone;
     aCaps &= (~EAttribEnabled);
     if ( !(iActiveOp && ( aCaps & EAttribAsync ) ) )
         {
@@ -491,12 +503,11 @@ void CVtEngCommandHandler::CheckState(
             {
             aCaps |= EAttribEnabled;
             }
-#ifdef VTDEBUG
         else
             {
+            iInvalidCommandId = aCommandId;
             __VTPRINT( DEBUG_GEN, "ComHlr.ChkState INVALID" )
             }
-#endif // VTDEBUG
         }
     __VTPRINT3( DEBUG_GEN | DEBUG_DETAIL, "  capsState cmd=%d,caps=%d", aCommandId, aCaps )
     }

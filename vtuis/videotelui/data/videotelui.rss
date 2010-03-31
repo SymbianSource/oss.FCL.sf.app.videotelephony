@@ -1761,8 +1761,8 @@ RESOURCE CBA r_videotelui_softkeys_empty_dialerexit
         {
         CBA_BUTTON
             {
-            id = EAknSoftkeyEmpty;
-            txt = text_softkey_empty;
+            id = EVtUiCmdDialerEmergencyCall;
+            txt = qtn_incal_softk_emergency_call;
             },
         CBA_BUTTON
             {

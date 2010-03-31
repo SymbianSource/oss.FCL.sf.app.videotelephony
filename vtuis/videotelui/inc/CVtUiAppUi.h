@@ -1185,6 +1185,11 @@ private:
         *  This function hides the brightness, contrast, volume slider if their mode is on.
         */
         void StopSliders();
+        
+        /*
+        * This function can get the focus window group id
+        */
+        TInt GetFocusWindowGroupId();
 
         /**
         * Does pre handling to key events, especially for Zoom in and Zoom out

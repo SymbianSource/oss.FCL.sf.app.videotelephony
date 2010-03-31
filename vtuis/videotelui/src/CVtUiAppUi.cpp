@@ -1481,8 +1481,7 @@ void CVtUiAppUi::HandleWsEventL(
             {
             // If focus window group is not this application nor window server,
             // then this application can not be in focus.
-            const TInt windowGroupId =
-                iCoeEnv->WsSession().GetFocusWindowGroup();
+            const TInt windowGroupId = GetFocusWindowGroupId();
 
             if ( ( windowGroupId != iThisApplicationWgId ) &&
                  ( windowGroupId != iEikonServerWgId ) &&
@@ -1550,6 +1549,62 @@ void CVtUiAppUi::HandleWsEventL(
     CAknAppUi::HandleWsEventL( aEvent, aDestination );
     __VTPRINTEXIT( "VtUi.HandleWsEventL" )
     }
+
+// -----------------------------------------------------------------------------
+// CVtUiAppUi::GetFocusWindowGroupId
+// -----------------------------------------------------------------------------
+//
+TInt CVtUiAppUi::GetFocusWindowGroupId()
+    {
+    __VTPRINTENTER( "VtUi.GetFocusWindowGroupId" )
+    RWsSession& ws = iCoeEnv->WsSession();
+    RArray<RWsSession::TWindowGroupChainInfo>* allWgIds = 
+        new (ELeave) RArray<RWsSession::TWindowGroupChainInfo>( 4 );
+
+    CleanupDeletePushL( allWgIds );
+    CleanupClosePushL( *allWgIds );
+
+    User::LeaveIfError( ws.WindowGroupList( 0, allWgIds) );
+
+	const TInt chainCount = allWgIds->Count();
+	
+	RApaLsSession appArcSession;
+	User::LeaveIfError( appArcSession.Connect() );
+
+	appArcSession.GetAllApps();
+
+    CApaWindowGroupName* windowName;
+    TInt firstAppWgId = KErrNone;
+    for ( TInt index=0; index < chainCount; index++ )
+        {
+        RWsSession::TWindowGroupChainInfo& info = (*allWgIds)[index];
+        if ( info.iParentId <= 0 )
+            {
+            TInt wgId=info.iId;
+            windowName = CApaWindowGroupName::NewLC(ws, wgId);
+            TUid applicationUid = windowName->AppUid();                
+
+            // application screen (0 = main screen, 1 = cover ui )          
+            // the possible error value is omitted 
+            TInt appScreen = -1; 
+            TInt errId = appArcSession.GetDefaultScreenNumber( appScreen, applicationUid ); 
+            if (  errId != KErrNone )
+                {
+                CleanupStack::PopAndDestroy( windowName );  //windowName
+                continue;   
+                }
+            if ( firstAppWgId == KErrNone && ( appScreen == 0 || appScreen == -1 ) )
+                {
+                firstAppWgId = wgId; //   firstAppWgId should be the top windows group id.
+                }
+
+            CleanupStack::PopAndDestroy();  //windowName
+            }
+        }
+    __VTPRINTEXIT( "VtUi.GetFocusWindowGroupId" )
+    return firstAppWgId;
+    }
+
 
 // -----------------------------------------------------------------------------
 // CVtUiAppUi::PreHandleKeyEventL
@@ -2259,6 +2314,11 @@ void CVtUiAppUi::HandleCommandL(
             CmdGoToIdleL();
             break;
 
+        // Dial emergency call
+        case EVtUiCmdDialerEmergencyCall:
+        __VTPRINT( DEBUG_GEN, "VtUiHandleCommand.CmdEmergencyCall" );
+            CmdSimulateKeyEvent( EStdKeyYes );
+            break;
         // Object sharing related
 
         case EVtUiCmdShareObjectImage:
@@ -4921,13 +4981,15 @@ void CVtUiAppUi::DoHandleLayoutChangedL()
         __VTPRINT( DEBUG_GEN,
             "VtUi.DoLayoutChg KVtEngHandleLayoutChange == KErrNotReady (ok)" )
         TVtEngCommandId pendingCommand = Model().CommandHandler().PendingCommand();
+        TVtEngCommandId invalidCommand = Model().CommandHandler().InvalidCommand();
         if ( pendingCommand  == KVtEngMuteOutgoingAudio || 
                 pendingCommand  == KVtEngUnmuteOutgoingAudio ||
                 pendingCommand  == KVtEngSetAudioRouting ||
                 pendingCommand  == KVtEngSetAudioVolume ||
                 pendingCommand  == KVtEngSetSource ||
                 pendingCommand  == KVtEngPrepareCamera ||
-                pendingCommand  == KVtEngUnfreeze )
+                pendingCommand  == KVtEngUnfreeze ||
+                invalidCommand  == KVtEngHandleLayoutChange )
             {
             iUiStates->SetLayoutChangeNeeded( ETrue );
             }
@@ -6977,7 +7039,8 @@ void CVtUiAppUi::CEventObserver::HandleVTCommandPerformedL(
             aCommand  == KVtEngSetAudioVolume ||
             aCommand  == KVtEngSetSource ||
             aCommand  == KVtEngPrepareCamera ||
-            aCommand  == KVtEngUnfreeze ) )
+            aCommand  == KVtEngUnfreeze ||
+            aCommand  == KVtEngHandleLayoutChange ) )
         {
         iAppUi.iUiStates->SetLayoutChangeNeeded( EFalse );
         iAppUi.DoHandleLayoutChangedL();

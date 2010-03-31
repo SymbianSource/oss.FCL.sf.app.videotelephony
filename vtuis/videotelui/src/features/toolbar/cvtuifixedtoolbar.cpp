@@ -159,7 +159,11 @@ void CVtUiFixedToolbar::SetToolbarVisibilityAfterLayoutChangeL( TBool aVisible )
             {
             iIdle = CIdle::NewL( CActive::EPriorityIdle );
             }
-        iIdle->Start( TCallBack( &DoDimToolbarButtons, this ) );
+        
+        if ( !iIdle->IsActive() )
+            {
+            iIdle->Start( TCallBack( &DoDimToolbarButtons, this ) );
+            }
         }
     // Landsacpe to portrait hide tb
     else
@@ -181,8 +185,8 @@ void CVtUiFixedToolbar::SetToolbarVisibilityAfterLayoutChangeL( TBool aVisible )
 void CVtUiFixedToolbar::DimToolbarbuttons( TBool aIsDimmed )
     {
     __VTPRINTENTER( "FixedToolbar.DimToolbarbuttons" )
-    iToolbar->SetItemDimmed( EVtUiCmdToolbarToggleVideo, aIsDimmed, EFalse );
-    iToolbar->SetItemDimmed( EVtUiCmdToolbarToggleMicrophone, aIsDimmed, EFalse );
+    iToolbar->SetItemDimmed( EVtUiCmdToolbarToggleVideo, aIsDimmed, ETrue );
+    iToolbar->SetItemDimmed( EVtUiCmdToolbarToggleMicrophone, aIsDimmed, ETrue );
     iToolbar->SetItemDimmed( EVtUiCmdToolbarAudioRouting, aIsDimmed, ETrue );
     __VTPRINTEXITR( "FixedToolbar.DimToolbarbuttons %d", aIsDimmed )
     }

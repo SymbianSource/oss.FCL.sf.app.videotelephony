@@ -110,7 +110,9 @@ enum
     // Adjust video colour tone
     EVtUiCmdAdjustVideoColourTone, //6114
     // Dialer close
-    EVtUiDialerExit //6115
+    EVtUiDialerExit, //6115
+    // Dialer emergency call
+    EVtUiCmdDialerEmergencyCall //6116
     };
 
 // Enumerates bitmap identifiers

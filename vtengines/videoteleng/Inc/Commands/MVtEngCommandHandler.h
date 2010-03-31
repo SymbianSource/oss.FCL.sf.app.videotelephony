@@ -97,6 +97,12 @@ class MVtEngCommandHandler
         virtual TVtEngCommandId PendingCommand() = 0;
 
         /**
+        * Returns invalid command.
+        * @return invalid command
+        */
+        virtual TVtEngCommandId InvalidCommand() = 0;
+        
+        /**
         * Sets command observer. First call on this is guaranteed
         * to succeed.
         * @param aObserver command observer.

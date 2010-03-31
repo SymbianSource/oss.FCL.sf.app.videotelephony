@@ -327,7 +327,7 @@ void CVSStillImageDataProvider::CommonInitializeL()
     iActiveWait = new (ELeave) CVSActiveWait< CVSStillImageDataProvider > ( this );
 
     //Create viewer
-    iViewer = CMultiframeProvider::NewL( this , iDisplayMode );
+    iViewer = CMultiframeProvider::NewL( this , EColor16MU/*iDisplayMode*/ );
     User::LeaveIfError( iFreezeCS.CreateLocal() );
 
     __IF_DEBUG(Print(_L("VideoSource [%d]: CVSStillImageDataProvider::CommonInitializeL() <<"), RThread().Id().operator TUint()));

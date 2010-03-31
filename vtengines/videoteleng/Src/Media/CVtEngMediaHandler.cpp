@@ -543,7 +543,9 @@ TInt CVtEngMediaHandler::ValidateCommand( const TVtEngCommandId aCommand ) const
 
             case KVtEngHandleLayoutChange:
                 if ( iLocalVideo && iLocalVideo->ActiveProvider() !=
-                        CVtEngLocalVideo::KVtEngProviderNone  && !iPendingOp )
+                        CVtEngLocalVideo::KVtEngProviderNone  && 
+                        !iPendingOp && iLocalVideo->ActiveProvider() !=
+                                CVtEngLocalVideo::KVtEngProviderImage )
                     {
                     okToPerform = KErrNone;
                     }

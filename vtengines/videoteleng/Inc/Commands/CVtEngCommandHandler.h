@@ -76,6 +76,11 @@ NONSHARABLE_CLASS( CVtEngCommandHandler ) : public CBase,
         /**
         * @see MVtEngCommandHandler        
         */
+        virtual TVtEngCommandId InvalidCommand();
+        
+        /**
+        * @see MVtEngCommandHandler        
+        */
         virtual void AddObserverL( MVtEngCommandObserver& aObserver );
 
         /**
@@ -185,6 +190,7 @@ NONSHARABLE_CLASS( CVtEngCommandHandler ) : public CBase,
         CVtEngHandlerContainer&              iHandlers;
         CVtEngOperation*                     iActiveOp;
         CVtEngCmdPool*                       iCommandPool;
+        TVtEngCommandId                      iInvalidCommandId;
 
     };
 

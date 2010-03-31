@@ -286,8 +286,6 @@ private:
     // Application thread id.
     TThreadId iAppThreadId;
     
-    // Owned window server session.
-    RWsSession iWsSession;
     /**
         * Active object for waiting thread death.
         *
