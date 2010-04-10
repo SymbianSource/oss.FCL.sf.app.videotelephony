@@ -128,9 +128,6 @@ class MVtUiStateContext : public MVtUiShutterObserver
         virtual TBool SetCallNameL( const TDesC& aName ) = 0;
         
         /**
-
-        
-        /**
         * Refresh flags
         */        
         enum TRefreshFlags
