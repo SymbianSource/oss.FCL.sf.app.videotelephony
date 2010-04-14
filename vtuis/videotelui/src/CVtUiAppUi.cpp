@@ -71,11 +71,11 @@
 #include    <telcommsinfopskeys.h>
 #include    <telinformationpskeys.h>
 #include    <activeidle2domainpskeys.h>
-#include 	<ctsydomainpskeys.h>
+#include     <ctsydomainpskeys.h>
 
 #include    <AknQueryDialog.h>
-#include 	<AknGlobalNote.h>
-#include 	<aknsoundsystem.h>
+#include     <AknGlobalNote.h>
+#include     <aknsoundsystem.h>
 
 
 #include    <cvtlogger.h>
@@ -112,7 +112,7 @@
 #include    <remconcoreapitargetobserver.h>
 #include    "tvtuiwsevent.h"
 #include    "mvtuinumbersource.h"
-#include	"tVtuifeaturevariation.h"
+#include    "tVtuifeaturevariation.h"
 #include    "cvtuidialer.h"
 #include    "tvtuiappstates.h"
 #include    "cvtuivolume.h"
@@ -154,6 +154,11 @@ const TUid KVtUiTelephoneUid = { 0x100058B3 };
 // Reset value for volume
 const TInt  KVolumeResetValue = -1;
 
+// Remote video control normal priority
+const TInt KVtUiRemoteVideoControlOrdinalPriNormal = 0;
+
+// Remote video control high priority
+const TInt KVtUiRemoteVideoControlOrdinalPriHigh = 2;
 
 // Name of the EIKON server window group.
 _LIT( KVtUiEikonServer, "EikonServer" );
@@ -216,7 +221,7 @@ enum TVtUiHandleEvents
     // Stop brightness and contrast slider
     EVtUiStopBrightnessOrContrast =         1 << 15,
     // refresh zoom popup
-    EVtUiRefreshZoomPopup =       					1 << 16
+    EVtUiRefreshZoomPopup =                           1 << 16
     };
 
 // Enumerates states for CVtUiActiveExec.
@@ -765,34 +770,34 @@ class CVtUiAppUi::CVtUiAppUiMGVerifier :
     {
     public:
 
-    		/**
-    		* Static constructor, pushes created instance into cleanup stack.
-    		*/
+            /**
+            * Static constructor, pushes created instance into cleanup stack.
+            */
         static CVtUiAppUiMGVerifier* NewLC(
             CVtUiAppUi& aAppUi, CCoeEnv& aCoeEnv );
 
-    		/**
-    		* Destructor.
-    		*/
+            /**
+            * Destructor.
+            */
         ~CVtUiAppUiMGVerifier();
 
     public: // from MMGFetchVerifier
 
         /**
-    		* @see MMGFetchVerifier::VerifySelectionL
-    		*/
+            * @see MMGFetchVerifier::VerifySelectionL
+            */
         TBool VerifySelectionL( const MDesCArray* aSelectedFiles );
 
     private:
 
-    		/**
-    		* 2nd constructor in two phase construction.
-    		*/
+            /**
+            * 2nd constructor in two phase construction.
+            */
         void ConstructL();
 
         /**
-    		* Constructor.
-    		*/
+            * Constructor.
+            */
         CVtUiAppUiMGVerifier( CVtUiAppUi& aAppUi, CCoeEnv& aCoeEnv );
 
     private:
@@ -845,8 +850,8 @@ void CVtUiAppUi::ConstructL()
     iEventObserver = CEventObserver::NewL( *this );
     iUiStates = new ( ELeave ) TVtUiStates( iEventObserver->Model() );
     iUiStates->Update();
-		iUiStates->SetViewFindersInitialPlaceContextPane( ETrue );
-		
+        iUiStates->SetViewFindersInitialPlaceContextPane( ETrue );
+        
     TVtUiAppStateBase::SetInitialStateL( *this, *iUiStates );
 
     iCommandManager = CVtUiCommandManager::NewL( *iUiStates, *this );
@@ -871,7 +876,7 @@ void CVtUiAppUi::ConstructL()
     iEikonServerWgId =
         eikEnv.WsSession().FindWindowGroupIdentifier( 0, KVtUiEikonServer );
     iAknCapServerWgId =
-    	eikEnv.WsSession().FindWindowGroupIdentifier( 0, KVtUiAknCapServer );
+        eikEnv.WsSession().FindWindowGroupIdentifier( 0, KVtUiAknCapServer );
     iAknNfyServerWgId =
         eikEnv.WsSession().FindWindowGroupIdentifier( 0,
             KVtUiAknNotifierServer );
@@ -1029,14 +1034,12 @@ void CVtUiAppUi::SwitchLayoutToFlatStatusPaneL( TBool aSwitch )
             {
             __VTPRINT( DEBUG_GEN,
                 "VtUi.SwitchLayoutToFlatStatusPaneL LAYOUT USUAL" );
-//            NaviPaneL()->Pop();
             statusPane->SwitchLayoutL( idleResId );
             }
         else if ( !isStatusPaneFlat && !VtUiLayout::IsLandscapeOrientation() )
             {
             __VTPRINT( DEBUG_GEN,
                 "VtUi.SwitchLayoutToFlatStatusPaneL USUAL FLAT" );
-//            NaviPaneL()->PushDefaultL();
             statusPane->SwitchLayoutL( R_AVKON_STATUS_PANE_LAYOUT_USUAL_FLAT );
             }
         }
@@ -1046,7 +1049,6 @@ void CVtUiAppUi::SwitchLayoutToFlatStatusPaneL( TBool aSwitch )
             {
             __VTPRINT( DEBUG_GEN,
                 "VtUi.SwitchLayoutToFlatStatusPaneL LAYOUT IDLE" );
-//            NaviPaneL()->Pop();
             statusPane->SwitchLayoutL( idleResId );
             }
         }
@@ -1566,12 +1568,12 @@ TInt CVtUiAppUi::GetFocusWindowGroupId()
 
     User::LeaveIfError( ws.WindowGroupList( 0, allWgIds) );
 
-	const TInt chainCount = allWgIds->Count();
-	
-	RApaLsSession appArcSession;
-	User::LeaveIfError( appArcSession.Connect() );
+    const TInt chainCount = allWgIds->Count();
+    
+    RApaLsSession appArcSession;
+    User::LeaveIfError( appArcSession.Connect() );
 
-	appArcSession.GetAllApps();
+    appArcSession.GetAllApps();
 
     CApaWindowGroupName* windowName;
     TInt firstAppWgId = KErrNone;
@@ -1601,6 +1603,8 @@ TInt CVtUiAppUi::GetFocusWindowGroupId()
             CleanupStack::PopAndDestroy();  //windowName
             }
         }
+    CleanupStack::PopAndDestroy( 2 ); // allWgIds, *allWgIds
+    
     __VTPRINTEXIT( "VtUi.GetFocusWindowGroupId" )
     return firstAppWgId;
     }
@@ -1833,6 +1837,22 @@ void CVtUiAppUi::SetRenderingModeL( const TRenderingMode aMode,
     __VTPRINTENTER( "VtUi.SetRenderingModeL" )
     __VTPRINT2( DEBUG_GEN, "VtUi.SetRenderingModeL=%d", aMode );
     iRenderingMode = aMode;
+    
+    TInt pos = 
+        iInstance->iRemoteVideoControl->DrawableWindow()->OrdinalPosition();
+    if ( aMode == ERenderingModeDialer )
+        {
+        // Remote video control has the highest priority in dialer
+        iInstance->iRemoteVideoControl->DrawableWindow()->SetOrdinalPosition( 
+                pos, KVtUiRemoteVideoControlOrdinalPriHigh );
+        }
+    else 
+        {
+        // Set remote video control priority back to normal
+        iInstance->iRemoteVideoControl->DrawableWindow()->SetOrdinalPosition( 
+                pos, KVtUiRemoteVideoControlOrdinalPriNormal );
+        }
+    
     if ( aNewDownlink )
         {
         if ( iDownlinkWindow != aNewDownlink )
@@ -2158,7 +2178,7 @@ void CVtUiAppUi::HandleCommandL(
             {
             MVtEngMedia::TShareObjectState shareObjectState;
             VtUiUtility::GetObjectSharingState( Model().Media(),
-            		                            shareObjectState );
+                                                shareObjectState );
             if( shareObjectState != MVtEngMedia::ESharingImage )
                 {
                 refresh = ETrue;
@@ -2186,7 +2206,7 @@ void CVtUiAppUi::HandleCommandL(
             CmdEnableAudioL();
             MVtEngMedia::TShareObjectState shareObjectState;
             VtUiUtility::GetObjectSharingState( Model().Media(),
-            									shareObjectState );
+                                                shareObjectState );
             if( shareObjectState != MVtEngMedia::ESharingImage )
                 {
                 refresh = ETrue;
@@ -2373,7 +2393,7 @@ void CVtUiAppUi::DynInitMenuPaneL(
         CEikMenuPane* aMenuPane )
     {
     __VTPRINTENTER( "VtUi.DynInitMenuPaneL" )
-	
+    
     CVtUiMenus* menus = static_cast< CVtUiMenus* >(
         iFeatureManager->GetFeatureById( EVtUiFeatureIdMenu ) );
     if ( menus )
@@ -2382,7 +2402,7 @@ void CVtUiAppUi::DynInitMenuPaneL(
         menus->SetMenuPane( aMenuPane );
         menus->RefreshL();
         }
-	__VTPRINTEXIT( "VtUi.DynInitMenuPaneL" )
+    __VTPRINTEXIT( "VtUi.DynInitMenuPaneL" )
     }
 
 // -----------------------------------------------------------------------------
@@ -2851,31 +2871,31 @@ void CVtUiAppUi::CmdCaptureL()
 // -----------------------------------------------------------------------------
 //
 void CVtUiAppUi::CmdSnapshotL()
-	{
-	__VTPRINTENTER( "VtUi.CmdSnapshotL" )
-	
-	// zoom mode must be set on before capture mode is set on
+    {
+    __VTPRINTENTER( "VtUi.CmdSnapshotL" )
+    
+    // zoom mode must be set on before capture mode is set on
     SetZoomModeL( ETrue, ETrue );
+    
+    // set capture mode on
+    iUiStates->SetCaptureModeOn( ETrue );
 
-	// if outgoing video is already frozen
+    // if outgoing video is already frozen
     MVtEngMedia& media = Model().Media();
     const TBool isFrozen( VtUiUtility::GetFreezeState( media ) );
     if ( isFrozen )
-    	{
-    	ExecuteCmdL( KVtEngUnfreeze );
-	    }
-	if ( !IsViewFinderInMainPane() )
-	    {
-	    SwitchViewFinderToMainPaneL( !isFrozen );
-	    }
-	else if ( !isFrozen )
-	    {
-	    iUiStates->SetViewFindersInitialPlaceContextPane( EFalse );
-	    }
-  
-    // set capture mode on
-
-    iUiStates->SetCaptureModeOn( ETrue );
+        {
+        ExecuteCmdL( KVtEngUnfreeze );
+        }
+    if ( !IsViewFinderInMainPane() )
+        {
+        SwitchViewFinderToMainPaneL( !isFrozen );
+        }
+    else if ( !isFrozen )
+        {
+        iUiStates->SetViewFindersInitialPlaceContextPane( EFalse );
+        }
+    
     RefreshStatesL();
     RefreshBlind();
     __VTPRINTEXIT( "VtUi.CmdSnapshotL" )
@@ -2892,7 +2912,7 @@ void CVtUiAppUi::CmdCancelCaptureL()
     iUiStates->SetCaptureModeOn( EFalse );
     SetZoomModeL( EFalse, ETrue );
     RefreshStatesL();
-	RestoreViewFinderL();
+    RestoreViewFinderL();
     RefreshBlind();
     __VTPRINTEXIT( "VtUi.CmdCancelCaptureL" )
     }
@@ -2903,14 +2923,14 @@ void CVtUiAppUi::CmdCancelCaptureL()
 //
 void CVtUiAppUi::CmdEnableVideoL()
     {
-	// if outgoing video is frozen
+    // if outgoing video is frozen
     MVtEngMedia& media = Model().Media();
     if ( VtUiUtility::GetFreezeState( media ) )
-    	{
-    	ExecuteCmdL( KVtEngUnfreeze );
-    	// swap images if needed
+        {
+        ExecuteCmdL( KVtEngUnfreeze );
+        // swap images if needed
         RestoreViewFinderL();
-    	}
+        }
     else
         {
         ExecuteCmdL( KVtEngStopViewFinder );
@@ -2943,21 +2963,21 @@ void CVtUiAppUi::CmdEnableAudioL()
 //
 void CVtUiAppUi::CmdDisableVideoL()
     {
-    	
-		if( iUiStates->IsZoomModeOn() )
-	        {
-	        // if zoom feature is active, stop that
-	        MVtUiFeature* zm = iFeatureManager->GetFeatureById( EVtUiFeatureIdZoom );
-	        if ( zm )
-	            {
-	            if ( zm->State() ==  MVtUiFeature::EActive )
-	                {
-	                __VTPRINT( DEBUG_GEN, "VtUi.CmdDisableVideoL zm->STOP" )
-	                zm->Stop();
-	                }
-	            }
-	        }
-    	
+        
+        if( iUiStates->IsZoomModeOn() )
+            {
+            // if zoom feature is active, stop that
+            MVtUiFeature* zm = iFeatureManager->GetFeatureById( EVtUiFeatureIdZoom );
+            if ( zm )
+                {
+                if ( zm->State() ==  MVtUiFeature::EActive )
+                    {
+                    __VTPRINT( DEBUG_GEN, "VtUi.CmdDisableVideoL zm->STOP" )
+                    zm->Stop();
+                    }
+                }
+            }
+        
     ExecuteCmdL( KVtEngStopViewFinder );
 
     iUplinkWindow->SetStreamBitmap( NULL );
@@ -3140,7 +3160,7 @@ void CVtUiAppUi::CmdSwapImagesPlacesL()
             // Start viewfinder.
             ExecuteCmdL( KVtEngStartViewFinder );
             }
-        User::Leave ( err );	
+        User::Leave ( err );    
         }
     // Start remote render.
     __VTPRINT( DEBUG_GEN, "VtUi.Swap.RR.up" )
@@ -3307,24 +3327,24 @@ void CVtUiAppUi::CmdUpdateVolumeL( MVtEngAudio::TVtEngOutputVolume aVolume )
 //
 void CVtUiAppUi::CmdGoToIdleL()
     {
-	__VTPRINTENTER( "VtUi.CmdGoToIdleL" )
+    __VTPRINTENTER( "VtUi.CmdGoToIdleL" )
     TInt idleUid = 0;
     if ( RProperty::Get(
              KPSUidAiInformation,
              KActiveIdleUid,
              idleUid ) == KErrNone )
         {
-		__VTPRINT2( DEBUG_GEN, "Idle UID: %d", idleUid )
+        __VTPRINT2( DEBUG_GEN, "Idle UID: %d", idleUid )
         TApaTaskList taskList( iEikonEnv->WsSession() );
         TApaTask task = taskList.FindApp( TUid::Uid( idleUid ) );
         if ( task.Exists() )
             {
-			__VTPRINT( DEBUG_GEN, "Idle task found")
+            __VTPRINT( DEBUG_GEN, "Idle task found")
             RProperty::Set( KPSUidUikon, KUikVideoCallTopApp, KVtUiAppUid.iUid );
             task.BringToForeground();
             }
         }
-	__VTPRINTEXIT( "VtUi.CmdGoToIdleL" )
+    __VTPRINTEXIT( "VtUi.CmdGoToIdleL" )
     }
 
 // -----------------------------------------------------------------------------
@@ -3419,7 +3439,7 @@ void CVtUiAppUi::CmdShareImageL()
 void CVtUiAppUi::CmdStopShareImageL( TBool& aNeedRefresh )
     {
     ExecuteCmdL( KVtEngStopShareImage );
-	RestoreViewFinderL();
+    RestoreViewFinderL();
     aNeedRefresh = ETrue;
     // update VB settings
     UpdateVBSettingL();
@@ -3430,7 +3450,7 @@ void CVtUiAppUi::CmdStopShareImageL( TBool& aNeedRefresh )
 // -----------------------------------------------------------------------------
 //
 void CVtUiAppUi::HandleWaitingStateChange( TBool aIsWaiting )
-	{
+    {
     // Dialer must be closed in case of waiting call
     MVtUiFeature* dialer =
         iFeatureManager->GetFeatureById( EVtUiFeatureIdDialer );
@@ -3447,7 +3467,7 @@ void CVtUiAppUi::HandleWaitingStateChange( TBool aIsWaiting )
         ChangeApplicationFocus( ETrue );
         TRAP_IGNORE ( SetHiddenL( EFalse ) );
         }
-	}
+    }
 
 // -----------------------------------------------------------------------------
 // CVtUiAppUi::ActiveExecInitExecuteL
@@ -3749,33 +3769,33 @@ TBool CVtUiAppUi::ActiveExecInitExecuteL(
                 iIsWaitingCallState = ETrue;
                 }
 
-			// User selectable call answer mute.
-			// In GS one can set call ansewer status
-			// eighter to query user, allways show, allways mute.
-			// GS values are checked from CR key ( KSettingsVTVideoSending )
-			// (default value is 0 = allways query).
-			TVtUiGsMuteVariation camute;
-    		__VTPRINT2( DEBUG_GEN, "VtUi.InitExe GS CR key KSettingsVTVideoSending querystate=%d", camute.GsMuteState() )
-			if ( camute.GsMuteState() == KAllwaysQuery && !iUiStates->IsDeviceLockOn() && EPSCTsyCallStateRinging != state)
-				{
-            	CVtUiAllowVideoDialog* dialog =
-                	new ( ELeave ) CVtUiAllowVideoDialog(
-                    	&iExecDialog,
-                    	CAknQueryDialog::ENoTone );
-            	dialog->ExecuteDialogLD( aRequest );
-            	iExecDialog = dialog;
-            	aNextState = EVtUiAppUiAnsweredQueryDecide;
-				}
-			else if ( camute.GsMuteState() == KAllwaysAllow )
-				{
+            // User selectable call answer mute.
+            // In GS one can set call ansewer status
+            // eighter to query user, allways show, allways mute.
+            // GS values are checked from CR key ( KSettingsVTVideoSending )
+            // (default value is 0 = allways query).
+            TVtUiGsMuteVariation camute;
+            __VTPRINT2( DEBUG_GEN, "VtUi.InitExe GS CR key KSettingsVTVideoSending querystate=%d", camute.GsMuteState() )
+            if ( camute.GsMuteState() == KAllwaysQuery && !iUiStates->IsDeviceLockOn() && EPSCTsyCallStateRinging != state)
+                {
+                CVtUiAllowVideoDialog* dialog =
+                    new ( ELeave ) CVtUiAllowVideoDialog(
+                        &iExecDialog,
+                        CAknQueryDialog::ENoTone );
+                dialog->ExecuteDialogLD( aRequest );
+                iExecDialog = dialog;
+                aNextState = EVtUiAppUiAnsweredQueryDecide;
+                }
+            else if ( camute.GsMuteState() == KAllwaysAllow )
+                {
                 aNextState = EVtUiAppUiAnsweredDoPrepareCamera;
-				synch = ETrue;
-				}
-			else
-				{
-				aNextState = EVtUiAppUiNone;
-				synch = ETrue;
-				}
+                synch = ETrue;
+                }
+            else
+                {
+                aNextState = EVtUiAppUiNone;
+                synch = ETrue;
+                }
 
             }
             break;
@@ -4590,9 +4610,9 @@ void CVtUiAppUi::HandleShutdownReady()
     __VTPRINTENTER( "VtUi.HandleShutdownReady" )
 
     if(iAsyncCallback->IsActive())
-	    {
-		iAsyncCallback->Cancel();
-	    }
+        {
+        iAsyncCallback->Cancel();
+        }
 
     iAsyncCallback->Set(
         TCallBack( &DoExit, this ) );
@@ -4899,7 +4919,7 @@ void CVtUiAppUi::StopWhiteBalanceOrColortone()
             
             if( wb && ( wb->State() == MVtUiFeature::EActive ) )
                 {
-                	
+                    
                 wb->Stop();
                 }
             
@@ -4982,6 +5002,13 @@ void CVtUiAppUi::DoHandleLayoutChangedL()
             "VtUi.DoLayoutChg KVtEngHandleLayoutChange == KErrNotReady (ok)" )
         TVtEngCommandId pendingCommand = Model().CommandHandler().PendingCommand();
         TVtEngCommandId invalidCommand = Model().CommandHandler().InvalidCommand();
+        
+        __VTPRINT2( DEBUG_GEN, "VtUi.DoLayoutChg pendingCommand=%d",
+                pendingCommand )
+        
+        __VTPRINT2( DEBUG_GEN, "VtUi.DoLayoutChg invalidCommand=%d",
+                invalidCommand )
+        
         if ( pendingCommand  == KVtEngMuteOutgoingAudio || 
                 pendingCommand  == KVtEngUnmuteOutgoingAudio ||
                 pendingCommand  == KVtEngSetAudioRouting ||
@@ -4991,6 +5018,7 @@ void CVtUiAppUi::DoHandleLayoutChangedL()
                 pendingCommand  == KVtEngUnfreeze ||
                 invalidCommand  == KVtEngHandleLayoutChange )
             {
+            iPendingCmd = pendingCommand;
             iUiStates->SetLayoutChangeNeeded( ETrue );
             }
         }
@@ -5555,10 +5583,10 @@ void CVtUiAppUi::CheckEngineFunctionality()
         iEventObserver->CommandSupportedAndSynchronous(
             KVtEngStartRenderRemote );
     const TBool setUIForeground =
-    	iEventObserver->CommandSupportedAndSynchronous(
-			KVtEngSetUIForeground );
+        iEventObserver->CommandSupportedAndSynchronous(
+            KVtEngSetUIForeground );
 
-	TVtUiDPVariation dpvariation;
+    TVtUiDPVariation dpvariation;
     TBool dpSupported( dpvariation.IsDPSupported() );
 
     if ( !prepareViewFinder ||
@@ -5962,7 +5990,7 @@ TInt CVtUiAppUi::AsyncViewFinderToMainPaneAndShare( TAny* aPtr )
     CVtUiAppUi* self = reinterpret_cast< CVtUiAppUi* >( aPtr );
 
     TRAPD( result, { self->SwitchViewFinderToMainPaneL();
-    								 self->CmdShareImageL();} );
+                                     self->CmdShareImageL();} );
     __VTPRINTEXITR( "VtUi.AsyncViewFinderToMainPaneAndShare %d", result )
     return result;
     }
@@ -6002,8 +6030,8 @@ void CVtUiAppUi::GetCameraOrientations()
     {
     __VTPRINTENTER( "VtUi.GetCameraOrientations" )
     MVtEngMedia& media = Model().Media();
- 	media.GetCameraOrientations( iPrimaryCameraOrientation,
- 	     iSecondaryCameraOrientation );
+     media.GetCameraOrientations( iPrimaryCameraOrientation,
+          iSecondaryCameraOrientation );
     __VTPRINTEXIT( "VtUi.GetCameraOrientations" )
     }
 
@@ -6052,17 +6080,17 @@ void CVtUiAppUi::SetCameraOrientationL()
             case MVtEngMedia::EPrimaryCamera:
                 __VTPRINT( DEBUG_GEN, "VtUi.SetCameraOrient.Primary")
                 if( iCurrentCameraOrientation != iPrimaryCameraOrientation )
-                	{
-                	newOrientation = iPrimaryCameraOrientation;
-                	}
+                    {
+                    newOrientation = iPrimaryCameraOrientation;
+                    }
                 break;
 
             case MVtEngMedia::ESecondaryCamera:
-            	__VTPRINT( DEBUG_GEN, "VtUi.SetCameraOrient.Secondary")
-            	if ( iCurrentCameraOrientation != iSecondaryCameraOrientation )
+                __VTPRINT( DEBUG_GEN, "VtUi.SetCameraOrient.Secondary")
+                if ( iCurrentCameraOrientation != iSecondaryCameraOrientation )
                     {
-                	newOrientation = iSecondaryCameraOrientation;
-                	}
+                    newOrientation = iSecondaryCameraOrientation;
+                    }
                     break;
 
             default:
@@ -6076,26 +6104,26 @@ void CVtUiAppUi::SetCameraOrientationL()
         newOrientation )
 
     if ( iCurrentCameraOrientation != newOrientation )
-        	{
-        	// map camera orientation to appui layout orientation
-        	TAppUiOrientation newAppUiOrientation;
-        	if ( newOrientation == MVtEngMedia::EOrientationLandscape )
-        	    {
-        	    __VTPRINT( DEBUG_GEN, "VtUi.SetCameraOrient=LS")
-        	    newAppUiOrientation = EAppUiOrientationLandscape;
-        	    }
-        	else if ( newOrientation == MVtEngMedia::EOrientationPortrait )
-        	    {
-        	    __VTPRINT( DEBUG_GEN, "VtUi.SetCameraOrient=PR")
-        	    newAppUiOrientation = EAppUiOrientationPortrait;
-        	    }
-        	else
-        	    {
-        	    __VTPRINT( DEBUG_GEN, "VtUi.SetCameraOrient=OL")
-        	    newAppUiOrientation = EAppUiOrientationUnspecified;
-        	    }
-        	SetOrientationL( newAppUiOrientation );
-        	}
+            {
+            // map camera orientation to appui layout orientation
+            TAppUiOrientation newAppUiOrientation;
+            if ( newOrientation == MVtEngMedia::EOrientationLandscape )
+                {
+                __VTPRINT( DEBUG_GEN, "VtUi.SetCameraOrient=LS")
+                newAppUiOrientation = EAppUiOrientationLandscape;
+                }
+            else if ( newOrientation == MVtEngMedia::EOrientationPortrait )
+                {
+                __VTPRINT( DEBUG_GEN, "VtUi.SetCameraOrient=PR")
+                newAppUiOrientation = EAppUiOrientationPortrait;
+                }
+            else
+                {
+                __VTPRINT( DEBUG_GEN, "VtUi.SetCameraOrient=OL")
+                newAppUiOrientation = EAppUiOrientationUnspecified;
+                }
+            SetOrientationL( newAppUiOrientation );
+            }
     __VTPRINTEXIT( "VtUi.SetCameraOrientationL" )
     }
 
@@ -6245,7 +6273,7 @@ TBool CVtUiAppUi::ProcessWsEventIfZoomModeIsActiveL( const TWsEvent& aEvent )
             __VTPRINT( DEBUG_GEN, "VtUi.ProcessWsEventIfZoomModeIsActiveL.ScreenChanged" );
             break;
 
-		case EVtUiWsEventNumberSourceDeactivate:
+        case EVtUiWsEventNumberSourceDeactivate:
             // Number source deactivated
             __VTPRINT( DEBUG_GEN, "VtUi.ProWsEvtIfZoomActivedL.NumberDeactivate" );
             break;
@@ -6279,7 +6307,7 @@ void CVtUiAppUi::StopSliders()
                 __VTPRINT( DEBUG_GEN, "VtUi.StopSliders br->STOP" )
                 br->Stop();
                 }
-            }	
+            }
         }
     // if contrast feature is active, stop that
     if( iUiStates->IsContrastModeOn() )
@@ -6782,9 +6810,9 @@ void CVtUiAppUi::CEventObserver::HandleVtEventL(
         {
         case KVtEngSessionWaitingCallActive:
         case KVtEngSessionWaitingCallInactive:
-        	iAppUi.HandleWaitingStateChange(
-        		aEvent == KVtEngSessionWaitingCallActive );
-	        break;
+            iAppUi.HandleWaitingStateChange(
+                aEvent == KVtEngSessionWaitingCallActive );
+            break;
         default:
             break;
         }
@@ -6948,7 +6976,9 @@ void CVtUiAppUi::CEventObserver::HandleVTCommandPerformedL(
         const TInt aError )
     {
     __VTPRINTENTER( "VtUiComms.HandleVTCommandPerformedL" )
-
+    __VTPRINT2( DEBUG_GEN, "VtUiComms.HandleVTCommandPerformedL aCommand = %d",
+            aCommand )
+    
     if ( iAppUi.iState &&
          iAppUi.iState->HandleVTCommandPerformedL( aCommand, aError ) ==
          TVtUiAppStateBase::EEventHandled )
@@ -7033,15 +7063,17 @@ void CVtUiAppUi::CEventObserver::HandleVTCommandPerformedL(
             }
         }
     else if ( iAppUi.iUiStates->IsLayoutChangeNeeded() && 
-            ( aCommand  == KVtEngMuteOutgoingAudio || 
-            aCommand  == KVtEngUnmuteOutgoingAudio ||
-            aCommand  == KVtEngSetAudioRouting ||
-            aCommand  == KVtEngSetAudioVolume ||
-            aCommand  == KVtEngSetSource ||
+            ( aCommand  == KVtEngSetSource ||
             aCommand  == KVtEngPrepareCamera ||
             aCommand  == KVtEngUnfreeze ||
-            aCommand  == KVtEngHandleLayoutChange ) )
+            aCommand  == KVtEngHandleLayoutChange ) ||
+            ( ( aCommand  == KVtEngMuteOutgoingAudio || 
+              aCommand  == KVtEngUnmuteOutgoingAudio ||
+              aCommand  == KVtEngSetAudioRouting ||
+              aCommand  == KVtEngSetAudioVolume ) && 
+              ( aCommand == iAppUi.iPendingCmd ) ) )
         {
+        iAppUi.iPendingCmd = KVtEngCommandNone;
         iAppUi.iUiStates->SetLayoutChangeNeeded( EFalse );
         iAppUi.DoHandleLayoutChangedL();
         }
@@ -7089,7 +7121,7 @@ void CVtUiAppUi::CEventObserver::vtHandleFrameL(
         {
         flag = EFalse;
         }
-    	
+        
     TBool local = EFalse;
     switch ( aType )
         {
@@ -7217,9 +7249,9 @@ void CVtUiAppUi::CEventObserver::HandleVolumeChange(
     switch ( aButtonAct )
         {
         case ERemConCoreApiButtonPress:
-        	__VTPRINT( DEBUG_GEN, "VtUi.HandleVolumeChange.ButtonPress" )
-        	TRAP_IGNORE( iAppUi.AdjustVolumeL( iRCCAOperationId ) );
-			TRAP_IGNORE( iAppUi.RefreshVolumeL() );
+            __VTPRINT( DEBUG_GEN, "VtUi.HandleVolumeChange.ButtonPress" )
+            TRAP_IGNORE( iAppUi.AdjustVolumeL( iRCCAOperationId ) );
+            TRAP_IGNORE( iAppUi.RefreshVolumeL() );
             TRAP_IGNORE( iAppUi.iInstance->VolumeKeyPressedL() );
              
             iRemConVolumeRepeatTimer->Start(

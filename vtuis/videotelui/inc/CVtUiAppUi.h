@@ -1414,6 +1414,9 @@ private:
         // engine side volume
         CVtUiVolumeControl* iVolCtrl;
 
+        // Pending command for delayed layout change
+        TVtEngCommandId iPendingCmd;
+
     private: // Friend classes
 
         // Inner class.

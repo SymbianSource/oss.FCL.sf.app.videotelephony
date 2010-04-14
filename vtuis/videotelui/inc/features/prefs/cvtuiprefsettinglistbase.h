@@ -212,9 +212,6 @@ private:
     
     // Window priority for main control
     TInt iMainControlWindowPriority;
-    
-    // Window position for main control
-    TInt iMainControlWindowPosition;
     };
 
 #endif // CVTUIPEFSETTINGLISTBASE_H

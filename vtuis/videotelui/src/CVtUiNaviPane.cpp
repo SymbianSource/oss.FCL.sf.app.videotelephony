@@ -29,8 +29,6 @@
 #include    <aknnavide.h>
 #include    <featmgr.h>
 #include	"tVtuifeaturevariation.h"
-#include    <StringLoader.h>
-#include    <videotelui.rsg>
 
 // CONSTANTS
 
@@ -114,12 +112,15 @@ void CVtUiNaviPane::ConstructL( )
 
     // Create muted indicator.
         {
-        HBufC* mutedText = 
-            StringLoader::LoadLC( R_VIDEOTELUI_QTN_INCAL_MUTED_PANE ); 
+        CVtUiMutedControl* naviControl =
+            new ( ELeave ) CVtUiMutedControl;
+        CleanupStack::PushL( naviControl );
+        naviControl->ConstructL();
+        CleanupStack::Pop( naviControl );
 
-        iMutedIndicator = iNaviPane.CreateNavigationLabelL( *mutedText );
-        
-        CleanupStack::PopAndDestroy( mutedText );
+        iMutedIndicator =
+            CreateDecoratorL( iNaviPane, naviControl );
+        iMutedControl = naviControl;
         }
 
     User::LeaveIfError( iTimer.CreateLocal() );
@@ -260,6 +261,7 @@ void CVtUiNaviPane::HandleResourceChange(
     if ( iMutedIndicator != iCurrent )
         {
         iMutedIndicator->HandleResourceChange( aType );
+        iMutedControl->HandleResourceChange( aType );
         }
     }
 

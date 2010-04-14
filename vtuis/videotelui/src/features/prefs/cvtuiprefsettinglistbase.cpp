@@ -37,6 +37,7 @@
 // constants
 static const TInt KMaxNumberOfArrayItems = 5;
 static const TInt KMaxNumberOfActiveItems = 5;
+static const TInt KOrdinalPositionBase = 3;
 
 // ---------------------------------------------------------------------------
 // CVtUiPrefSettingListBase::~CVtUiPrefSettingListBase
@@ -163,11 +164,9 @@ void CVtUiPrefSettingListBase::StartSettingPageL()
     iContextControlWindowPosition = iAppUi.ContextControl().DrawableWindow()
         ->OrdinalPosition();
     
-    // Get main control's window priority and position
+    // Get main control's window priority
     iMainControlWindowPriority= iAppUi.MainControl().DrawableWindow()
         ->OrdinalPriority();
-    iMainControlWindowPosition = iAppUi.MainControl().DrawableWindow()
-        ->OrdinalPosition();
     
     // Get remote video control's window priority and position
     iRemoteVideoControlWindowPriority = 
@@ -225,26 +224,28 @@ void CVtUiPrefSettingListBase::StopSettingPageL()
         iSettingPage->OfferKeyEventL( keyEvent, EEventKey );
         }
     
+    TInt ordinalPos = KOrdinalPositionBase;
+    
     // Set main control priority and position back to 
     // orginal value.
     iAppUi.MainControl().DrawableWindow()->SetOrdinalPosition( 
-        iMainControlWindowPosition, iMainControlWindowPriority );
-    
+    		ordinalPos--, iMainControlWindowPriority );
+      
     // Set end call button pane priority and position back to 
     // orginal value.
     iAppUi.EndCallButtonPane().DrawableWindow()->SetOrdinalPosition( 
-            iEndCallButtonPanePosition, iEndCallButtonPanePriority );
-        
-    // Set remote video control's window priority and position back to 
-    // orginal value.
-    iAppUi.RemoteVideoControl().DrawableWindow()->SetOrdinalPosition(
-            iRemoteVideoControlWindowPosition, 
-            iRemoteVideoControlWindowPriority );
+    		ordinalPos--, iEndCallButtonPanePriority );
     
     // Set context control's window priority and position back to 
     // orginal value.
     iAppUi.ContextControl().DrawableWindow()->SetOrdinalPosition( 
-        iContextControlWindowPosition, iContextControlWindowPriority );
+    		ordinalPos--, iContextControlWindowPriority );
+    
+    // Set remote video control's window priority and position back to 
+    // orginal value.
+    iAppUi.RemoteVideoControl().DrawableWindow()->SetOrdinalPosition(
+    		ordinalPos--, 
+            iRemoteVideoControlWindowPriority );
     
     __VTPRINTEXIT( "CVtUiPrefSettingListBase.StopSettingPageL" )
     }

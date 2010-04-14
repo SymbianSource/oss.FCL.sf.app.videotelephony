@@ -30,6 +30,7 @@
 #include    "CVtUiEndCallButton.h"
 #include    "VtUiLayout.h"
 
+const TInt KEndCallButtonText = 255;
 
 // -----------------------------------------------------------------------------
 // CVtUiEndCallButton::CVtUiEndCallButton
@@ -238,7 +239,19 @@ void CVtUiEndCallButton::LayoutIconAndText( CWindowGc& aGc ) const
     TRgb brushColor;
     GetTextColors( penColor ); 
     
-    iLayoutText.DrawText( aGc, state->Text(), EFalse, penColor );
+    // buffer for visually ordered text
+    TBuf< KEndCallButtonText + KAknBidiExtraSpacePerLine> visualText; 
+    TInt clipWidth = iLayoutText.TextRect().Width();
+        
+    // bidi processing - using AknBidiTextUtils.
+    AknBidiTextUtils::ConvertToVisualAndClip(
+            state->Text(),
+            visualText,
+            *iLayoutText.Font(),
+            clipWidth,
+            clipWidth );
+    
+    iLayoutText.DrawText( aGc, visualText, EFalse, penColor );
     
     const CGulIcon* icon = GetCurrentIcon();
 

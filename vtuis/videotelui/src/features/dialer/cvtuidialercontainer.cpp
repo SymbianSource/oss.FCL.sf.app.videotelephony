@@ -111,7 +111,7 @@ void CVtUiDialerContainer::HandleResourceChangeL( TInt aType )
         }
 
     CCoeControl::HandleResourceChange( aType );
-	
+    
     __VTPRINTEXIT( "DialContainer.HandleResourceChangeL" )
     }
 
@@ -146,6 +146,9 @@ void CVtUiDialerContainer::DoActivateL()
     iVideoControl->MakeVisible( ETrue );
     iDialer->MakeVisible( ETrue );
     MakeVisible( ETrue );
+    // Force a resource change and draw for the dialer
+    HandleResourceChange( KAknsMessageSkinChange );
+    DrawNow();
     User::LeaveIfError( iFeatureManager->
         CommandManager().AddCommandModifier( *iSKModifier ) );
     iInputBuffer->Activate();
@@ -314,6 +317,12 @@ void CVtUiDialerContainer::ConstructL( CVtUiBitmapManager& aBitmapManager )
     iInputBuffer = CVtUiDTMFBuffer::NewL( *iCoeEnv );
     iVideoControl = CVtUiDialerVideoControl::NewL( aBitmapManager );
     iDialer = CVideoDTMFDialer::NewL( *this, *iVideoControl, DialerRect() );
+    
+    // Dialer has the higher priority
+    iDialer->DrawableWindow()->SetOrdinalPosition( 
+            iDialer->DrawableWindow()->OrdinalPosition(),
+            iDialer->DrawableWindow()->OrdinalPriority() + 1 );
+    
     iSKModifier = CVtUiDialerSKModifier::NewL( *iFeatureManager );
     // Disable fading when using DP (eliminates nasty color error)
     if ( FeatureManager::FeatureSupported( KFeatureIdDisplayPost ) )

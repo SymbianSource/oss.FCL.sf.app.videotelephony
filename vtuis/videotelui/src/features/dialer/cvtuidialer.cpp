@@ -19,6 +19,7 @@
 #include <AknUtils.h>
 #include <peninputcmdparam.h>
 #include <cvtlogger.h>
+#include <akntoolbar.h>
 
 #include "cvtuidialer.h"
 #include "cvtuifeaturemanager.h"
@@ -31,6 +32,9 @@
 #include "CVtUiAppUi.h"
 #include "tvtuistates.h"
 #include "CVtUiContextControl.h"
+#include "CVtUiEndCallButtonPane.h"
+#include "CVtUiMainControl.h"
+#include "VtUiLayout.h"
 
 // ======== LOCAL FUNCTIONS ========
 
@@ -97,10 +101,16 @@ void CVtUiDialer::StartL()
     __VTPRINTENTER( "Dial.StartL" )
     if ( State() == MVtUiFeature::EUnprepared )
         {
-        // fixed toolbar is set to be hidden
+        // Make context control and end call button invisible
         iFeatureManager.AppUi().ContextControl().MakeVisible( EFalse );
+        iFeatureManager.AppUi().EndCallButtonPane().MakeVisible( EFalse );
         iFeatureManager.UiStates().SetIsDialerActivating( ETrue );
+        // fixed toolbar is set to be hidden
         iFeatureManager.UiStates().SetIsFixedToolbarVisible( EFalse );
+        if ( !VtUiLayout::IsLandscapeOrientation() )
+            {
+            iFeatureManager.AppUi().CurrentFixedToolbar()->MakeVisible( EFalse );
+            }
         iFeatureManager.CommandManager().RefreshL();
         PrepareL();
         iFeatureManager.ComponentManager().RequestActivationL(
@@ -128,7 +138,15 @@ void CVtUiDialer::Stop()
                 MVtUiComponent::EComponentIdDialer );
             } );
         Unprepare();
+        iFeatureManager.AppUi().CurrentFixedToolbar()->MakeVisible( ETrue );
+        // Make these two control back to visible
+        iFeatureManager.AppUi().EndCallButtonPane().MakeVisible( ETrue );
         iFeatureManager.AppUi().ContextControl().MakeVisible( ETrue );
+        // Force a skin change event to appui then redraw main control
+        // and end call button
+        iFeatureManager.AppUi().HandleResourceChangeL( KAknsMessageSkinChange );
+        iFeatureManager.AppUi().MainControl().DrawNow();
+        iFeatureManager.AppUi().EndCallButtonPane().DrawNow();
         }
     __VTPRINTEXIT( "Dial.Stop" )
     }

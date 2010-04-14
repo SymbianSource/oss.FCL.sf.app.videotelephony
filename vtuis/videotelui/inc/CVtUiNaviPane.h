@@ -30,6 +30,7 @@
 class CAknNavigationControlContainer;
 class CAknNavigationDecorator;
 class CVtUiNaviPaneControl;
+class CVtUiMutedControl;
 class CVtUiAppUi;
 
 // CONSTANTS
@@ -187,6 +188,9 @@ class CVtUiNaviPane : public CActive
 
         // Owned muted indicator.
         CAknNavigationDecorator* iMutedIndicator;
+
+        // Reference to muted control.
+        CVtUiMutedControl* iMutedControl;
 
         // Owned timer instance.
         RTimer iTimer;
