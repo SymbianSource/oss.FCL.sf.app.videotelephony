@@ -69,7 +69,7 @@ CVTUserInputDtmf::~CVTUserInputDtmf()
 //
 TUserInputType CVTUserInputDtmf::GetType()
     {
-    return EVtUiiDTFM;
+    return EVtUiiDTMF;
     }
 
 // -----------------------------------------------------------------------------

@@ -1840,18 +1840,6 @@ void CVtUiAppUi::SetRenderingModeL( const TRenderingMode aMode,
     
     TInt pos = 
         iInstance->iRemoteVideoControl->DrawableWindow()->OrdinalPosition();
-    if ( aMode == ERenderingModeDialer )
-        {
-        // Remote video control has the highest priority in dialer
-        iInstance->iRemoteVideoControl->DrawableWindow()->SetOrdinalPosition( 
-                pos, KVtUiRemoteVideoControlOrdinalPriHigh );
-        }
-    else 
-        {
-        // Set remote video control priority back to normal
-        iInstance->iRemoteVideoControl->DrawableWindow()->SetOrdinalPosition( 
-                pos, KVtUiRemoteVideoControlOrdinalPriNormal );
-        }
     
     if ( aNewDownlink )
         {
@@ -1866,6 +1854,20 @@ void CVtUiAppUi::SetRenderingModeL( const TRenderingMode aMode,
         }
     RefreshBlind();
     UpdateRenderingParametersL();
+    
+    if ( aMode == ERenderingModeDialer )
+        {
+        // Remote video control has the highest priority in dialer
+        iInstance->iRemoteVideoControl->DrawableWindow()->SetOrdinalPosition( 
+                pos, KVtUiRemoteVideoControlOrdinalPriHigh );
+        }
+    else 
+        {
+        // Set remote video control priority back to normal
+        iInstance->iRemoteVideoControl->DrawableWindow()->SetOrdinalPosition( 
+                pos, KVtUiRemoteVideoControlOrdinalPriNormal );
+        }
+    
     __VTPRINTEXIT( "VtUi.SetRenderingModeL" )
     }
 
@@ -2280,6 +2282,7 @@ void CVtUiAppUi::HandleCommandL(
             break;
 
         case EVtUiCmdSwapImagesPlaces:
+            {
             refresh = ETrue;
             CleanupPushEnableBlindL();
             iUiStates->SetDisableBlindSetting( ETrue );
@@ -2293,6 +2296,7 @@ void CVtUiAppUi::HandleCommandL(
                 }
                 
             CleanupStack::PopAndDestroy(); // CleanupPushEnableBlindL
+            }
             break;
 
         case EVtUiCmdZoom:
@@ -2671,12 +2675,12 @@ void CVtUiAppUi::ShutdownL()
     if ( wb && wb->State() == MVtUiFeature::EActive )
         {
         __VTPRINT( DEBUG_GEN, "CVtUiWhiteBalance::DoDeactivateL" );
-        wb->DoDeactivateL ();
+        wb->Stop();
         }
     if ( ct && ct->State() == MVtUiFeature::EActive )
         {
         __VTPRINT( DEBUG_GEN, "CVtUiColorTone::DoDeactivateL" );
-        ct->DoDeactivateL( );            
+        ct->Stop( );            
         }
     
     // close volume slider
@@ -2887,13 +2891,16 @@ void CVtUiAppUi::CmdSnapshotL()
         {
         ExecuteCmdL( KVtEngUnfreeze );
         }
-    if ( !IsViewFinderInMainPane() )
+    if ( iUiStates->IsCaptureModeOn() )
         {
-        SwitchViewFinderToMainPaneL( !isFrozen );
-        }
-    else if ( !isFrozen )
-        {
-        iUiStates->SetViewFindersInitialPlaceContextPane( EFalse );
+        if ( !IsViewFinderInMainPane() )
+            {
+            SwitchViewFinderToMainPaneL( !isFrozen );
+            }
+        else if ( !isFrozen )
+            {
+            iUiStates->SetViewFindersInitialPlaceContextPane( EFalse );
+            }
         }
     
     RefreshStatesL();

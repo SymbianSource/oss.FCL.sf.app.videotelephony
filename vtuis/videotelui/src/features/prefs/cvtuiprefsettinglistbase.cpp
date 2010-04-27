@@ -312,7 +312,8 @@ void CVtUiPrefSettingListBase::UpdateSettingL()
 CVtUiPrefSettingListBase::CVtUiPrefSettingListBase( CVtUiFeatureManager&
     aFeatureManager,  TVtUiFeatureId aFeatureId ) : CVtUiFeatureBase(
     aFeatureId, aFeatureManager ), iActiveItems( KMaxNumberOfActiveItems ), 
-    iBitmapTopLeftCorner( 0, 0 ), iAppUi( aFeatureManager.AppUi() ),iPendingSettingChangeCmd( EFalse )
+    iPendingSettingChangeCmd( EFalse ), iBitmapTopLeftCorner( 0, 0 ), 
+    iAppUi( aFeatureManager.AppUi() )
     {
     __VTPRINTENTER( "CVtUiPrefSettingListBase.CVtUiPrefSettingListBase" )   
     __VTPRINTEXIT( "CVtUiPrefSettingListBase.CVtUiPrefSettingListBase" )

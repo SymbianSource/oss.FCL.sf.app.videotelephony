@@ -186,7 +186,7 @@ void CVtUiEndCallButtonPane::HandleControlEventL( CCoeControl* aControl,
         return;
         }
     CVtUiAppUi* appUi = STATIC_CAST( CVtUiAppUi*, CCoeEnv::Static()->AppUi() );
-    appUi->CmdSimulateKeyEvent( EStdKeyNo );
+    appUi->HandleCommandL( EVtUiCmdEndActiveCall );
     __VTPRINTEXIT( "CVtUiEndCallButtonPane.HandleControlEventL" )
     }
 

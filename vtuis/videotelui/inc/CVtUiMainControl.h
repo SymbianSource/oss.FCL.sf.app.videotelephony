@@ -65,6 +65,12 @@ class CVtUiMainControl : public CVtUiVideoControlBase
          */
         void LayoutRemoteVideo();
 
+        /**
+        * Get main control pointer event flag
+        * @return pointer event is from main control
+        */
+        TBool IsMainControlPointerEvent();
+
     public: // from CCoeControl
 
         /**
@@ -160,6 +166,8 @@ class CVtUiMainControl : public CVtUiVideoControlBase
         // reference to uistates
         TVtUiStates& iUiStates;
 
+        // Main control pointer event flag
+        TBool iMCPointerEvent;
     };
 
 #endif      // CVTUIMAINCONTROL_H

@@ -35,7 +35,7 @@
 void CVTUserInputDtmf::ConstructL(TUint8 aTone)
     {
     __IF_DEBUG(Print(_L("VTProto: CVTUserInputDtmf::ConstructL<")));	
-    iUII = CPVUserInputDtmfSymbian::NewL( aTone, 0 );
+    iUII = CPVUserInputDtmfSymbian::NewL( aTone, EFalse, 0 );
     __IF_DEBUG(Print(_L("VTProto: CVTUserInputDtmf::ConstructL>")));
     }
 
@@ -74,7 +74,7 @@ CVTUserInputDtmf::~CVTUserInputDtmf()
 //
 TUserInputType CVTUserInputDtmf::GetType()
     {
-    return EVtUiiDTFM;
+    return EVtUiiDTMF;
     }
 
 // -----------------------------------------------------------------------------

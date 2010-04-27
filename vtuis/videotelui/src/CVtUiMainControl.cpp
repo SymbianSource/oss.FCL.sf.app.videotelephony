@@ -57,7 +57,7 @@ CVtUiMainControl* CVtUiMainControl::NewL( CVtUiBitmapManager& aBitmapManager,
 CVtUiMainControl::CVtUiMainControl( CVtUiBitmapManager& aBitmapManager,
         CVtUiAppUi& aAppUi, TVtUiStates& aUiStates ) : 
         CVtUiVideoControlBase( aBitmapManager ), iAppUi( aAppUi ),
-        iUiStates ( aUiStates )
+        iUiStates ( aUiStates ), iMCPointerEvent( EFalse )
     {
     __VTPRINTENTER( "MainCtrl.Ctor" )
     SetRenderingHint( ESkinnedBackground );
@@ -106,9 +106,10 @@ CVtUiMainControl::~CVtUiMainControl()
 void CVtUiMainControl::HandlePointerEventL( const TPointerEvent& aPointerEvent )
     {
     __VTPRINTENTER( "MainCtrl.HandlePointerEventL" )
-    // Let context control handle this first
+    // Let context control handle this
+    iMCPointerEvent = ETrue;
     iAppUi.ContextControl().HandlePointerEventL( aPointerEvent );
-    CCoeControl::HandlePointerEventL( aPointerEvent );
+    iMCPointerEvent = EFalse;
     __VTPRINTEXIT( "MainCtrl.HandlePointerEventL" )
     }
 
@@ -259,4 +260,14 @@ void CVtUiMainControl::LayoutRemoteVideo( )
         }
     __VTPRINTEXIT( "MainCtrl.LayoutRemoteVideo" )
     }
+
+// -----------------------------------------------------------------------------
+// CVtUiMainControl::IsMainControlPointerEvent
+// -----------------------------------------------------------------------------
+//
+TBool CVtUiMainControl::IsMainControlPointerEvent()
+    {
+    return iMCPointerEvent;
+    }
+
 //  End of File

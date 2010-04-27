@@ -34,7 +34,11 @@
 #include "CVtUiContextControl.h"
 #include "CVtUiEndCallButtonPane.h"
 #include "CVtUiMainControl.h"
+#include "CVtUiRemoteVideoControl.h"
 #include "VtUiLayout.h"
+
+// Index of white color.
+const TInt KVtDialerRVCPriLow = -1;
 
 // ======== LOCAL FUNCTIONS ========
 
@@ -101,6 +105,11 @@ void CVtUiDialer::StartL()
     __VTPRINTENTER( "Dial.StartL" )
     if ( State() == MVtUiFeature::EUnprepared )
         {
+        // Lower remote video control window priority
+        TInt pos = 
+                iFeatureManager.AppUi().RemoteVideoControl().DrawableWindow()->OrdinalPosition();
+        iFeatureManager.AppUi().RemoteVideoControl().DrawableWindow()->
+                SetOrdinalPosition( pos, KVtDialerRVCPriLow );
         // Make context control and end call button invisible
         iFeatureManager.AppUi().ContextControl().MakeVisible( EFalse );
         iFeatureManager.AppUi().EndCallButtonPane().MakeVisible( EFalse );
@@ -130,6 +139,12 @@ void CVtUiDialer::Stop()
     __VTPRINTENTER( "Dial.Stop" )
     if ( State() == MVtUiFeature::EActive )
         {
+        // Lower remote video control window priority
+        TInt pos = 
+                iFeatureManager.AppUi().RemoteVideoControl().DrawableWindow()->OrdinalPosition();
+        iFeatureManager.AppUi().RemoteVideoControl().DrawableWindow()->
+                SetOrdinalPosition( pos, KVtDialerRVCPriLow );
+        
         TInt error;
         TRAP( error,
             {

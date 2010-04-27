@@ -26,7 +26,8 @@
 #include    <featmgr.h>
 #include    "CVtUiAppUi.h"
 #include    "tvtuistates.h"
-#include	"tVtuifeaturevariation.h"
+#include    "tVtuifeaturevariation.h"
+#include    "CVtUiMainControl.h"
 
 
 // -----------------------------------------------------------------------------
@@ -82,7 +83,8 @@ void CVtUiContextControl::HandlePointerEventL(
         if ( aPointerEvent.iType == TPointerEvent::EButton1Down )
             {
             TRect window( Size() );
-            if ( !window.Contains( aPointerEvent.iPosition ) )
+            if ( !window.Contains( aPointerEvent.iPosition ) || 
+                    iAppUi.MainControl().IsMainControlPointerEvent() )
                 {
                 __VTPRINT( DEBUG_GEN, "CtxCtrl.HandlePtr.Button1Down outside" )
                 // Down outside of Ctx ctrl, set inside false
@@ -98,7 +100,8 @@ void CVtUiContextControl::HandlePointerEventL(
         else if ( aPointerEvent.iType == TPointerEvent::EButton1Up )
             {
             TRect window( Size() );
-            if ( !window.Contains( aPointerEvent.iPosition ) )
+            if ( !window.Contains( aPointerEvent.iPosition ) ||
+                    iAppUi.MainControl().IsMainControlPointerEvent() )
                 {
                 __VTPRINT( DEBUG_GEN, "CtxCtrl.HandlePtr.Button1Up outside" )
                 

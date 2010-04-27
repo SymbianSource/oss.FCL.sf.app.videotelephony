@@ -408,6 +408,7 @@ void CVSDataProvider::EnumerateVideoFrameSizesL(
     const TDesC8& aFormat )
     {
     __IF_DEBUG(Print(_L("VideoSource[%d]: CVSDataProvider::EnumerateVideoFrameSizes() >>"), RThread().Id().operator TUint()));
+    CleanupClosePushL( aSupportedSizes );
     RArray<TSizeCount> sizeCountArray;
     CleanupClosePushL( sizeCountArray );
     TInt providerCount = ProvidersAvailable();
@@ -463,7 +464,8 @@ void CVSDataProvider::EnumerateVideoFrameSizesL(
                 aSupportedSizes.Append( sizeCountArray[k].iSize ) );
             }
         }
-    CleanupStack::PopAndDestroy( ); // sizeCountArray
+    CleanupStack::PopAndDestroy(); // sizeCountArray
+    CleanupStack::Pop(); // aSupportedSizes
     __IF_DEBUG(Print(_L("VideoSource[%d]: CVSDataProvider::EnumerateVideoFrameSizes() <<"), RThread().Id().operator TUint()));
     }
 
@@ -477,6 +479,7 @@ void CVSDataProvider::EnumerateVideoFrameRatesL(
     const TSize& aSize )
     {
     __IF_DEBUG(Print(_L("VideoSource[%d]: CVSDataProvider::EnumerateVideoFrameRates() >>"), RThread().Id().operator TUint()));
+    CleanupClosePushL( aSupportedRates );
     RArray<TRateCount> rateCountArray;
     CleanupClosePushL( rateCountArray );
     TInt providerCount = ProvidersAvailable();
@@ -537,6 +540,7 @@ void CVSDataProvider::EnumerateVideoFrameRatesL(
             }
         }
     CleanupStack::PopAndDestroy( ); // rateCountArray
+    CleanupStack::Pop(); // aSupportedRates
     __IF_DEBUG(Print(_L("VideoSource[%d]: CVSDataProvider::EnumerateVideoFrameRates() <<"), RThread().Id().operator TUint()));
     }
 

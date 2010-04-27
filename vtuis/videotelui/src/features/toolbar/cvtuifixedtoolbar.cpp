@@ -149,21 +149,22 @@ void CVtUiFixedToolbar::SetToolbarVisibilityAfterLayoutChangeL( TBool aVisible )
     if( aVisible )
         {
         __VTPRINT(DEBUG_GEN, "FixedToolbar.SetToolbarVisibilityAfterLayoutChangeL.1" )
+        DimToolbarbuttons( ETrue );
         // Set flag
         iFeatureManager.UiStates().SetIsFixedToolbarVisible( ETrue );
         // set visible
         iFeatureManager.AppUi().CurrentFixedToolbar()
             ->SetToolbarVisibility( ETrue );
         // Set callback to dim toolbarbuttons
-        if ( !iIdle )
-            {
-            iIdle = CIdle::NewL( CActive::EPriorityIdle );
-            }
-        
-        if ( !iIdle->IsActive() )
-            {
-            iIdle->Start( TCallBack( &DoDimToolbarButtons, this ) );
-            }
+//        if ( !iIdle )
+//            {
+//            iIdle = CIdle::NewL( CActive::EPriorityIdle );
+//            }
+//        
+//        if ( !iIdle->IsActive() )
+//            {
+//            iIdle->Start( TCallBack( &DoDimToolbarButtons, this ) );
+//            }
         }
     // Landsacpe to portrait hide tb
     else

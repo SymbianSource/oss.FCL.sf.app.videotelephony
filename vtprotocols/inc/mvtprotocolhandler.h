@@ -109,7 +109,7 @@ const TUint8 EVtIncoming = 1;
 
 enum TUserInputType
     {
-    EVtUiiDTFM,
+    EVtUiiDTMF,
     EVtUiiAlphaNumeric
     };
 

@@ -195,11 +195,11 @@ MVTUserInput& CVtEngDtmfHandler::ReserveProtoDtmfL(
         case EIA5String:
         case EGeneralString:
             __VTPRINT( DEBUG_MEDIA , "DTMF. Proto USERINPUT alphanumeric" )
-				iProtoDtmf = VTProtocolFactory::CreateUserInputIndication( EVtUiiDTFM, val );
+				iProtoDtmf = VTProtocolFactory::CreateUserInputIndication( EVtUiiAlphaNumeric, val );
             break;
         case EDTMFString:
             __VTPRINT( DEBUG_MEDIA , "DTMF. Proto USERINPUT iDTMFString" )
-				iProtoDtmf = VTProtocolFactory::CreateUserInputIndication( EVtUiiAlphaNumeric, val);
+				iProtoDtmf = VTProtocolFactory::CreateUserInputIndication( EVtUiiDTMF, val);
             break;
         default:
             __VTPRINT( DEBUG_MEDIA , "DTMF. Proto USERINPUT unsupported" )
