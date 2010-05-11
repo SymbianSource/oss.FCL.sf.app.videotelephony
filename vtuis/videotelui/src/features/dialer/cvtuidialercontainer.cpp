@@ -25,6 +25,7 @@
 #include    <layoutmetadata.cdl.h>
 #include    <featmgr.h>
 #include    <AknsBasicBackgroundControlContext.h>
+#include    <akntoolbar.h>
 
 #include    "VtUiUtility.h"
 #include    "VtUiLayout.h"
@@ -38,9 +39,15 @@
 #include    "CVtUiAppUi.h"
 #include    "mvtuicommandmanager.h"
 #include    "cvtuidtmfbuffer.h"
-
+#include    "CVtUiMainControl.h"
+#include    "CVtUiContextControl.h"
+#include    "CVtUiRemoteVideoControl.h"
+#include    "CVtUiEndCallButtonPane.h"
 // Index of white color.
 const TInt KVtUiColorWhite = 0;
+
+const TInt KVtUiActOrdinalPos = 2;
+const TInt KVtUiDeactOrdinalPos = 4;
 
 // Implementation of TVtUiMiniDialerComponentState
 
@@ -143,6 +150,21 @@ void CVtUiDialerContainer::DoActivateL()
     iUiStates.SetIsDialerActivating( EFalse );
     LayoutDialerContainer();
     Reset();
+    
+    // Sort control windows' ordinal pos
+    TInt ordinalPos = KVtUiActOrdinalPos;
+    CVtUiAppUi& appUi = iFeatureManager->AppUi();
+    appUi.MainControl().DrawableWindow()->SetOrdinalPosition(
+            ordinalPos--, 
+            appUi.MainControl().DrawableWindow()->OrdinalPriority() );
+    
+    appUi.CurrentFixedToolbar()->DrawableWindow()->SetOrdinalPosition(
+            ordinalPos--, 
+            appUi.CurrentFixedToolbar()->DrawableWindow()->OrdinalPriority() );
+    
+    iDialer->DrawableWindow()->SetOrdinalPosition(
+            ordinalPos--, iDialer->DrawableWindow()->OrdinalPriority() );
+    
     iVideoControl->MakeVisible( ETrue );
     iDialer->MakeVisible( ETrue );
     MakeVisible( ETrue );
@@ -172,6 +194,30 @@ void CVtUiDialerContainer::DoDeactivateL()
     iFeatureManager->CommandManager().
         RemoveCommandModifier( *iSKModifier );
     iUiStates.SetIsDialerOpen( EFalse );
+
+    // Sort control windows' ordinal pos
+    TInt ordinalPos = KVtUiDeactOrdinalPos;
+    CVtUiAppUi& appUi = iFeatureManager->AppUi();
+    appUi.MainControl().DrawableWindow()->SetOrdinalPosition( 
+            ordinalPos--, 
+            appUi.MainControl().DrawableWindow()->OrdinalPriority() );
+    
+    appUi.CurrentFixedToolbar()->DrawableWindow()->SetOrdinalPosition(
+            ordinalPos--, 
+            appUi.CurrentFixedToolbar()->DrawableWindow()->OrdinalPriority() );
+      
+    appUi.EndCallButtonPane().DrawableWindow()->SetOrdinalPosition( 
+            ordinalPos--, 
+            appUi.EndCallButtonPane().DrawableWindow()->OrdinalPriority() );
+    
+    appUi.ContextControl().DrawableWindow()->SetOrdinalPosition( 
+            ordinalPos--, 
+            appUi.ContextControl().DrawableWindow()->OrdinalPriority() );
+    
+    appUi.RemoteVideoControl().DrawableWindow()->SetOrdinalPosition(
+            ordinalPos--, 
+            appUi.RemoteVideoControl().DrawableWindow()->OrdinalPriority() );
+    
     iVideoControl->MakeVisible( EFalse );
     iDialer->MakeVisible( EFalse );
     MakeVisible( EFalse );
@@ -317,11 +363,6 @@ void CVtUiDialerContainer::ConstructL( CVtUiBitmapManager& aBitmapManager )
     iInputBuffer = CVtUiDTMFBuffer::NewL( *iCoeEnv );
     iVideoControl = CVtUiDialerVideoControl::NewL( aBitmapManager );
     iDialer = CVideoDTMFDialer::NewL( *this, *iVideoControl, DialerRect() );
-    
-    // Dialer has the higher priority
-    iDialer->DrawableWindow()->SetOrdinalPosition( 
-            iDialer->DrawableWindow()->OrdinalPosition(),
-            iDialer->DrawableWindow()->OrdinalPriority() + 1 );
     
     iSKModifier = CVtUiDialerSKModifier::NewL( *iFeatureManager );
     // Disable fading when using DP (eliminates nasty color error)

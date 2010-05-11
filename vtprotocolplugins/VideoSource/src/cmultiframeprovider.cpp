@@ -579,12 +579,17 @@ void CMultiframeProvider::ConversionFinished( TInt aError )
         	}
     // Allways inform Decoding problems
     else
-       	{
+        {
         iObserver->NotifyImageHandlingError( aError );
         delete iTempBM;
-       	delete iMask;
-       	iMask = NULL;
-       	iTempBM = NULL;
+        delete iMask;
+        iMask = NULL;
+        iTempBM = NULL;
+        // GIF used when error happen
+        if ( iCount > 1 )
+            {
+            iCount = 1;
+            }
         }
     __IF_DEBUG(Print(_L("VideoSource[%d]: CMultiframeProvider::ConversionFinished() error %d <<"), RThread().Id().operator TUint(), aError));
     }

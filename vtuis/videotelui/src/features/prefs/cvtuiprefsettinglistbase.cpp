@@ -21,6 +21,7 @@
 #include    <eikenv.h>
 #include    <cvtlogger.h>
 #include    <avkon.hrh>
+#include    <akntoolbar.h>
 
 #include    "cvtuiprefsettinglistbase.h"
 #include    "CVtUiAppUi.h"
@@ -37,7 +38,7 @@
 // constants
 static const TInt KMaxNumberOfArrayItems = 5;
 static const TInt KMaxNumberOfActiveItems = 5;
-static const TInt KOrdinalPositionBase = 3;
+static const TInt KOrdinalPositionBase = 4;
 
 // ---------------------------------------------------------------------------
 // CVtUiPrefSettingListBase::~CVtUiPrefSettingListBase
@@ -158,48 +159,12 @@ void CVtUiPrefSettingListBase::StartSettingPageL()
     // Swap image places if needed
     iAppUi.SwitchViewFinderToMainPaneL();
     
-    // Get context control's window priority and position
-    iContextControlWindowPriority = iAppUi.ContextControl().DrawableWindow()
-        ->OrdinalPriority();
-    iContextControlWindowPosition = iAppUi.ContextControl().DrawableWindow()
-        ->OrdinalPosition();
-    
-    // Get main control's window priority
-    iMainControlWindowPriority= iAppUi.MainControl().DrawableWindow()
-        ->OrdinalPriority();
-    
-    // Get remote video control's window priority and position
-    iRemoteVideoControlWindowPriority = 
-            iAppUi.RemoteVideoControl().DrawableWindow()->OrdinalPriority();
-    iRemoteVideoControlWindowPosition = 
-            iAppUi.RemoteVideoControl().DrawableWindow()->OrdinalPosition();
-    
-    // Get end call button pane priority and position
-    iEndCallButtonPanePriority = 
-            iAppUi.EndCallButtonPane().DrawableWindow()->OrdinalPriority();
-    iEndCallButtonPanePosition = 
-            iAppUi.EndCallButtonPane().DrawableWindow()->OrdinalPosition();
-    
-    // Rise context control's window priority othwerwise setting page will be
-    // drawn partially over the context control window.
-    iAppUi.ContextControl().DrawableWindow()->SetOrdinalPosition( 
-        iContextControlWindowPosition, 
-        iContextControlWindowPriority + 1 );
-    
-    // Rise remote video control's window priority othwerwise setting page 
-    // will be drawn partially over the context control window.
-    iAppUi.RemoteVideoControl().DrawableWindow()->SetOrdinalPosition(
-        iRemoteVideoControlWindowPosition, 
-        iRemoteVideoControlWindowPriority + 2 );
-    
-    // Rise end call button pane priority othwerwise setting page 
-    // will be drawn partially over the context control window.
-    iAppUi.EndCallButtonPane().DrawableWindow()->SetOrdinalPosition(
-        iEndCallButtonPanePosition, 
-        iEndCallButtonPanePriority + 1 );
-
-    // Creates setting page
+    // Creates setting page first
     CreateSettingPageL();
+    
+    // Sort controls window position
+    SortControlsWindowPoistion();
+
     // Launch setting page.
     iSettingPage->ExecuteLD( CAknSettingPage::EUpdateWhenAccepted, EFalse );
     iSettingPage = NULL;
@@ -213,8 +178,6 @@ void CVtUiPrefSettingListBase::StartSettingPageL()
 void CVtUiPrefSettingListBase::StopSettingPageL()
     {
     __VTPRINTENTER( "CVtUiPrefSettingListBase.StopSettingPageL" )
-    // Swap image places if needed  
-    iAppUi.RestoreViewFinderL();
     
     if ( iSettingPage)
         {
@@ -224,28 +187,11 @@ void CVtUiPrefSettingListBase::StopSettingPageL()
         iSettingPage->OfferKeyEventL( keyEvent, EEventKey );
         }
     
-    TInt ordinalPos = KOrdinalPositionBase;
+    // Sort controls window position
+    SortControlsWindowPoistion();
     
-    // Set main control priority and position back to 
-    // orginal value.
-    iAppUi.MainControl().DrawableWindow()->SetOrdinalPosition( 
-    		ordinalPos--, iMainControlWindowPriority );
-      
-    // Set end call button pane priority and position back to 
-    // orginal value.
-    iAppUi.EndCallButtonPane().DrawableWindow()->SetOrdinalPosition( 
-    		ordinalPos--, iEndCallButtonPanePriority );
-    
-    // Set context control's window priority and position back to 
-    // orginal value.
-    iAppUi.ContextControl().DrawableWindow()->SetOrdinalPosition( 
-    		ordinalPos--, iContextControlWindowPriority );
-    
-    // Set remote video control's window priority and position back to 
-    // orginal value.
-    iAppUi.RemoteVideoControl().DrawableWindow()->SetOrdinalPosition(
-    		ordinalPos--, 
-            iRemoteVideoControlWindowPriority );
+    // Swap image places if needed  
+    iAppUi.RestoreViewFinderL();
     
     __VTPRINTEXIT( "CVtUiPrefSettingListBase.StopSettingPageL" )
     }
@@ -411,3 +357,47 @@ void CVtUiPrefSettingListBase::ResizeBackroundBitmapRect()
     iBitmapTopLeftCorner = iStreamLayout.Rect().iTl;
     __VTPRINTEXIT( "CVtUiPrefSettingListBase.ResizeBackroundBitmapRect" )
     }
+
+// ---------------------------------------------------------------------------
+// CVtUiPrefSettingListBase::SortControlsWindowPoistion
+// ---------------------------------------------------------------------------
+//
+void CVtUiPrefSettingListBase::SortControlsWindowPoistion()
+    {
+    TInt ordinalPos = KOrdinalPositionBase;
+    
+    if ( iSettingPage )
+        {
+        ordinalPos++;
+        }
+    
+    // Re-sort control's window position
+    iAppUi.MainControl().DrawableWindow()->SetOrdinalPosition( 
+        ordinalPos--, 
+        iAppUi.MainControl().DrawableWindow()->OrdinalPriority() );
+    
+    if ( iSettingPage )
+        {
+        iSettingPage->DrawableWindow()->SetOrdinalPosition(
+            ordinalPos--,
+            iSettingPage->DrawableWindow()->OrdinalPriority() );
+        }
+    
+    iAppUi.CurrentFixedToolbar()->DrawableWindow()->SetOrdinalPosition(
+        ordinalPos--,
+        iAppUi.CurrentFixedToolbar()->DrawableWindow()->OrdinalPriority() );
+    
+    iAppUi.ContextControl().DrawableWindow()->SetOrdinalPosition( 
+        ordinalPos--, 
+        iAppUi.ContextControl().DrawableWindow()->OrdinalPriority() );
+    
+    iAppUi.RemoteVideoControl().DrawableWindow()->SetOrdinalPosition(
+        ordinalPos--, 
+        iAppUi.RemoteVideoControl().DrawableWindow()->OrdinalPriority() );
+    
+    iAppUi.EndCallButtonPane().DrawableWindow()->SetOrdinalPosition(
+        ordinalPos--, 
+        iAppUi.EndCallButtonPane().DrawableWindow()->OrdinalPriority() );
+    }
+
+// End of file

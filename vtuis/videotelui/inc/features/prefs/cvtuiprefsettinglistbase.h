@@ -153,6 +153,9 @@ private:
     
     // Resizes backround bitmap
     void ResizeBackroundBitmapRect( );
+    
+    // Sort controls window position
+    void SortControlsWindowPoistion();
 
 protected:    
     
@@ -169,8 +172,8 @@ protected:
     // Contains currenltly supported items in setting page
     RArray< TInt> iActiveItems;
             
-     // whether or not has a pending command
-     TBool iPendingSettingChangeCmd;
+    // whether or not has a pending command
+    TBool iPendingSettingChangeCmd;
 
 private:
     
@@ -191,27 +194,6 @@ private:
     
     // Reference to appui
     CVtUiAppUi& iAppUi;
-    
-    // Window priority for context control
-    TInt iContextControlWindowPriority;
-    
-    // Window position for context control
-    TInt iContextControlWindowPosition;
-    
-    // Window priority for remote video control
-    TInt iRemoteVideoControlWindowPriority;
-    
-    // Window position for remote video control
-    TInt iRemoteVideoControlWindowPosition;
-    
-    // Window priority for end call button pane
-    TInt iEndCallButtonPanePriority;
-    
-    // Window position for end call button pane
-    TInt iEndCallButtonPanePosition;
-    
-    // Window priority for main control
-    TInt iMainControlWindowPriority;
     };
 
 #endif // CVTUIPEFSETTINGLISTBASE_H

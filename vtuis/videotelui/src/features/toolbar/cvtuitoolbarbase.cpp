@@ -1202,7 +1202,12 @@ void CVtUiToolbarBase::HandleLayoutChangeL()
     // toolbar must be hided
     if ( !isLandscape && IsDialerActive() )
         {
-        __VTPRINT(DEBUG_GEN, "CVtUiToolbarBase.LayoutChangeL.Stop" )
+        __VTPRINT( DEBUG_GEN, "ToolbarBase::HandleLayoutChangeL DialerActive." )
+        SetToolbarVisibilityAfterLayoutChangeL( EFalse );
+        }
+    else if ( !isLandscape && iFeatureManager.UiStates().IsCaptureModeOn() )
+        {
+        __VTPRINT( DEBUG_GEN, "ToolbarBase::HandleLayoutChangeL CaptureOn." )
         SetToolbarVisibilityAfterLayoutChangeL( EFalse );
         }
     else if ( iFeatureManager.UiStates().IsSelectingShare() )
@@ -1232,7 +1237,13 @@ void CVtUiToolbarBase::HandleLayoutChangeL()
         }
     // Transition from portrait to landsacpe
     // toolbar must be set to visible
-    else if ( isLandscape && IsDialerActive() )
+    else if ( isLandscape && ( 
+            IsDialerActive() ||
+            iFeatureManager.UiStates().IsCaptureModeOn() ||
+            iFeatureManager.UiStates().IsVideoQualityModeOn() ||
+            iFeatureManager.UiStates().IsWhiteBalanceModeOn() ||
+            iFeatureManager.UiStates().IsColorToneModeOn() ||
+            menuBar && menuBar->IsDisplayed() ) )
         {
         __VTPRINT(DEBUG_GEN, "CVtUiToolbarBase.LayoutChangeL.StartL" )
         SetToolbarVisibilityAfterLayoutChangeL( ETrue );

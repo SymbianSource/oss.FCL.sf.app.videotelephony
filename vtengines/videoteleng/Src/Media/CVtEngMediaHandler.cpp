@@ -1498,7 +1498,7 @@ void CVtEngMediaHandler::HandleSessionCommandEventL(
                     // Set default frame rate and send indication to peer
                     if ( !IsFlag( EVideoQualitySetByPeer ) )
                         {
-                        SetVideoQualityL( EVideoQualityNormal, EFalse );
+                        SetVideoQualityL( EVideoQualityNormal, ETrue );
                         }
 
                     __VTPRINT( DEBUG_MEDIA | DEBUG_DETAIL,

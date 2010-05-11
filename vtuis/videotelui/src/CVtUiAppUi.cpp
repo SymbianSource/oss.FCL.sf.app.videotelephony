@@ -158,7 +158,7 @@ const TInt  KVolumeResetValue = -1;
 const TInt KVtUiRemoteVideoControlOrdinalPriNormal = 0;
 
 // Remote video control high priority
-const TInt KVtUiRemoteVideoControlOrdinalPriHigh = 2;
+const TInt KVtUiRemoteVideoControlOrdinalPriHigh = 1;
 
 // Name of the EIKON server window group.
 _LIT( KVtUiEikonServer, "EikonServer" );
@@ -1855,6 +1855,16 @@ void CVtUiAppUi::SetRenderingModeL( const TRenderingMode aMode,
     RefreshBlind();
     UpdateRenderingParametersL();
     
+    // Raise the menu priority, otherwise the remote video control may
+    // overlay the menu pane
+    CEikMenuBar* menuBar = iEikonEnv->AppUiFactory()->MenuBar();
+    if ( menuBar && menuBar->IsDisplayed() )
+        {
+        TInt mpPos = menuBar->MenuPane()->DrawableWindow()->OrdinalPosition();
+        menuBar->MenuPane()->DrawableWindow()->SetOrdinalPosition( mpPos, 
+                KVtUiRemoteVideoControlOrdinalPriHigh ); // Pri = 1
+        }
+    
     if ( aMode == ERenderingModeDialer )
         {
         // Remote video control has the highest priority in dialer
@@ -2494,7 +2504,8 @@ void CVtUiAppUi::HandleResourceChangeL(
             {
             iInstance->iNaviPane->HandleResourceChange( aType );
             }
-        if ( layoutChange )
+        // Handle layout change only when type == DLVS
+        if ( aType == KEikDynamicLayoutVariantSwitch )
             {
             (void) HandleLayoutChanged();
             }
@@ -6516,9 +6527,31 @@ void CVtUiAppUi::CInstance::VolumeKeyPressedL()
             // end the capture mode
             if( iAppUi.iUiStates->IsCaptureModeOn() )
                 {
+                __VTPRINT( DEBUG_GEN, "CVtUiAppUi.VolumeKeyPressedL cancel capture" )
                 iAppUi.CmdCancelCaptureL();
                 }
+            else if ( iAppUi.iUiStates->IsZoomModeOn() )
+                {
+                // If zoom feature is active, stop that
+                MVtUiFeature* zm = iAppUi.iFeatureManager->GetFeatureById( EVtUiFeatureIdZoom );
+                if ( zm )
+                    {
+                    if ( zm->State() ==  MVtUiFeature::EActive )
+                        {
+                        __VTPRINT( DEBUG_GEN, "CVtUiAppUi.VolumeKeyPressedL zm->STOP" )
+                        zm->Stop();
+                        }
+                    }
+                }
             volume->StartL();
+            
+            // Toolbar needs to be refreshed if zoom, contrat and brightness were dismissed
+            CVtUiToolbarBase* tb = static_cast< CVtUiToolbarBase* >(
+            iAppUi.iFeatureManager->GetFeatureById( EVtUiFeatureIdToolbar ) );
+            if ( tb )
+                {
+                tb->RefreshL();
+                }
             }
         }
     __VTPRINTEXIT( "CVtUiAppUi.VolumeKeyPressedL" )

@@ -23,8 +23,8 @@
 //  INCLUDES
 #include <e32base.h>
 #include <e32std.h>
-#include <RSatRefresh.h>
-#include <RSatSession.h>
+#include <rsatrefresh.h>
+#include <rsatsession.h>
 
 
 // CLASS DECLARATION

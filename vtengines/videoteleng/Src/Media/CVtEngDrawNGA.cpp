@@ -27,6 +27,7 @@
 #include <tdisplaysinkparamsnga.h>
 #include <cvtlogger.h>
 #include <graphics/surfaceconfiguration.h>
+#include <graphics/suerror.h>
 
 // Reversed enumeration for the bitmaps.
 static const MDisplaySink::TBitmapNo KVtEngBitmapNoReversed[] =
@@ -525,7 +526,7 @@ void CVtEngDrawNGA::RunL()
         iCallBackTable[surfaceno]->SetActive();
         iSurfaceUpdateSession.NotifyWhenDisplayed(iCallBackTable[surfaceno]->iStatus, iTimeStamp);
         iSubmitPending = ETrue;
-        iSurfaceUpdateSession.SubmitUpdate(0, iSurfaceId, surfaceno, NULL); 
+        iSurfaceUpdateSession.SubmitUpdate( KAllScreens, iSurfaceId, surfaceno, NULL ); 
         buffer.UnSet();
         }
     if ( iSurfaceBuffers[ KVtEngBitmapNoReversed[ bitmapNo ] ].IsSet() )
@@ -886,7 +887,7 @@ TBool CVtEngDrawNGA::DoSurfaceBuffer0Ready()
         iCallBackTable[surfaceno]->SetActive();
         iSurfaceUpdateSession.NotifyWhenDisplayed(iCallBackTable[surfaceno]->iStatus, iTimeStamp);
         iSubmitPending = ETrue;
-        iSurfaceUpdateSession.SubmitUpdate(0, iSurfaceId, surfaceno, NULL); 
+        iSurfaceUpdateSession.SubmitUpdate( KAllScreens, iSurfaceId, surfaceno, NULL ); 
         iWaitingBuffers.Remove(*buffer);
         buffer->UnSet();
         }
@@ -919,7 +920,7 @@ TBool CVtEngDrawNGA::DoSurfaceBuffer1Ready()
         iCallBackTable[surfaceno]->SetActive();
         iSurfaceUpdateSession.NotifyWhenDisplayed(iCallBackTable[surfaceno]->iStatus, iTimeStamp);
         iSubmitPending = ETrue;
-        iSurfaceUpdateSession.SubmitUpdate(0, iSurfaceId, surfaceno, NULL); 
+        iSurfaceUpdateSession.SubmitUpdate( KAllScreens, iSurfaceId, surfaceno, NULL ); 
         iWaitingBuffers.Remove(*buffer);
         buffer->UnSet();
         }
