@@ -86,6 +86,11 @@ private: // from aknsettinpage
      */
      void HandleControlEventL( CCoeControl* aControl,TCoeEvent aEventType );
      
+     /**
+     * @see CAknSettinPage::HandleResourceChange
+     */
+     void HandleResourceChange(TInt aType);
+     
 private: // new functions
         
         /*

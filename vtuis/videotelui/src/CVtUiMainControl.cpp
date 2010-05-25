@@ -83,6 +83,11 @@ void CVtUiMainControl::ConstructL()
             EVtUiBitmap_qgn_indi_call_video_blind_in_mask_icon,
             EFalse );
     BitmapManager().SetAspectRatio( iBlindMaskId, EFalse );
+    
+    // For set non focus and recieve all point event
+    SetNonFocusing();
+    ClaimPointerGrab( ETrue );
+    
     __VTPRINTEXIT( "MainCtrl.ConstructL" )
     }
 

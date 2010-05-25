@@ -35,9 +35,9 @@
 *  @since S60 v3.2
 */
 void CVtUiTransparentSettingPage::HandleLayoutChangeL()
-{
-	  	GetTheLayoutData();
-}
+    {
+    GetTheLayoutData();
+    }
 
 // -----------------------------------------------------------------------------
 // CVtUiTransparentSettingPage::CVtUiTransparentSettingPage
@@ -154,6 +154,16 @@ void CVtUiTransparentSettingPage::HandleControlEventL( CCoeControl* /*aControl*/
         }
     
     __VTPRINTEXIT( "CVtUiTransparentSettingPage.HandleControlEventL" )
+    }
+
+// -----------------------------------------------------------------------------
+// CVtUiTransparentSettingPage::HandleResourceChange
+// -----------------------------------------------------------------------------
+//
+void CVtUiTransparentSettingPage::HandleResourceChange(TInt aType)
+    {
+    CAknTransparentCameraSettingPage::HandleResourceChange(aType);
+    GetTheLayoutData();
     }
 
 // -----------------------------------------------------------------------------

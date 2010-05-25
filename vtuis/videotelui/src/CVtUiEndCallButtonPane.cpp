@@ -81,6 +81,10 @@ void CVtUiEndCallButtonPane::ConstructL( const TRect& aRect )
         Window().SetNonFading( ETrue );
         }
     
+    // For set non focus and recieve all point event
+    SetNonFocusing();
+    ClaimPointerGrab( ETrue );
+
     __VTPRINTEXIT( "CVtUiEndCallButtonPane.ConstructL" )
     }
 

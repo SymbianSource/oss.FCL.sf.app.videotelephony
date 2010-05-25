@@ -512,6 +512,13 @@ TInt CVtEngMediaHandler::ValidateCommand( const TVtEngCommandId aCommand ) const
                     break;
                 }
             case KVtEngSetAudioRouting:
+                if ( ( iProtoState == MVtProtocolCommand::EConnected ) && 
+                     ( ( iPendingOp && iPendingOp->Command() == KVtEngHandleLayoutChange )
+                       || !iPendingOp ) )
+                    {
+                    okToPerform = KErrNone;
+                    }
+                break;
             case KVtEngSetAudioVolume:
                 if ( ( iProtoState == MVtProtocolCommand::EConnected ) && !iPendingOp )
                     {

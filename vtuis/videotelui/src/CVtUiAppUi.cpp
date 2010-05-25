@@ -58,7 +58,7 @@
 #include    <StringLoader.h>
 #include    <AknDef.h>
 #include    <aknconsts.h>
-
+#include    <akntoolbar.h>
 
 #include    <e32property.h>
 #include    <ecom/ecom.h>
@@ -2490,6 +2490,10 @@ void CVtUiAppUi::HandleResourceChangeL(
         {
         if ( layoutChange )
             {
+            if ( CurrentFixedToolbar() )
+                {
+                CurrentFixedToolbar()->HandleResourceChange( aType );
+                }
             CVtUiToolbarBase* tb = static_cast< CVtUiToolbarBase* >(
                 iFeatureManager->GetFeatureById( EVtUiFeatureIdToolbar ) );
             if( tb )
@@ -2504,15 +2508,14 @@ void CVtUiAppUi::HandleResourceChangeL(
             {
             iInstance->iNaviPane->HandleResourceChange( aType );
             }
-        // Handle layout change only when type == DLVS
-        if ( aType == KEikDynamicLayoutVariantSwitch )
-            {
-            (void) HandleLayoutChanged();
-            }
         }
-
     iComponentManager->HandleResourceChangeL( aType );
-
+    
+    // Handle layout change only when type == DLVS
+    if ( iInstance && aType == KEikDynamicLayoutVariantSwitch )
+        {
+        (void) DelayedHandleLayoutChanged( this );
+        }
     __VTPRINTEXIT( "VtUi.HandleResourceChangeL");
     }
 
@@ -6487,18 +6490,18 @@ void CVtUiAppUi::CInstance::LayoutChanged()
     VtUiLayout::GetApplicationParentRect( parent );
     VtUiLayout::GetMainPaneLayout( control );
     AknLayoutUtils::LayoutControl( iMainControl, parent, control );
+    iMainControl->DrawNow();
     if(iMainControl)
         iMainControl->LayoutRemoteVideo();
     AknLayoutUtils::LayoutControl( iNumberEntryActivation, parent, control );
     VtUiLayout::GetFirstWindowBackgroundLayout( control );
     AknLayoutUtils::LayoutControl( iContextControl, parent, control );
-    
-    VtUiLayout::GetButtonPaneLayout( control );
-    AknLayoutUtils::LayoutControl( iEndCallButtonPane, parent, control );
-    
+    iContextControl->DrawNow();
     if(iContextControl)
         iContextControl->LayoutRemoteVideo();
-    
+    VtUiLayout::GetButtonPaneLayout( control );
+    AknLayoutUtils::LayoutControl( iEndCallButtonPane, parent, control );
+    iEndCallButtonPane->DrawNow();
     }
 
 // -----------------------------------------------------------------------------
