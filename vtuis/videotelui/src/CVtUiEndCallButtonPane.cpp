@@ -75,12 +75,6 @@ void CVtUiEndCallButtonPane::ConstructL( const TRect& aRect )
     // Activate the window, which makes it ready to be drawn
     ActivateL();
     
-    // Disable fading when using DP (eliminates nasty color error)
-    if ( FeatureManager::FeatureSupported( KFeatureIdDisplayPost ) )
-        {
-        Window().SetNonFading( ETrue );
-        }
-    
     // For set non focus and recieve all point event
     SetNonFocusing();
     ClaimPointerGrab( ETrue );

@@ -1220,6 +1220,12 @@ private:
         * option menus is not visible.
         */
         void TryToStartTbL();
+        
+        /*
+        * Retries to start toolbar. Toolbar is started if
+        * option menus is not visible.
+        */
+        void RetryToStartTbL();
 
         /*
         * Update video prefrence
@@ -1482,6 +1488,8 @@ private:
         TBool iLayoutChg;
         //save cmd for later use 
         TInt iDelayedCmd;
+        //disable video process
+        TBool iDisableVideoOngoing;
     };
 
 #endif      // CVTUIAPPUI_H

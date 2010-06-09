@@ -82,11 +82,6 @@ void CVtUiVideoControlBase::BaseConstructL()
     CreateWindowL();
     SetExtent( TPoint(), TSize() );
     ActivateL();
-    // Disable fading when using DP (eliminates nasty color error)
-    if ( FeatureManager::FeatureSupported( KFeatureIdDisplayPost ) )
-        {
-        Window().SetNonFading( ETrue );
-        }
     WrapOnDemand();
     __VTPRINTEXIT( "VidCtrlBase.BaseConstructL" )
     }

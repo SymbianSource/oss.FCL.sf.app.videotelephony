@@ -1295,7 +1295,7 @@ void CVtEngMediaHandler::HandleSessionCommandEventL(
                 }
 
             // Do send an intra message
-            if ( IsFlag( EProtoVideoTrackPaused ) )
+            if ( videoEnabledByUser && IsFlag( EProtoVideoTrackPaused ) )
                 {
                 ClearFlag( EProtoVideoTrackPaused );
                 if ( IsFlag( EProtoSendIntraFrame ) )

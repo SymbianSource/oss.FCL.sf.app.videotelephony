@@ -112,7 +112,7 @@ TBool TVtUiStates::IsContrastSettingAvailable() const
     if ( iCameraPref )
         {
         TInt temp;
-	    ret = !iCameraPref->GetBrightness( temp );
+	    ret = !iCameraPref->GetContrast( temp );
         }
     return ret;
     }

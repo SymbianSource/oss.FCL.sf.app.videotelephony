@@ -1828,6 +1828,46 @@ void CVtUiAppUi::TryToStartTbL()
     }
 
 // -----------------------------------------------------------------------------
+// CVtUiAppUi::ReTryToStartTbL
+// -----------------------------------------------------------------------------
+//
+void CVtUiAppUi::RetryToStartTbL()
+    {
+    // only with fixed toolbar
+    if ( AknLayoutUtils::PenEnabled() )
+        {
+        if ( iUiStates->IsFixedToolbarVisible())
+            {
+            // When option menu is opened fixed toolbar should
+            // be set hidden
+            iUiStates->SetIsFixedToolbarVisible( EFalse );
+            // Stop toolbar
+            MVtUiFeature* tb =
+                iFeatureManager->GetFeatureById( EVtUiFeatureIdToolbar );
+            if ( tb )
+                {
+                // timer could be active
+                if ( iTbPeriodic )
+                    {
+                    iTbPeriodic->Cancel();
+                    }
+                tb->Stop();
+                }
+            if ( !iTbPeriodic )
+                {
+                iTbPeriodic = CPeriodic::NewL( CActive::EPriorityStandard );
+                }
+            // Toolbar doesn't come visible until options menu is closed.
+            iTbPeriodic->Start( KStartTime, KPeriodTime, TCallBack( DoTryToStartTbL, this ) );
+            }
+        }
+    else
+        {
+        StopSliders(); 
+        }
+    }
+
+// -----------------------------------------------------------------------------
 // CVtUiAppUi::SetRenderingModeL
 // -----------------------------------------------------------------------------
 //
@@ -1999,38 +2039,7 @@ void CVtUiAppUi::ProcessCommandL(
     MVtEngCommandHandler& command = Model().CommandHandler();
     command.ExecuteL( KVtEngRequestLastRemoteFrame, NULL );
     
-    // only with fixed toolbar
-    if ( AknLayoutUtils::PenEnabled() )
-        {
-        if ( iUiStates->IsFixedToolbarVisible())
-            {
-            // When option menu is opened fixed toolbar should
-            // be set hidden
-            iUiStates->SetIsFixedToolbarVisible( EFalse );
-            // Stop toolbar
-            MVtUiFeature* tb =
-            iFeatureManager->GetFeatureById( EVtUiFeatureIdToolbar );
-            if ( tb )
-                {
-                // timer could be active
-                if ( iTbPeriodic )
-                    {
-                    iTbPeriodic->Cancel();
-                    }
-                tb->Stop();
-                }
-            if ( !iTbPeriodic )
-                {
-                iTbPeriodic = CPeriodic::NewL( CActive::EPriorityStandard );
-                }
-            // Toolbar doesn't come visible until options menu is closed.
-            iTbPeriodic->Start( KStartTime, KPeriodTime, TCallBack( DoTryToStartTbL, this ) );
-            }
-        }
-    else
-        {
-        StopSliders(); 
-        }
+    RetryToStartTbL();
 
     iInstance->iMainControl->SetSize( iInstance->iMainControl->Size() );
     iInstance->iMainControl->DrawNow();
@@ -2130,7 +2139,7 @@ void CVtUiAppUi::HandleCommandL(
         TInt aCommand )
     {
     __VTPRINTENTER( "VtUi.HandleCommand" )
-
+    __VTPRINT2( DEBUG_GEN, "VtUi.HandleCommand.Cmd=%d", aCommand );
     // Check if same command is already being performed.
     if ( IsActiveCommand( aCommand ) || ( iState &&
          iState->HandleCommandL( aCommand ) ==
@@ -2248,8 +2257,11 @@ void CVtUiAppUi::HandleCommandL(
             break;
 
         case EVtUiCmdDisableBoth:
-            HandleCommandL( EVtUiCmdDisableAudio );
-            HandleCommandL( EVtUiCmdDisableVideo );
+            refresh = ETrue;
+            EnableCommandActivatingAndCleanupPushL();
+            CmdDisableVideoL();
+            CmdDisableAudioL();
+            CleanupStack::PopAndDestroy();
             break;
 
         case EVtUiCmdActivateBT:
@@ -2984,20 +2996,20 @@ void CVtUiAppUi::CmdEnableAudioL()
 //
 void CVtUiAppUi::CmdDisableVideoL()
     {
-        
-        if( iUiStates->IsZoomModeOn() )
+    iDisableVideoOngoing = ETrue;
+    if( iUiStates->IsZoomModeOn() )
+        {
+        // if zoom feature is active, stop that
+        MVtUiFeature* zm = iFeatureManager->GetFeatureById( EVtUiFeatureIdZoom );
+        if ( zm )
             {
-            // if zoom feature is active, stop that
-            MVtUiFeature* zm = iFeatureManager->GetFeatureById( EVtUiFeatureIdZoom );
-            if ( zm )
+            if ( zm->State() ==  MVtUiFeature::EActive )
                 {
-                if ( zm->State() ==  MVtUiFeature::EActive )
-                    {
-                    __VTPRINT( DEBUG_GEN, "VtUi.CmdDisableVideoL zm->STOP" )
-                    zm->Stop();
-                    }
+                __VTPRINT( DEBUG_GEN, "VtUi.CmdDisableVideoL zm->STOP" )
+                zm->Stop();
                 }
             }
+        }
         
     ExecuteCmdL( KVtEngStopViewFinder );
 
@@ -3018,6 +3030,7 @@ void CVtUiAppUi::CmdDisableVideoL()
         }
 
     ExecuteCmdL( KVtEngStartViewFinder );
+    iDisableVideoOngoing = EFalse;
     }
 
 // -----------------------------------------------------------------------------
@@ -3393,7 +3406,7 @@ void CVtUiAppUi::CmdInitializeShareImageL( TBool& aNeedRefresh )
     CVtUiAppUi::CVtUiAppUiMGVerifier* verifier =
         CVtUiAppUi::CVtUiAppUiMGVerifier::NewLC( *this, *iCoeEnv );
 
-     // number erntry is not availabe while media gallery is open
+    // number erntry is not availabe while media gallery is open
     iInstance->iNumberEntryActivation->SetActive( EFalse );
     iUiStates->SetSelectingShare( ETrue );
 
@@ -4801,12 +4814,15 @@ void CVtUiAppUi::HandleForegroundChangedL(
     __VTPRINTENTER( "VtUi.HandleForegroundChangedL" )
     __VTPRINT2( DEBUG_GEN, "VtUi.foreground=%d", (TInt) aIsForeground )
 
-
     // Let the Engine know that Application's foregorund
     // has changed. Then Engine can do some initalize/uninitalize
     // before rendering due to the foreground state.
-    iState->PreHandleForegroundChangedL(aIsForeground);
+    iState->PreHandleForegroundChangedL( aIsForeground );
 
+    // The availability of number entry depends on application is
+    // foreground or not
+    iInstance->iNumberEntryActivation->SetActive( aIsForeground );
+    
     // These operations must be done before
     // sending KVtEngSetUIForeground command to engine i.e. calling
     // iState->HandleForegroundChangedL( aIsForeground )
@@ -4839,7 +4855,6 @@ void CVtUiAppUi::HandleForegroundChangedL(
                cr->Stop();
                }
             }
-
         }
 
     TBool foregroundAndReady = EFalse;
@@ -4856,8 +4871,6 @@ void CVtUiAppUi::HandleForegroundChangedL(
         }
     else if ( !aIsForeground )
         {
-
-
         iEventObserver->StopBeat();
         }
     SetIncallBubbleAllowedInUsualL( !foregroundAndReady );
@@ -5005,11 +5018,19 @@ void CVtUiAppUi::HandleLayoutChangedL()
 void CVtUiAppUi::DoHandleLayoutChangedL()
     {
     __VTPRINTENTER( "VtUi.DoLayoutChg" )
+    TInt error;
     // Fully update rendering parameters
     UpdateRenderingParametersL();
     // Notify engine about layout change
     iLayoutChg = ETrue;
-    TRAPD( error, ExecuteCmdL( KVtEngHandleLayoutChange ) );
+    if( iDisableVideoOngoing )
+        {
+        error = KErrNotReady;
+        }
+    else
+        {
+        TRAP( error, ExecuteCmdL( KVtEngHandleLayoutChange ) );
+        }
     iLayoutChg = EFalse;
 
     // Not ready error is allowed to happen (e.g. when sharing)
@@ -5040,6 +5061,11 @@ void CVtUiAppUi::DoHandleLayoutChangedL()
                 invalidCommand  == KVtEngHandleLayoutChange )
             {
             iPendingCmd = pendingCommand;
+            iUiStates->SetLayoutChangeNeeded( ETrue );
+            }
+        if( iDisableVideoOngoing && pendingCommand == KVtEngCommandNone )
+            {
+            iPendingCmd = KVtEngSetSource;
             iUiStates->SetLayoutChangeNeeded( ETrue );
             }
         }
@@ -5739,6 +5765,7 @@ void CVtUiAppUi::HandleCommandDeactivationL()
         {
         RefreshStatesL();
         }
+    iDisableVideoOngoing = EFalse;
     __VTPRINTEXIT( "VtUi.HandleCommandDeactivationL" )
     }
 
@@ -6546,6 +6573,8 @@ void CVtUiAppUi::CInstance::VolumeKeyPressedL()
                         }
                     }
                 }
+            
+            iAppUi.RetryToStartTbL();
             volume->StartL();
             
             // Toolbar needs to be refreshed if zoom, contrat and brightness were dismissed
