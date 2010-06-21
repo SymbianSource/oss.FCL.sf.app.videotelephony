@@ -205,9 +205,12 @@ void CVtUiPrefSettingListBase::SizeChanged()
     __VTPRINTENTER( "CVtUiPrefSettingListBase.SizeChanged" )
     ResizeBackroundBitmapRect();
     // Set new coordinates and size
-    iSettingPage->SetBitmapPositionAndClipRect( iBitmapTopLeftCorner,
-        iBitmapClippingRect );
-    iSettingPage->HandleLayoutChangeL();
+    if( iSettingPage )
+        {
+        iSettingPage->SetBitmapPositionAndClipRect( iBitmapTopLeftCorner,
+            iBitmapClippingRect );
+        iSettingPage->HandleLayoutChangeL();
+        }
     __VTPRINTEXIT( "CVtUiPrefSettingListBase.SizeChanged" )
     }
 

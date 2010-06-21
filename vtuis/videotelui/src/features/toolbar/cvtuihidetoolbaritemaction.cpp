@@ -104,134 +104,132 @@ void CVtUiHideToolbarItemAction::SetItemHiddenL( TInt aCommandId )
 // ---------------------------------------------------------------------------
 //
 void CVtUiHideToolbarItemAction::HideOrShowToolbarControlL
-     ( TInt aCommandId )
-     {
-     __VTPRINTENTER( "HideTbAct.HideOrShowToolbarControlL" )
-     TBool isZoomModeOn = iUiStates.IsZoomModeOn();
-     TBool isVolumeModeOn = iUiStates.IsVolumeModeOn();
-     TBool isBrightnessModeOn = iUiStates.IsBrightnessModeOn();
-     TBool isContrastModeOn = iUiStates.IsContrastModeOn();
-     TBool dimmed = EFalse;
-     const TVtUiMediaState& mediaState( iUiStates.MediaState() );
-     const TVtUiAudioState& audioState( iUiStates.AudioState() );
+    ( TInt aCommandId )
+    {
+    __VTPRINTENTER( "HideTbAct.HideOrShowToolbarControlL" )
+    TBool isZoomModeOn = iUiStates.IsZoomModeOn();
+    TBool isVolumeModeOn = iUiStates.IsVolumeModeOn();
+    TBool isBrightnessModeOn = iUiStates.IsBrightnessModeOn();
+    TBool isContrastModeOn = iUiStates.IsContrastModeOn();
+    TBool isDialerOpen = iUiStates.IsDialerOpen();
+    TBool isDialerActivating = iUiStates.IsDialerActivating();
+    TBool isWhiteBalanceModeOn = iUiStates.IsWhiteBalanceModeOn();
+    TBool isColorToneModeOn = iUiStates.IsColorToneModeOn();
+    TBool isCaptureModeOn = iUiStates.IsCaptureModeOn();
+    TBool isSomeElseZoomOn = isBrightnessModeOn || isContrastModeOn || isDialerOpen || isVolumeModeOn
+            || isDialerActivating || isWhiteBalanceModeOn || isColorToneModeOn || isCaptureModeOn;
+    TBool isSomeoneOn = isZoomModeOn || isSomeElseZoomOn;
+    TBool dimmed = EFalse;
+    const TVtUiMediaState& mediaState( iUiStates.MediaState() );
+    const TVtUiAudioState& audioState( iUiStates.AudioState() );
 
-     switch ( aCommandId )
-            {
-            case EVtUiCmdDisableVideo:
-            case EVtUiCmdSwapImagesPlaces:
-            case EVtUiCmdDisableAudio:
-            case EVtUiCmdEnableAudio:
-                if ( isContrastModeOn || 
-                    isBrightnessModeOn
-                    || isZoomModeOn || isVolumeModeOn )
-                    {
-                    dimmed = ETrue;
-                    }
-                break;
-            case EVtUiCmdEnableVideo:
-                if ( isZoomModeOn || isVolumeModeOn )        
-                    {
-                    dimmed = ETrue;
-                    }             
-                break;
-                
-            case EVtUiCmdUsePrimaryCamera:            
-            case EVtUiCmdUseSecondaryCamera:
-                if ( isContrastModeOn || 
-                    isBrightnessModeOn
-                    || iUiStates.IsCaptureModeOn() ||
-                    mediaState.IsSharing()
-                    || isZoomModeOn || isVolumeModeOn )        
-                    {
-                    dimmed = ETrue;
-                    } 
-                break;
-            case EVtUiCmdZoom:
-                if ( isContrastModeOn ||
-                     isBrightnessModeOn||
-                     !mediaState.IsVideo() ||
-                     mediaState.IsFrozen() ||
-                     mediaState.IsSharing() ||
-                     isVolumeModeOn )
-                     {
-                     dimmed = ETrue;
-                     }
-                 break;
-                 
-            case EVtUiCmdShareObjectImage:
-                if ( isContrastModeOn || 
-                     isBrightnessModeOn ||
-                     isZoomModeOn || mediaState.IsFrozen() ||
-                     mediaState.IsVideoPermanentlyStopped() ||
-                     isVolumeModeOn )
-                     {
-                     dimmed = ETrue;
-                     } 
-                break;
+    switch ( aCommandId )
+    {
+        case EVtUiCmdDisableVideo:
+        case EVtUiCmdSwapImagesPlaces:
+        case EVtUiCmdDisableAudio:
+        case EVtUiCmdEnableAudio:
+        case EVtUiCmdEnableVideo:
+            if ( isSomeoneOn )
+                {
+                dimmed = ETrue;
+                }
+            break;
 
-            case EVtUiCmdActivateBT:
-                dimmed = !audioState.CanActivateBtHf() ||
-                    audioState.IsAudioPermanentlyStopped() ||
-                    isZoomModeOn || isContrastModeOn || 
-                    isBrightnessModeOn ||
-                    isVolumeModeOn ;
-                break;
-
-            case EVtUiCmdDeactivateLoudspeaker:
-                dimmed = !audioState.CanDeactivateLoudspeaker() ||
-                    audioState.IsAudioPermanentlyStopped() ||
-                    isZoomModeOn || isContrastModeOn || 
-                    isBrightnessModeOn ||
-                    isVolumeModeOn;
-                break;
-
-            case EVtUiCmdSwitchFromBTToIHF:
-                dimmed = !audioState.CanDeactivateBtHf() ||
-                    !audioState.CanActivateLoudspeaker() ||
-                    audioState.IsAudioPermanentlyStopped() ||
-                    isZoomModeOn || isContrastModeOn || 
-                    isBrightnessModeOn ||
-                    isVolumeModeOn;
-                break;
-
-            case EVtUiCmdActivateLoudspeaker:
-                dimmed = !audioState.CanActivateLoudspeaker() ||
-                    audioState.IsAudioPermanentlyStopped() ||
-                    isZoomModeOn || isContrastModeOn || 
-                    isBrightnessModeOn ||
-                    isVolumeModeOn;
-                break;
-
+        case EVtUiCmdUsePrimaryCamera:
+        case EVtUiCmdUseSecondaryCamera:
+            if ( mediaState.IsSharing()
+                || isSomeoneOn )        
+                {
+                dimmed = ETrue;
+                } 
+            break;
+        case EVtUiCmdZoom:
+            if ( !mediaState.IsVideo() ||
+                mediaState.IsFrozen() ||
+                mediaState.IsSharing() ||
+                isSomeElseZoomOn )
+                {
+                dimmed = ETrue;
+                }
+            break;
+        
+        case EVtUiCmdShareObjectImage:
+            if ( mediaState.IsFrozen() ||
+                mediaState.IsVideoPermanentlyStopped() ||
+                isSomeoneOn )
+                {
+                dimmed = ETrue;
+                } 
+            break;
+        
+        case EVtUiCmdActivateBT:
+            if ( !audioState.CanActivateBtHf() ||
+                audioState.IsAudioPermanentlyStopped() ||
+                isSomeoneOn )
+                {
+                dimmed = ETrue;
+                }
+            break;
+        
+        case EVtUiCmdDeactivateLoudspeaker:
+            if ( !audioState.CanDeactivateLoudspeaker() ||
+                audioState.IsAudioPermanentlyStopped() ||
+                isSomeoneOn )
+                {
+                dimmed = ETrue;
+                }
+            break;
+        
+        case EVtUiCmdSwitchFromBTToIHF:
+            if ( !audioState.CanDeactivateBtHf() ||
+                !audioState.CanActivateLoudspeaker() ||
+                audioState.IsAudioPermanentlyStopped() ||
+                isSomeoneOn )
+                {
+                dimmed = ETrue;
+                }
+            break;
+        
+        case EVtUiCmdActivateLoudspeaker:
+            if ( !audioState.CanActivateLoudspeaker() ||
+                audioState.IsAudioPermanentlyStopped() ||
+                isSomeoneOn )
+                {
+                dimmed = ETrue;
+                }
+            break;
+        
             /*
             case EVtUiCmdSnapshot:
-                 if ( iUiStates.IsContrastModeOn() || iUiStates.IsBrightnessModeOn ()
-                      || isZoomModeOn || ( !iUiStates.MediaState().IsVideo() && 
-                      !iUiStates.MediaState().IsFrozen() ) ||
-                      !iUiStates.MediaState().IsFreezeSupported() || iUiStates.IsContrastModeOn() || 
-                        iUiStates.IsBrightnessModeOn() || isVolumeModeOn )
-                     {
-                     dimmed = ETrue;
-                     } 
-                 break;
+            if ( iUiStates.IsContrastModeOn() || iUiStates.IsBrightnessModeOn ()
+            || isZoomModeOn || ( !iUiStates.MediaState().IsVideo() && 
+            !iUiStates.MediaState().IsFrozen() ) ||
+            !iUiStates.MediaState().IsFreezeSupported() || iUiStates.IsContrastModeOn() || 
+            iUiStates.IsBrightnessModeOn() || isVolumeModeOn )
+            {
+            dimmed = ETrue;
+            } 
+            break;
             */                 
-            default:
-                 dimmed = EFalse;
-                break;
-            }
-            
-     // update toolbar's commands visibility values
-     if ( dimmed )
+        default:
+            dimmed = EFalse;
+            break;
+    }
+    
+    // update toolbar's commands visibility values
+    if ( dimmed )
         {
         iToolbar->SetCmdIdVisibilityStateL( aCommandId, 
-            CVtUiToolbarBase::EDimmed );
+                CVtUiToolbarBase::EDimmed );
         }
-     else
+    else
         {
         iToolbar->SetCmdIdVisibilityStateL( aCommandId, 
-            CVtUiToolbarBase::EShown );
+                CVtUiToolbarBase::EShown );
         }
-     __VTPRINTEXIT( "HideTbAct.HideOrShowToolbarControlL" )
-     }
+    __VTPRINTEXIT( "HideTbAct.HideOrShowToolbarControlL" )
+    }
 
 // ---------------------------------------------------------------------------
 // CVtUiHideToolbarItemAction::EndProcess

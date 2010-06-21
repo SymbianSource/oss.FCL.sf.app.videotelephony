@@ -4226,7 +4226,7 @@ void CVtEngMediaHandler::TVtEngVideoQuality::SettingVideoQuality(
     TInt aId, const TVideoQuality aValue, TBool aSetPeer )
     {
     __VTPRINTENTER( "MH.VQ.SettingVideoQuality" )
-    iParamList.Append( TVQSParams( aId, aValue, aSetPeer ) );
+    User::LeaveIfError( iParamList.Append( TVQSParams( aId, aValue, aSetPeer ) ) );
     __VTPRINTEXIT( "MH.VQ.SettingVideoQuality" )
     }
 

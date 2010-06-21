@@ -1764,28 +1764,40 @@ void CVtUiAppUi::UpdateVBSettingL()
     
 
     
-    if ( wb && iUiStates->IsWhiteBalanceSettingAvailable() )
+    if ( wb && wb->State() == MVtUiFeature::EActive )
         {
-        __VTPRINT( DEBUG_GEN,"VtUi.UpdateVBSettingL WB update" )
-        wb->UpdateSettingL();
+        if ( iUiStates->IsWhiteBalanceSettingAvailable() )
+            {
+            __VTPRINT( DEBUG_GEN,"VtUi.UpdateVBSettingL WB update" )
+            wb->UpdateSettingL();
+            }
         }
 
-    if ( ct && iUiStates->IsColorToneSettingAvailable() )
+    if ( ct && ct->State() == MVtUiFeature::EActive )
         {
-        __VTPRINT( DEBUG_GEN,"VtUi.UpdateVBSettingL CT update" )
-        ct->UpdateSettingL();
+        if ( iUiStates->IsColorToneSettingAvailable() )
+            {
+            __VTPRINT( DEBUG_GEN,"VtUi.UpdateVBSettingL CT update" )
+            ct->UpdateSettingL();
+            }
         }
     
-    if ( br && iUiStates->IsBrightnessSettingAvailable() )
+    if ( br && br->State() == MVtUiFeature::EActive )
         {
-        __VTPRINT( DEBUG_GEN,"VtUi.UpdateVBSettingL br update" )
-        br->UpdateSlider();
+        if ( iUiStates->IsBrightnessSettingAvailable() )
+            {
+            __VTPRINT( DEBUG_GEN,"VtUi.UpdateVBSettingL br update" )
+            br->UpdateSlider();
+            }
         }
     
-    if ( contr && iUiStates->IsContrastSettingAvailable() )
+    if ( contr && contr->State() == MVtUiFeature::EActive )
         {
-        __VTPRINT( DEBUG_GEN,"VtUi.UpdateVBSettingL contract update" )
-        contr->UpdateSlider();
+        if ( iUiStates->IsContrastSettingAvailable() )
+            {
+            __VTPRINT( DEBUG_GEN,"VtUi.UpdateVBSettingL contract update" )
+            contr->UpdateSlider();
+            }
         }
     }
 

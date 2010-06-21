@@ -630,15 +630,15 @@ void CMultiframeProvider::AddBitmapToFreeQueue()
     {
     __IF_DEBUG(Print(_L("VideoSource[%d]: CMultiframeProvider::AddBitmapToFreeQueue() >>"), RThread().Id().operator TUint()));
     if ( iOldBM )
-    	  {
-    	  __IF_DEBUG(Print(_L("VideoSource[%d]: CMultiframeProvider::AddBitmapToFreeQueue() OLD BM"), RThread().Id().operator TUint()));
-    	  iOldBM = EFalse;
-        iFreeQueue.Append( iOldBitmap );
-    	  }
+        {
+        __IF_DEBUG(Print(_L("VideoSource[%d]: CMultiframeProvider::AddBitmapToFreeQueue() OLD BM"), RThread().Id().operator TUint()));
+        iOldBM = EFalse;
+        User::LeaveIfError( iFreeQueue.Append( iOldBitmap ) );
+        }
     else
-    	  {
-   	 	  iFreeQueue.Append( iScaled );
-  		  }
+        {
+        User::LeaveIfError( iFreeQueue.Append( iScaled ) );
+        }
     iLoopAo->SetFreeBitmaps( 1 );
     __IF_DEBUG(Print(_L("VideoSource[%d]: CMultiframeProvider::AddBitmapToFreeQueue() <<"), RThread().Id().operator TUint()));
     }

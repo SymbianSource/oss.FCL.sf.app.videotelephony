@@ -1230,6 +1230,10 @@ void CVtUiToolbarBase::HandleLayoutChangeL()
         __VTPRINT( DEBUG_GEN, "ToolbarBase::HandleLayoutChangeL Color Tone." )
         SetToolbarVisibilityAfterLayoutChangeL( EFalse );
         }
+    else if ( !isLandscape && iFeatureManager.UiStates().IsVolumeModeOn() )
+        {
+        SetToolbarVisibilityAfterLayoutChangeL( EFalse );
+        }
     else if ( !isLandscape && menuBar && menuBar->IsDisplayed() )
         {
         __VTPRINT( DEBUG_GEN, "ToolbarBase::HandleLayoutChangeL Menu Displayed." )
@@ -1243,6 +1247,7 @@ void CVtUiToolbarBase::HandleLayoutChangeL()
             iFeatureManager.UiStates().IsVideoQualityModeOn() ||
             iFeatureManager.UiStates().IsWhiteBalanceModeOn() ||
             iFeatureManager.UiStates().IsColorToneModeOn() ||
+            iFeatureManager.UiStates().IsVolumeModeOn() ||
             menuBar && menuBar->IsDisplayed() ) )
         {
         __VTPRINT(DEBUG_GEN, "CVtUiToolbarBase.LayoutChangeL.StartL" )
