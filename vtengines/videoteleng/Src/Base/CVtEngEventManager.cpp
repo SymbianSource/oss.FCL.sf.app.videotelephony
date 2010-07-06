@@ -71,7 +71,7 @@ void CVtEngEventManager::ConstructL( MVtEngEventObserver& aEventObserver )
 	{
 	iEventQueue = new ( ELeave ) CArrayFixFlat< TInt >( KMaxEventsInQueue );
     iEventQueue->SetReserveL( KMaxEventsInQueue );
-    iObservers.Append( &aEventObserver );
+    User::LeaveIfError( iObservers.Append( &aEventObserver ) );
 	}
 	
 // Destructor

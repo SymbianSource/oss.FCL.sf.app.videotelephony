@@ -512,6 +512,13 @@ TInt CVtEngMediaHandler::ValidateCommand( const TVtEngCommandId aCommand ) const
                     break;
                 }
             case KVtEngSetAudioRouting:
+                if ( ( iProtoState == MVtProtocolCommand::EConnected ) && 
+                     ( ( iPendingOp && iPendingOp->Command() == KVtEngHandleLayoutChange )
+                       || !iPendingOp ) )
+                    {
+                    okToPerform = KErrNone;
+                    }
+                break;
             case KVtEngSetAudioVolume:
                 if ( ( iProtoState == MVtProtocolCommand::EConnected ) && !iPendingOp )
                     {
@@ -1288,7 +1295,7 @@ void CVtEngMediaHandler::HandleSessionCommandEventL(
                 }
 
             // Do send an intra message
-            if ( IsFlag( EProtoVideoTrackPaused ) )
+            if ( videoEnabledByUser && IsFlag( EProtoVideoTrackPaused ) )
                 {
                 ClearFlag( EProtoVideoTrackPaused );
                 if ( IsFlag( EProtoSendIntraFrame ) )
@@ -4213,7 +4220,7 @@ void CVtEngMediaHandler::TVtEngVideoQuality::SettingVideoQuality(
     TInt aId, const TVideoQuality aValue, TBool aSetPeer )
     {
     __VTPRINTENTER( "MH.VQ.SettingVideoQuality" )
-    iParamList.Append( TVQSParams( aId, aValue, aSetPeer ) );
+    User::LeaveIfError( iParamList.Append( TVQSParams( aId, aValue, aSetPeer ) ) );
     __VTPRINTEXIT( "MH.VQ.SettingVideoQuality" )
     }
 
