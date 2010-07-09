@@ -34,7 +34,7 @@
 #include    <lcsessionobserver.h>
 #include    <lcuiprovider.h>
 #include    <lcengine.h>
-
+//#include    <lcvtindicatorcontroller.h>
 #include    <cvtlogger.h>
 #include    <mvtengeventobserver.h>
 #include    <mvtengcommandobserver.h>
@@ -556,7 +556,7 @@ private:
 
     HBufC* iRemoteDisplayName;
     HBufC* iRemoteDetails;
-    
+    //LcVtIndicatorController* iIndicatorCtr;
     };
     
 

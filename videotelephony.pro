@@ -18,7 +18,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 symbian: {  
-        
+    //:BLD_INF_RULES.prj_exports += "$${LITERAL_HASH}include <platform_paths.hrh>"    
     :BLD_INF_RULES.prj_mmpfiles += $$LITERAL_HASH"include \"packetvideoengine/group/bld.inf\""
     :BLD_INF_RULES.prj_mmpfiles += $$LITERAL_HASH"include \"vtprotocols/group/bld.inf\""   
     :BLD_INF_RULES.prj_mmpfiles += $$LITERAL_HASH"include \"vtprotocolplugins/group/bld.inf\""
@@ -27,4 +27,6 @@ symbian: {
     :BLD_INF_RULES.prj_mmpfiles += $$LITERAL_HASH"include \"videotelephony_plat/group/bld.inf\""
 }
 
+//SUBDIRS += vtuis/lcvtindicatorplugin
+//SUBDIRS += vtuis/lcvtindicatorcontroller
 SUBDIRS += vtuis/lcvtapp

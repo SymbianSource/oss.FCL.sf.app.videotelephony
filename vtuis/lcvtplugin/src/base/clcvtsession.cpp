@@ -266,6 +266,8 @@ void CLcVtSession::ConstructL()
             TCallBack( &DelayedHandleLayoutChanged, this ),
             CActive::EPriorityStandard );   
 #endif    
+
+    //iIndicatorCtr = new  ( ELeave ) LcVtIndicatorController();
     __VTPRINTEXIT( "CLcVtSession.ConstructL" )
     
     }
@@ -301,6 +303,10 @@ CLcVtSession::~CLcVtSession()
     
     delete iRemoteDisplayName;
     delete iRemoteDetails;
+//    if (iIndicatorCtr) {
+//        iIndicatorCtr->disableActiveCallIndicator();
+//        delete iIndicatorCtr;
+//    }    
     __VTPRINTEXIT( "CLcVtSession.~CLcVtSession" )
     FeatureManager::UnInitializeLib();  
     }
@@ -443,9 +449,7 @@ void CLcVtSession::EstablishLcSessionL()
 void CLcVtSession::TerminateLcSessionL()
     {
     __VTPRINTENTER( "CLcVtSession.TerminateLcSessionL" )    
-    
     HandleCommandL( EPluginCmdEndActiveCall );
-    
     __VTPRINTEXIT( "CLcVtSession.TerminateLcSessionL" )
     }
 
@@ -942,6 +946,13 @@ TInt CLcVtSession::SetForegroundStatus( TBool aIsForeground )
         iLocalVideoWindow->SetOrdinalPosition( 1 , priority );
         iRwSession.Flush();
         }
+//    if ( aIsForeground ) {
+//            iIndicatorCtr->disableActiveCallIndicator();
+//        }
+//    else  {
+//            iIndicatorCtr->enableActiveCallIndicator();
+//        }
+
     __VTPRINTEXIT( "CLcVtSession.SetForegroundStatus" )
     
     return KErrNone;   
