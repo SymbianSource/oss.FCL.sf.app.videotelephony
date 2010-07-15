@@ -3421,11 +3421,13 @@ void CVtUiAppUi::CmdInitializeShareImageL( TBool& aNeedRefresh )
     // number erntry is not availabe while media gallery is open
     iInstance->iNumberEntryActivation->SetActive( EFalse );
     iUiStates->SetSelectingShare( ETrue );
-
+     
+    iInstance->iRemoteVideoControl->MakeVisible(EFalse);
     TBool result( EFalse );
     TRAPD( err, result =
         MGFetch::RunL( *selectedFiles, EImageFile, EFalse, verifier ) );
 
+    iInstance->iRemoteVideoControl->MakeVisible(ETrue);
    // leave occured
    if ( err != KErrNone )
        {
@@ -4632,6 +4634,13 @@ void CVtUiAppUi::DoExecuteCmdL(
                         Model().CommandHandler(),
                         *iEventObserver );
                 dlg->ExecuteCmdLD( aCommand, aParams, NULL );
+                
+                // Here we tell current state to handle shutdown request
+                if ( aCommand == KVtEngSetSource && iState
+                        && TVtUiAppStateBase::ShutdownRequested() )
+                    {
+                    iState->HandleVTCommandPerformedL( aCommand, KErrNone );
+                    }
                 }
             }
         else
@@ -5093,7 +5102,10 @@ void CVtUiAppUi::DoHandleLayoutChangedL()
     // restore the last user setting
     UpdateVBSettingL();
     
-
+    if( iUiStates->IsSelectingShare() )
+        {
+        iInstance->iRemoteVideoControl->MakeVisible(EFalse);
+        }
     if ( iDelayedCmd != 0 )
         {
         __VTPRINT2( DEBUG_GEN, "VtUi.DoLayoutChg reexecute the delayed cmd=%d", iDelayedCmd);
@@ -6531,7 +6543,10 @@ void CVtUiAppUi::CInstance::LayoutChanged()
     AknLayoutUtils::LayoutControl( iMainControl, parent, control );
     iMainControl->DrawNow();
     if(iMainControl)
+        {
         iMainControl->LayoutRemoteVideo();
+        }
+    
     AknLayoutUtils::LayoutControl( iNumberEntryActivation, parent, control );
     VtUiLayout::GetFirstWindowBackgroundLayout( control );
     AknLayoutUtils::LayoutControl( iContextControl, parent, control );
@@ -6725,6 +6740,7 @@ void CVtUiAppUi::CEventObserver::CreateRemConSessionL()
             CRemConCoreApiTarget::NewL( *interfaceSelector, *this );
         // The coreApiTarget instance is owned by interfaceSelector instance.
         // This instance must implement MRemConCoreApiTargetObserver interface.
+        __VTPRINT( DEBUG_GEN, "VtUiComms.CreateRemCon, done creating coreApiTarget" )
         CleanupStack::PushL( coreApiTarget );
         interfaceSelector->OpenTargetL();
 
@@ -7046,7 +7062,15 @@ void CVtUiAppUi::CEventObserver::HandleVtEventL(
         default:
             break;
         }
-
+    switch ( aEvent )
+        {
+        case KVtEngAudioMuted:
+        case KVtEngAudioUnmuted:
+            callBits |= EVtUiRefreshMenu;
+            break;
+        default:
+            break;
+        }
     TRAP_IGNORE ( DoExecuteL( callBits ) );
     __VTPRINTEXITR( "VtUiComms.HandleVtEventL %d", 1 )
     }
@@ -7063,14 +7087,27 @@ void CVtUiAppUi::CEventObserver::HandleVTCommandPerformedL(
     __VTPRINT2( DEBUG_GEN, "VtUiComms.HandleVTCommandPerformedL aCommand = %d",
             aCommand )
     
-    if ( iAppUi.iState &&
-         iAppUi.iState->HandleVTCommandPerformedL( aCommand, aError ) ==
-         TVtUiAppStateBase::EEventHandled )
+    if ( aCommand == KVtEngSetSource && 
+            TVtUiAppStateBase::ShutdownRequested() )
         {
-        // state didn't allow further processing of command completion
-        __VTPRINTEXITR( "VtUiComms.HandleVTCommandPerformedL %d", 0 )
-        return;
+        // We are going to quit
+        // Pending cmd needs to be set none
+        iAppUi.iPendingCmd = KVtEngCommandNone;
+        // The next layoutchange needs to be cancelled
+        iAppUi.iUiStates->SetLayoutChangeNeeded( EFalse );
         }
+    else
+        {
+        if ( iAppUi.iState &&
+             iAppUi.iState->HandleVTCommandPerformedL( aCommand, aError ) ==
+             TVtUiAppStateBase::EEventHandled )
+            {
+            // state didn't allow further processing of command completion
+            __VTPRINTEXITR( "VtUiComms.HandleVTCommandPerformedL %d", 0 )
+            return;
+            }
+        }
+    
     iAppUi.RefreshStatesL();
 
     if ( aCommand == KVtEngMuteOutgoingAudio ||

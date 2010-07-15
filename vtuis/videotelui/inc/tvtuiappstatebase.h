@@ -141,6 +141,12 @@ public: // new functions
     static void SetInitialStateL(
         MVtUiStateContext& aCtx,
         TVtUiStates& aUiStates);
+    
+    /**
+    * Get whether the shutdown requested
+    * @return ETrue if shutdown requested
+    */
+    static TBool ShutdownRequested();
 
 protected: // for concrete state classes
 

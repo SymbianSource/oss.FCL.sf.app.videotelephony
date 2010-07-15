@@ -138,6 +138,15 @@ void TVtUiAppStateBase::SetInitialStateL(
     }
 
 // -----------------------------------------------------------------------------
+// TVtUiAppStateBase::ShutdownRequested
+// -----------------------------------------------------------------------------
+//
+TBool TVtUiAppStateBase::ShutdownRequested()
+    {
+    return iShutdownRequested;
+    }
+
+// -----------------------------------------------------------------------------
 // TVtUiAppStateBase::AppUiStartupFailedL
 // -----------------------------------------------------------------------------
 //
