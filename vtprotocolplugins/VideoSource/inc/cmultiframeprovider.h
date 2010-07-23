@@ -156,7 +156,7 @@ NONSHARABLE_CLASS( CMultiframeProvider ) : public CBase
 				/**
         * Adds used bitmap to free queue
         */
-				void AddBitmapToFreeQueue();
+				void AddBitmapToFreeQueueL();
 				
 				/**
         * Indicates that second VF buffer needs to be used
