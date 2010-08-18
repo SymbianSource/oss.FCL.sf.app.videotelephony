@@ -112,7 +112,7 @@ const TUint32 KVTAudioDecoderDelay = 0x0000000A;
 * Defines number of toolbar buttons. Three buttons is minimum
 * and seven is maximum.
 */
-const TUint32 KVTToolbarCommands  = 0x0000000B;
+//const TUint32 KVTToolbarCommands  = 0x0000000B;
 
 #endif      // VIDEOTELEPHONYINTERNALCRKEYS_H
 

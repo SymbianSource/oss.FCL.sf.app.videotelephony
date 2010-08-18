@@ -31,6 +31,7 @@ symbian: {
 		:BLD_INF_RULES.prj_exports += "./rom/videotelui.iby CORE_APP_LAYER_IBY_EXPORT_PATH(videotelui.iby)"
 		:BLD_INF_RULES.prj_exports += "./rom/videoteluiResources.iby LANGUAGE_APP_LAYER_IBY_EXPORT_PATH(videoteluiResources.iby)"		
 		:BLD_INF_RULES.prj_exports += "./conf/s60videotelephony.confml APP_LAYER_CONFML(s60videotelephony.confml)"
+		:BLD_INF_RULES.prj_exports += "./conf/CI_s60videotelephony.confml APP_LAYER_CONFML(CI_s60videotelephony.confml)"
 		:BLD_INF_RULES.prj_exports += "./conf/s60videotelephony_102072D0.crml APP_LAYER_CRML(s60videotelephony_102072D0.crml)"
 		:BLD_INF_RULES.prj_exports += "./conf/s60videotelephony_10281872.crml APP_LAYER_CRML(s60videotelephony_10281872.crml)"
 		:BLD_INF_RULES.prj_exports += "./inc/VideoTelephonyVariant.hrh  |../../inc/videotelephonyvariant.hrh"

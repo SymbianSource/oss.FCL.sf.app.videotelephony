@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -11,17 +11,23 @@
 *
 * Contributors:
 *
-* Description:  File that exports the files belonging to 
-:                Video Telephony Media Configuration API
+* Description:
 *
 */
 
+#ifndef SYMBIANSTUB_HELPER_H
+#define SYMBIANSTUB_HELPER_H
 
-#include <platform_paths.hrh>
 
-PRJ_PLATFORMS
-DEFAULT
+/**
+* Helper class to control stub behavior
+*
+*/ 
+class SymbianStubHelper 
+{
+    public:
+        static void reset();
+        static void setVtTaskExists(bool exists);
+};
 
-PRJ_EXPORTS
-
-../inc/VideoTelephonyDomainPSKeys.h     APP_LAYER_PLATFORM_EXPORT_PATH(videotelephonydomainpskeys.h)
+#endif //SYMBIANSTUB_HELPER_H
