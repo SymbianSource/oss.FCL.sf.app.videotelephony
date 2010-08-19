@@ -98,12 +98,6 @@ void CVtUiRemoteVideoControl::ConstructL()
     SetExtent( TPoint(), TSize() );
     ActivateL();
 	    
-    // Disable fading when using DP (eliminates nasty color error)
-    if ( FeatureManager::FeatureSupported( KFeatureIdDisplayPost ) )
-        {
-        Window().SetNonFading( ETrue );
-        }    
-  
     if ( iAppUi.EventMonitor() )
         {
         iAppUi.EventMonitor()->AddObserverL( this );

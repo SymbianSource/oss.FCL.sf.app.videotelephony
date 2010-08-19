@@ -233,3 +233,13 @@ void CVtUiEndCallButtonPane::GetButtonLayoutData()
     iEndButton->SetLayout( text, icon.Rect() );
      __VTPRINTEXIT( "CVtUiEndCallButtonPane.GetButtonLayoutData" )
     }
+
+// -----------------------------------------------------------------------------
+// CVtUiEndCallButtonPane::SetEnabled
+// -----------------------------------------------------------------------------
+//
+void CVtUiEndCallButtonPane::SetEnabled( TBool aEnabled )
+    {
+    iEndButton->SetDimmed( !aEnabled );
+    DrawNow();
+    }

@@ -3865,7 +3865,7 @@ void CVtEngMediaHandler::SetVideoQualityL(
     TInt protoOperId( iH263Encoder->SetVideoFrameRate(
         iVideoQuality.ToFrameRate( aVideoQuality ) ) );
     AddOperation( ESetVideoQuality, protoOperId );
-    iVideoQuality.SettingVideoQuality( protoOperId,
+    iVideoQuality.SettingVideoQualityL( protoOperId,
         aVideoQuality, aSetPeerVideoQuality );
     __VTPRINTEXIT( "MH.SetVideoQualityL" )
     }
@@ -4222,7 +4222,7 @@ CVtEngMediaHandler::TVtEngVideoQuality::~TVtEngVideoQuality()
 // CVtEngMediaHandler::TVtEngVideoQuality::SettingVideoQuality
 // -----------------------------------------------------------------------------
 //
-void CVtEngMediaHandler::TVtEngVideoQuality::SettingVideoQuality(
+void CVtEngMediaHandler::TVtEngVideoQuality::SettingVideoQualityL(
     TInt aId, const TVideoQuality aValue, TBool aSetPeer )
     {
     __VTPRINTENTER( "MH.VQ.SettingVideoQuality" )

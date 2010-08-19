@@ -134,7 +134,7 @@ void CMultiframeDataAO::RunL()
         }
     if ( !iVFUpdate )
         {	
-        iRequester->AddBitmapToFreeQueue();
+        iRequester->AddBitmapToFreeQueueL();
         }
     if ( !iInit && !iVFUpdate )  
         {				

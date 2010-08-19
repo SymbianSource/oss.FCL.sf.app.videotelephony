@@ -221,7 +221,9 @@ enum TVtUiHandleEvents
     // Stop brightness and contrast slider
     EVtUiStopBrightnessOrContrast =         1 << 15,
     // refresh zoom popup
-    EVtUiRefreshZoomPopup =                           1 << 16
+    EVtUiRefreshZoomPopup =                 1 << 16,
+    // enable end call button
+    EVtUiEnableEndCallButton =              1 << 17
     };
 
 // Enumerates states for CVtUiActiveExec.
@@ -1224,6 +1226,15 @@ void CVtUiAppUi::RefreshBlind()
         iDownlinkWindow->SetWaiting( iUiStates->IsWaitingForFirstFrame() );
         __VTPRINTEXIT( "VtUi.RefreshBlind" )
         }
+    }
+
+// -----------------------------------------------------------------------------
+// CVtUiAppUi::EnableEndCallButton
+// -----------------------------------------------------------------------------
+//
+void CVtUiAppUi::EnableEndCallButton()
+    {
+    EndCallButtonPane().SetEnabled( ETrue );
     }
 
 // -----------------------------------------------------------------------------
@@ -4613,6 +4624,12 @@ void CVtUiAppUi::DoExecuteCmdL(
     MVtEngCommandHandler& command = Model().CommandHandler();
     const TInt caps = command.GetCommandCaps( aCommand );
 
+    if ( ( aCommand == KVtEngSetSource ||
+         aCommand == KVtEngHandleLayoutChange ) && ( caps & MVtEngCommandHandler::EAttribEnabled ) )
+        {
+        EndCallButtonPane().SetEnabled( EFalse );
+        }
+
     if ( caps >= KErrNone )
         {
         const TBool asynchronous =
@@ -5040,11 +5057,15 @@ void CVtUiAppUi::DoHandleLayoutChangedL()
     {
     __VTPRINTENTER( "VtUi.DoLayoutChg" )
     TInt error;
+    if( iUiStates->IsSelectingShare() )
+        {
+        iInstance->iRemoteVideoControl->MakeVisible( ETrue );
+        }
     // Fully update rendering parameters
     UpdateRenderingParametersL();
     // Notify engine about layout change
     iLayoutChg = ETrue;
-    if( iDisableVideoOngoing )
+    if( iDisableVideoOngoing || iShareImageOngoing )
         {
         error = KErrNotReady;
         }
@@ -5079,6 +5100,7 @@ void CVtUiAppUi::DoHandleLayoutChangedL()
                 pendingCommand  == KVtEngSetSource ||
                 pendingCommand  == KVtEngPrepareCamera ||
                 pendingCommand  == KVtEngUnfreeze ||
+                pendingCommand  == KVtEngStopShareImage ||
                 invalidCommand  == KVtEngHandleLayoutChange )
             {
             iPendingCmd = pendingCommand;
@@ -5087,6 +5109,11 @@ void CVtUiAppUi::DoHandleLayoutChangedL()
         if( iDisableVideoOngoing && pendingCommand == KVtEngCommandNone )
             {
             iPendingCmd = KVtEngSetSource;
+            iUiStates->SetLayoutChangeNeeded( ETrue );
+            }
+        if( iShareImageOngoing && pendingCommand == KVtEngCommandNone )
+            {
+            iPendingCmd = KVtEngStartShareImage;
             iUiStates->SetLayoutChangeNeeded( ETrue );
             }
         }
@@ -7058,6 +7085,7 @@ void CVtUiAppUi::CEventObserver::HandleVtEventL(
             callBits |= EVtUiRefreshMenu;
             callBits |= EVtUiStopBrightnessOrContrast;
             callBits |= EVtUiRefreshZoomPopup;
+            callBits |= EVtUiEnableEndCallButton;
             break;
         default:
             break;
@@ -7155,6 +7183,8 @@ void CVtUiAppUi::CEventObserver::HandleVTCommandPerformedL(
         {
         __VTPRINT3( DEBUG_GEN,
             "VtUi.HandleVTCommandPerformedL cmd=%d err=%d", aCommand, aError );
+        
+        iAppUi.iShareImageOngoing = EFalse;
         if( aError != KErrNone )
             {
             // stop toolbar feature to prevent drawing over error dialog
@@ -7181,11 +7211,21 @@ void CVtUiAppUi::CEventObserver::HandleVTCommandPerformedL(
                     TCallBack( &AsyncShare, &iAppUi ) );
                 }
             iAppUi.iAsyncCallback->CallBack();
+            iAppUi.iShareImageOngoing = ETrue;
+            }
+        else if( iAppUi.iUiStates->IsLayoutChangeNeeded() && 
+                aCommand == KVtEngStartShareImage && 
+                aCommand == iAppUi.iPendingCmd )
+            {
+            iAppUi.iPendingCmd = KVtEngCommandNone;
+            iAppUi.iUiStates->SetLayoutChangeNeeded( EFalse );
+            iAppUi.DoHandleLayoutChangedL();
             }
         }
     else if ( iAppUi.iUiStates->IsLayoutChangeNeeded() && 
             ( aCommand  == KVtEngSetSource ||
             aCommand  == KVtEngPrepareCamera ||
+            aCommand  == KVtEngStopShareImage ||
             aCommand  == KVtEngUnfreeze ||
             aCommand  == KVtEngHandleLayoutChange ) ||
             ( ( aCommand  == KVtEngMuteOutgoingAudio || 
@@ -7197,6 +7237,13 @@ void CVtUiAppUi::CEventObserver::HandleVTCommandPerformedL(
         iAppUi.iPendingCmd = KVtEngCommandNone;
         iAppUi.iUiStates->SetLayoutChangeNeeded( EFalse );
         iAppUi.DoHandleLayoutChangedL();
+        }
+    // Handle condition that commmand setsource and layoutchange
+    //   without layoutchange needed in UI
+    else if ( aCommand == KVtEngHandleLayoutChange ||
+              aCommand == KVtEngSetSource ) 
+        {
+        iAppUi.EndCallButtonPane().SetEnabled( ETrue );
         }
     __VTPRINTEXITR( "VtUiComms.HandleVTCommandPerformedL %d", 1 )
     }
@@ -7326,7 +7373,8 @@ void CVtUiAppUi::CEventObserver::DoExecuteL( TInt aBits )
         &CVtUiAppUi::StopWhiteBalanceOrColortone,
         &CVtUiAppUi::RefreshMenuL,
         &CVtUiAppUi::StopBrightnessOrContrast,
-        &CVtUiAppUi::RefreshZoomPopupL
+        &CVtUiAppUi::RefreshZoomPopupL,
+        &CVtUiAppUi::EnableEndCallButton
         };
     const TInt count = ( sizeof( methodArray ) / sizeof ( TMethodL ) );
 

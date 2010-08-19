@@ -84,6 +84,13 @@ class CVtUiEndCallButtonPane : public CCoeControl,
          * Handles an event from an observed control.
          */
         void HandleControlEventL( CCoeControl* aControl, TCoeEvent aEventType );
+        
+    public:
+        
+        /**
+         * Set end call button enabled or not.
+         */
+        void SetEnabled( TBool aEnabled );
     
     private:
     

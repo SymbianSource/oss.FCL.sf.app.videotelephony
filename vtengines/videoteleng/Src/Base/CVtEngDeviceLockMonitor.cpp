@@ -58,20 +58,20 @@ void CVtEngDeviceLockMonitor::NotifyState() const
 
     TInt state = EAutolockStatusUninitialized;
 
-	// Get autolock state
-	TInt err = iAutolockListener->Get( state );
+    // Get autolock state
+    TInt err = iAutolockListener->Get( state );
 
-	__VTPRINT2( DEBUG_GEN, "LockMonitor Get err: %d", err );
-	__VTPRINT2( DEBUG_GEN, "LockMonitor state: %d", state );
-
-	if( err == KErrNone )
+    __VTPRINT2( DEBUG_GEN, "LockMonitor Get err: %d", err );
+    __VTPRINT2( DEBUG_GEN, "LockMonitor state: %d", state );
+      
+    // Recognize the uninitialized state as autolock on, or the VT will be wrongly shown when startup & lock is on.
+    if( err == KErrNone )
 		{
 		const TInt event =
-        ( state <= EAutolockOff ) ?
+        ( state == EAutolockOff ) ?
                 KVtEngDeviceLockOff : KVtEngDeviceLockOn;
-        CVtEngEventManager::NotifyEvent( event );
-        }		
-			
+    CVtEngEventManager::NotifyEvent( event );
+    }	
     __VTPRINTEXIT( "LockMonitor.NotifyState" )
     }
 

@@ -107,7 +107,13 @@ TVtUiAppStateBase::TEventResponse TVtUiStateRunning::HandleCommandL(
     switch ( aCommand )
         {
     case EVtUiCmdEndActiveCall:
-        ShutdownWithEngineCommandL( KVtEngTerminateSession );
+        {
+        const MVtEngSessionInfo::TSessionState state = SessionState( EFalse );
+        if ( state == MVtEngSessionInfo::EOpen )
+            {
+            ShutdownWithEngineCommandL( KVtEngTerminateSession );
+            }
+        }
         break;
     case EVtUiCmdCreateVoice:
         CreateVoiceCallL();

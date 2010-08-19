@@ -439,7 +439,9 @@ TBool CVtUiPrimaryCmdPolicy::ValidateCommand( TInt aCommandId,
 #else
         // When RD_BOOT_CUSTOMIZABLE_AI is defined, active idle is always
         // shown in menu
-        result = EFalse;
+        // result = EFalse;
+        // disable the go to idle when autolock is on.
+        result = iUiStates.IsDeviceLockOn();
 #endif //RD_BOOT_CUSTOMIZABLE_AI
         break;
 
