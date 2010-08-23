@@ -51,7 +51,6 @@ CLcVtLocalVideoPlayer::CLcVtLocalVideoPlayer(
     CLcVtVideoPlayerBase( avtSession, aLcAudioControl ),
     iCameraHandler( aCameraHandler ) 
     {
-    iIsPlaying = ETrue;
     iOrientationChanged = EFalse;
     }
 
@@ -77,8 +76,17 @@ CLcVtLocalVideoPlayer::~CLcVtLocalVideoPlayer()
 //
 MLcVideoPlayer::TLcVideoPlayerState 
 CLcVtLocalVideoPlayer::LcVideoPlayerState() const
-    {    
-    TLcVideoPlayerState playerState = MLcVideoPlayer::EPlaying;
+    {
+    TLcVideoPlayerState playerState;
+    if ( ivtSession->LcVtStates().MediaState().IsVideo() )
+        {
+        playerState = MLcVideoPlayer::EPlaying;
+        }
+    else
+        {
+        playerState = MLcVideoPlayer::EPaused;
+        }
+    __VTPRINT2( DEBUG_GEN, "CLcVtLocalVideoPlayer.LcVideoPlayerState = %d", playerState )
     return playerState;
     }
 
@@ -88,7 +96,7 @@ CLcVtLocalVideoPlayer::LcVideoPlayerState() const
 //
 TBool CLcVtLocalVideoPlayer::LcIsPlayingL()
     {         
-    TBool result = ivtSession->LcVtStates().MediaState().IsVideo();
+    TBool result = (LcVideoPlayerState() == MLcVideoPlayer::EPlaying);
     __VTPRINT2( DEBUG_GEN, "CLcVtLocalVideoPlayer.LcIsPlayingL = %d", result )
     return result;
     }
@@ -100,7 +108,6 @@ TBool CLcVtLocalVideoPlayer::LcIsPlayingL()
 void CLcVtLocalVideoPlayer::LcPlayL(TLcVideoPlayerSource /*aSource*/)
     {
     __VTPRINT( DEBUG_GEN, "CLcVtLocalVideoPlayer.LcPlayL" )
-    iIsPlaying = ETrue;
     ivtSession->HandleCommandL(EPluginCmdEnableVideo);
     }
 
@@ -111,7 +118,6 @@ void CLcVtLocalVideoPlayer::LcPlayL(TLcVideoPlayerSource /*aSource*/)
 void CLcVtLocalVideoPlayer::LcPauseL()
     {
     __VTPRINT( DEBUG_GEN, "CLcVtLocalVideoPlayer.LcPauseL" )
-    iIsPlaying = EFalse;
     ivtSession->HandleCommandL(EPluginCmdDisableVideo);
     }
 

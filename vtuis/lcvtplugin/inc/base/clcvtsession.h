@@ -34,7 +34,6 @@
 #include    <lcsessionobserver.h>
 #include    <lcuiprovider.h>
 #include    <lcengine.h>
-//#include    <lcvtindicatorcontroller.h>
 #include    <cvtlogger.h>
 #include    <mvtengeventobserver.h>
 #include    <mvtengcommandobserver.h>
@@ -54,6 +53,7 @@
 #include    "tlcvtcamerahandler.h"
 #include    "clcvtactiveexec.h"
 #include    "tlcvtstatebase.h"
+#include    "lcvtindicatorcontroller.h"
 
 #define     NGA_VIDEO_RENDER 
 
@@ -556,7 +556,10 @@ private:
 
     HBufC* iRemoteDisplayName;
     HBufC* iRemoteDetails;
-    //LcVtIndicatorController* iIndicatorCtr;
+
+    TInt VideoSendingKey;
+    
+    LcVtIndicatorController* iIndicatorCtr;
     };
     
 

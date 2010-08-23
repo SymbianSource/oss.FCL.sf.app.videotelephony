@@ -18,8 +18,7 @@
 #include <QtPlugin>
 #include <QVariant>
 #include <QDebug>
-#include <eikenv.h>
-#include <apgtask.h>
+#include <QProcess>
 
 #include "lcvtindicatorplugin.h"
 
@@ -37,7 +36,7 @@ LcVtIndicatorPlugin::LcVtIndicatorPlugin():
     mError(0)
 {
     qDebug() << "LcVtIndicatorPlugin::LcVtIndicatorPlugin()";
-    mIndicatorTypes << IndicatorType;
+    mIndicatorTypes << IndicatorType;    
 }
 
 // -----------------------------------------------------------------------------
@@ -45,7 +44,7 @@ LcVtIndicatorPlugin::LcVtIndicatorPlugin():
 // -----------------------------------------------------------------------------
 //
 LcVtIndicatorPlugin::~LcVtIndicatorPlugin()
-{
+{    
 }
 
 // -----------------------------------------------------------------------------
@@ -160,15 +159,8 @@ bool LcVtIndicatorPlugin::handleClientRequest(RequestType type, const QVariant &
 //
 bool LcVtIndicatorPlugin::bringVtToForeground()
 {
-    bool ret = false;
-    RWsSession& wsSession = CEikonEnv::Static()->WsSession();
-    TApaTaskList taskList( wsSession );
-    const TUid KUidVtApp = { 0x101F8681 }; 
-    TApaTask task = taskList.FindApp(KUidVtApp);
-    if (task.Exists()) {
-        qDebug() << "-> SwitchBackToVTCall";
-        task.BringToForeground();
-        ret = true;
-    }
-    return ret;
+    qDebug() << "LcVtIndicatorPlugin::bringVtToForeground()";
+    const QString AppName = "videotelui.exe";
+    return QProcess::startDetached(AppName);
 }
+

@@ -36,6 +36,8 @@ USERINCLUDE  ../inc/base
 USERINCLUDE  ../inc/common
 USERINCLUDE  ../inc/control
 USERINCLUDE  ../inc/states
+USERINCLUDE  ../../lcvtindicatorcontroller/inc
+
 APP_LAYER_SYSTEMINCLUDE
 SYSTEMINCLUDE 	/epoc32/include/ecom
 SYSTEMINCLUDE   ../../../inc
@@ -91,3 +93,5 @@ LIBRARY         videoteleng.lib
 DEBUGLIBRARY    vtlogger.lib
 
 LIBRARY         phoneclient.lib
+
+LIBRARY         lcvtindicatorcontroller.lib

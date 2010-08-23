@@ -25,7 +25,7 @@
 file=ABI_DIR\UREL\lcvtindicatorcontroller.dll SHARED_LIB_DIR\lcvtindicatorcontroller.dll
 
 // Enabler for eclipsing ROM binaries
-//data=ZSYSTEM\install\lcvtplugin_stub.sis           system\install\lcvtplugin_stub.sis
+data=ZSYSTEM\install\lcvtindicatorcontroller_stub.sis           system\install\lcvtindicatorcontroller_stub.sis
 
 #endif
 
