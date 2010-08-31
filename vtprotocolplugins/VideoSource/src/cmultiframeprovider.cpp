@@ -19,8 +19,8 @@
 // INCLUDE FILES
 #include <imageconversion.h>
 #include <cvtimageconverter.h>
-#include <RPhCltServer.h>
-#include <CPhCltImageHandler.h>
+#include <rphcltserver.h>
+#include <cphcltimagehandler.h>
 #include <bautils.h>
 
 #include "cmultiframeprovider.h"
@@ -233,7 +233,7 @@ void CMultiframeProvider::IniatializeGSL( const TGeneralSettingsImageType aType 
             }
         iGSImage = ETrue;
         iCount = 1;     
-		    iActiveWaitInit->InitializeWaiter( &ConversionFinished );
+		    iActiveWaitInit->InitializeWaiter( &CMultiframeProvider::ConversionFinished );
         iActiveWaitInit->Signal( KErrNone );
         }
     else
@@ -275,7 +275,7 @@ void CMultiframeProvider::IniatializeBlankL()
     CleanupStack::PopAndDestroy(); // tempBitmap
     tempBitmap = 0;
 
-    iActiveWaitInit->InitializeWaiter( &BMSScalingFinished );
+    iActiveWaitInit->InitializeWaiter( &CMultiframeProvider::BMSScalingFinished );
     iActiveWaitInit->Signal( KErrNone );
     __IF_DEBUG(Print(_L("VideoSource [%d]: CMultiframeProvider::IniatializeBlank() <<"), RThread().Id().operator TUint()));
     }
@@ -517,7 +517,7 @@ void CMultiframeProvider::ConversionFinished( TInt aError )
     iDefaultImageFile.Close(); 
     if ( aError == KErrNone )
         {
-				iActiveWaitInitScale->InitializeWaiter( &BMSScalingFinished );
+				iActiveWaitInitScale->InitializeWaiter( &CMultiframeProvider::BMSScalingFinished );
       	if ( iGSImage )
        			{
        			__IF_DEBUG(Print(_L("VideoSource[%d]: CMultiframeProvider::ConversionFinished() scale GS "), RThread().Id().operator TUint()));
@@ -579,12 +579,12 @@ void CMultiframeProvider::ConversionFinished( TInt aError )
         	}
     // Allways inform Decoding problems
     else
-        {
+       	{
         iObserver->NotifyImageHandlingError( aError );
         delete iTempBM;
-        delete iMask;
-        iMask = NULL;
-        iTempBM = NULL;
+       	delete iMask;
+       	iMask = NULL;
+       	iTempBM = NULL;
         // GIF used when error happen
         if ( iCount > 1 )
             {
@@ -686,7 +686,7 @@ void CMultiframeProvider::VFScalingReady()
             {
             //ScaleCopy is not running, Jump ScaleCopy
             __IF_DEBUG(Print(_L("VideoSource[%d]: CMultiframeProvider::VFScalingReady()jump ScaleCopy>>"), RThread().Id().operator TUint()));
-            iActiveWaitScale->InitializeWaiter( &VFRescalingFinished );
+            iActiveWaitScale->InitializeWaiter( &CMultiframeProvider::VFRescalingFinished );
             iActiveWaitScale->Signal(KErrNone);
             }
         }
@@ -729,7 +729,7 @@ void CMultiframeProvider::ScaleCopy( TSize& aSize,  TBool aVFUpdate  )
     else
         {
         __IF_DEBUG(Print(_L("VideoSource [%d]: CMultiframeProvider::ScaleCopy(): scaling NOW"), RThread().Id().operator TUint()));
-        iActiveWaitScale->InitializeWaiter( &VFRescalingFinished );
+        iActiveWaitScale->InitializeWaiter( &CMultiframeProvider::VFRescalingFinished );
         TInt result( iVFbitmap->Bitmap().Resize( aSize ) );
         __IF_DEBUG(Print(_L("VideoSource [%d]: CMultiframeProvider::ScaleCopy() result %d <<"), RThread().Id().operator TUint(), result));
         if ( result != KErrNone )
@@ -811,7 +811,7 @@ void CMultiframeProvider::DecreaseDataConsumer()
 void CMultiframeProvider::ScaleVF( const TSize& aSize )
     {
     __IF_DEBUG(Print(_L("VideoSource[%d]: CMultiframeProvider::ScaleVF() >>"), RThread().Id().operator TUint()));
-    iActiveWaitScale->InitializeWaiter( &VFRescalingFinished );
+    iActiveWaitScale->InitializeWaiter( &CMultiframeProvider::VFRescalingFinished );
     TInt result( iVFbitmap->Bitmap().Resize( aSize ) );
     ClearVFScalingTargetSize();
     if ( result != KErrNone )

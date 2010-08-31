@@ -22,8 +22,8 @@
 #include <bautils.h>
 #include <imageconversion.h>
 #include <cvtimageconverter.h>
-#include <RPhCltServer.h>
-#include <CPhCltImageHandler.h>
+#include <rphcltserver.h>
+#include <cphcltimagehandler.h>
 #include <w32std.h>
 
 #include "CVSStillImageDataProvider.h"
@@ -327,7 +327,7 @@ void CVSStillImageDataProvider::CommonInitializeL()
     iActiveWait = new (ELeave) CVSActiveWait< CVSStillImageDataProvider > ( this );
 
     //Create viewer
-    iViewer = CMultiframeProvider::NewL( this , EColor16MU/*iDisplayMode*/ );
+    iViewer = CMultiframeProvider::NewL( this , iDisplayMode );
     User::LeaveIfError( iFreezeCS.CreateLocal() );
 
     __IF_DEBUG(Print(_L("VideoSource [%d]: CVSStillImageDataProvider::CommonInitializeL() <<"), RThread().Id().operator TUint()));
@@ -805,7 +805,7 @@ void CVSStillImageDataProvider::ProtoTimer()
     // SourceThreadLogoff() if a switch is pending
     if( iProtoTimer && ( iPSState == EPSPlaying ) )
         {
-        iProtoTimer->After( iProtoUpdateRate, &ProtoTimer );
+        iProtoTimer->After( iProtoUpdateRate, &CVSStillImageDataProvider::ProtoTimer );
         }
     __IF_DEBUG(Print(_L("VideoSource[%d]: CVSStillImageDataProvider::ProtoTimer() this %x <<"), RThread().Id().operator TUint(), this));
     }
@@ -894,7 +894,8 @@ void CVSStillImageDataProvider::ConstructL()
     CWsScreenDevice* wsScreenDevice = new ( ELeave ) CWsScreenDevice( wsSession );
     CleanupStack::PushL( wsScreenDevice );
     User::LeaveIfError( wsScreenDevice->Construct() );
-    iDisplayMode = wsScreenDevice->DisplayMode();/* = EColor16MU;*/
+    //iDisplayMode = wsScreenDevice->DisplayMode();/* = EColor16MU;*/
+    iDisplayMode = EColor16MU;
     CleanupStack::PopAndDestroy( 2 ); // wsSession, wsScreenDevice
     __IF_DEBUG(Print(_L("VideoSource [%d]: CVSStillImageDataProvider::ConstructL() this %x <<"), RThread().Id().operator TUint(), this));
     }
@@ -1096,7 +1097,7 @@ void CVSStillImageDataProvider::RefreshViewFinder( TImageShareDataBuffer& aVFBit
     // has beed aquired and play state is on
     if ( ( iTargetSize == iVFBitmap->Size() ) && ( iVFState == EVFPlaying ) )
         {
-        iVFTimer->After( 1, &VFTimer );
+        iVFTimer->After( 1, &CVSStillImageDataProvider::VFTimer );
         }
     else
         {

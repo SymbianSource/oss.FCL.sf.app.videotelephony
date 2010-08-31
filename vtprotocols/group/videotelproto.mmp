@@ -40,7 +40,7 @@ SOURCE          cvideoconfighandler.cpp
 SOURCE          cvtuserinput.cpp
 SOURCE          vtprotocolfactory.cpp
 
-DOCUMENT        ../../group/bld.inf
+DOCUMENT        ../../bld.inf
 
 USERINCLUDE     ../inc/
 

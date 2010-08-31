@@ -31,7 +31,7 @@
 // new audio routing
 #include    "TelephonyAudioRouting.h"
 #include    "MTelephonyAudioRoutingObserver.h"
-#include    <RPhCltServer.h>
+#include    <rphcltserver.h>
 #include    <mmf/server/sounddevice.h>
 
 // FORWARD DECLARATIONS

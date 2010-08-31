@@ -41,7 +41,8 @@ const TInt KVideotelMdtrCommandsVersionBuild( 0 );
 struct TVtVideoTelephonyCallInformation
 {   
     /** Max length of display text */
-    enum { TDisplayTextMaxLength = 100 };        
+    enum { TDisplayTextMaxLength = 100 }; 
+    enum { TPhoneNumMaxLength = 100 };
                                      
     /** Display text type definition */
     typedef TBuf<TDisplayTextMaxLength> TDisplayText;
@@ -67,6 +68,12 @@ struct TVtVideoTelephonyCallInformation
         EDisplayTextValid = 0x01,
         EDataportValid    = 0x02
     };
+    
+    /** Display text type definition */
+    typedef TBuf<TPhoneNumMaxLength> TPhoneNumText;
+      
+    /** Remote end CLI identifier (name/number/call id) */
+    TPhoneNumText iPhoneNumText;
                                                
     /** Event data validity */
     TUint iEventDataValidity;

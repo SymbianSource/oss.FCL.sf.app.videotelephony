@@ -43,7 +43,7 @@ NONSHARABLE_CLASS( CVtEngAccessoryHandler ) : public CActive
         
         /**
         * Two-phased constructor.
-        ¨* @return instance of CVtEngAccessoryHandler
+        ? @return instance of CVtEngAccessoryHandler
         */
         static CVtEngAccessoryHandler* NewL( );
         

@@ -40,8 +40,8 @@ inline TVtEngRenderConfigNGA::TVtEngRenderConfigNGA(
     iType = ENgaRender;
     iWsSession = &aOptions.iWs;
     //iWsSreenDevice = &aOptions.iWsSD;
-   // iWindow = &aOptions.iWindow;
-    iObserver = aOptions.iObserver;
+    //iWindow = &aOptions.iWindow;
+    //iObserver = aOptions.iObserver;
     //iRect = aOptions.iRect;
     //iClipRect = aOptions.iClipRect;
     //iOffset = aOptions.iOffset;

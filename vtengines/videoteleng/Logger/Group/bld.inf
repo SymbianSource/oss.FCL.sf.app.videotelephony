@@ -23,7 +23,7 @@ DEFAULT
 
 PRJ_EXPORTS
 ../inc/cvtlogger.h      |../../../inc/cvtlogger.h
-../inc/VtLogger.hrh     |../../../inc/VtLogger.hrh
+../inc/vtlogger.hrh     |../../../inc/vtlogger.hrh
 
 PRJ_MMPFILES
 ../Group/vtlogger.mmp

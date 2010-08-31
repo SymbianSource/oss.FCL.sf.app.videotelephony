@@ -33,6 +33,10 @@
 #include    <capivideosource.h>
 #include    <cvtlogger.h>
 #include    <mvtprotocolhandler.h>
+#include    <fbs.h> 
+#include    <w32std.h> 
+#include    <graphics/suerror.h>
+#include    <graphics/surfaceconfiguration.h> 
 
 #include    "CVtEngCameraPreferences.h"
 
@@ -93,6 +97,8 @@ void CVtEngLocalVideo::ConstructL()
 
     iAsyncCallBack = new ( ELeave ) CAsyncCallBack(
         TCallBack( CallBackFunc, this ), EPriorityStandard );
+
+    iNGARender = CVtEngVFBitmapNGARender::NewL();
 
     TInt indexMobile( KErrNotFound );
     iShareImage = CVtEngShareImage::NewL( *this );
@@ -368,6 +374,9 @@ CVtEngLocalVideo::~CVtEngLocalVideo()
     delete iSourceController;
     DeleteAudioSource();
     delete iShareImage;
+
+    delete iNGARender;
+    
     __VTPRINTEXIT( "LocVid.~" )
     }
 
@@ -833,8 +842,11 @@ void CVtEngLocalVideo::vsViewFinderFrameReady( CFbsBitmap& aFrame )
     if ( iActiveProvider &&
          iActiveProvider->iType != KVtEngProviderNone )
         {
+#if 0
         TRAP_IGNORE( iOptions.iObserver->vtHandleFrameL(
             MVtEngFrameObserver::ELocalVideoFrame, &aFrame ) );
+#endif
+        iNGARender->UpdateBitmapL( aFrame );
         }
     __VTPRINTEXIT( "LocVid.vsViewFinderFrameReady" )
     }
@@ -1107,6 +1119,34 @@ void CVtEngLocalVideo::SetViewFinderParameters(
     iDsaOptions.iWs = &aDP.iWs;
     iDsaOptions.iWsSD = &aDP.iWsSD;
     __VTPRINTEXIT( "LocVid.SetVFParamsDP" )
+    }
+
+// -----------------------------------------------------------------------------
+// CVtEngLocalVideo::SetViewFinderParameters
+// Configures parameters for rendering with NGA.
+// -----------------------------------------------------------------------------
+//
+void CVtEngLocalVideo::SetViewFinderParameters(
+    const TVtEngRenderingOptionsNGA &aNGA )
+    {
+    __VTPRINTENTER( "LocVid.SetVFParamsNGA" )
+
+    // Before setting the params, stop VF
+    if( ViewFinderStarted() )
+        {
+        StopViewFinder();
+        }
+
+    iOptions.iSize.SetSize( KVtEngLocalVideoDefaultWidth, 
+                            KVtEngLocalVideoDefaultHeight );
+    
+    iWindow = &aNGA.iWindow;
+    iWs = &aNGA.iWs;
+    
+    iRenderingMethod = EWindowServer;
+
+    iNGARender->AttachSurfaceL( iWs, iWindow );
+    __VTPRINTEXIT( "LocVid.SetVFParamsNGA" )
     }
 
 // -----------------------------------------------------------------------------
@@ -1884,8 +1924,10 @@ void CVtEngLocalVideo::StopViewFinder( TBool aClientRequest )
          iActiveProvider->iProvider &&
          iActiveProvider->iProvider->ViewFinderActive() )
         {
+#if 0
         TRAP_IGNORE( iOptions.iObserver->vtHandleFrameL(
             MVtEngFrameObserver::ELocalVideoFrame, NULL ) );
+#endif
         iActiveProvider->iProvider->StopViewFinder();
         __VTPRINT( DEBUG_MEDIA, "LocVideo.stopVF Stopped" )
         if ( IsFlag( EFlagAutomaticSwitchCallback )  ||
@@ -4497,6 +4539,224 @@ TBool CVtEngLocalVideo::TVtEngLayoutChangeHandler::ProviderSwitchDone(
         }
     __VTPRINTEXITR( "LocVid.LayoutCH.ProviderSwitchDone %d", handled )
     return handled;
+    }
+
+// -----------------------------------------------------------------------------
+// CVtEngLocalVideo::CVtEngVFBitmapNGARender::NewL
+// -----------------------------------------------------------------------------
+//
+CVtEngLocalVideo::CVtEngVFBitmapNGARender * 
+CVtEngLocalVideo::CVtEngVFBitmapNGARender::NewL()
+    {
+    CVtEngVFBitmapNGARender* self 
+        = new ( ELeave ) CVtEngVFBitmapNGARender();
+    CleanupStack::PushL( self );
+    self->ConstructL( );
+    CleanupStack::Pop();
+    return self;
+    }
+
+// -----------------------------------------------------------------------------
+// CVtEngLocalVideo::CVtEngVFBitmapNGARender::~CVtEngVFBitmapNGARender
+// -----------------------------------------------------------------------------
+//
+CVtEngLocalVideo::CVtEngVFBitmapNGARender::~CVtEngVFBitmapNGARender()
+    {
+    __VTPRINTENTER( "LocVid.NGARender.~" )
+    Cancel();
+    
+    if ( iSurfaceCreated )
+        {
+        iWindow->RemoveBackgroundSurface(ETrue);
+        iWs->UnregisterSurface(0, iSurfaceId);
+        
+        iSurfaceManager.CloseSurface(iSurfaceId);
+        iSurfaceChunk->Close();
+        delete iSurfaceChunk;
+        iSurfaceChunk = NULL;
+        
+        iSurfaceManager.Close();
+            
+        iSurfaceUpdateSession.CancelAllUpdateNotifications();
+        iSurfaceUpdateSession.Close();    
+        }
+    
+    __VTPRINTEXIT( "LocVid.NGARender.~" )
+    }
+
+// -----------------------------------------------------------------------------
+// CVtEngLocalVideo::CVtEngVFBitmapNGARender::UpdateBitmap
+// -----------------------------------------------------------------------------
+//
+TInt CVtEngLocalVideo::CVtEngVFBitmapNGARender::UpdateBitmapL( CFbsBitmap& aFrame )
+    {
+    __VTPRINTENTER( "LocVid.NGARender.UpdateBitmapL" )
+    // do nothing if we're already active, the newer bitmap will be ignored.
+    if ( IsActive() )
+        {
+        __VTPRINTEXIT( "LocVid.NGARender.UpdateBitmapL 0" )
+        return KErrNone;
+        }
+    else
+        {
+        if ( !iSurfaceCreated )
+            {
+            User::Leave( KErrNotReady );
+            }
+        aFrame.BeginDataAccess();
+        __VTPRINT2( DEBUG_MEDIA, "LocVid.NGARender.bitmap size = %d", aFrame.DataSize() );
+#if 0
+        memcpy( iBuffer, aFrame.DataAddress(), aFrame.DataSize() );
+#else
+        TInt size = aFrame.DataSize();
+        TPtr8 ptrBuffer( iBuffer, size );
+        ptrBuffer.Copy( reinterpret_cast<TUint8*>(aFrame.DataAddress()), size );
+#endif
+        __VTPRINT( DEBUG_MEDIA, "LocVid.NGARender.bitmap step 1" );
+        aFrame.EndDataAccess();
+        __VTPRINT( DEBUG_MEDIA, "LocVid.NGARender.bitmap step 2" );
+        iStatus = KRequestPending;
+        SetActive();
+        __VTPRINT( DEBUG_MEDIA, "LocVid.NGARender.bitmap step 3" );
+        iSurfaceUpdateSession.NotifyWhenDisplayed( iStatus, iTimeStamp );
+        __VTPRINT( DEBUG_MEDIA, "LocVid.NGARender.bitmap step 4" );
+        iSurfaceUpdateSession.SubmitUpdate( KAllScreens, iSurfaceId, 0, NULL );
+        __VTPRINT( DEBUG_MEDIA, "LocVid.NGARender.bitmap step 5" );
+
+        __VTPRINTEXIT( "LocVid.NGARender.UpdateBitmapL 1" )
+
+        return KErrNone;
+        }
+    }
+
+// -----------------------------------------------------------------------------
+// CVtEngLocalVideo::CVtEngVFBitmapNGARender::CreateSurfaceL
+// -----------------------------------------------------------------------------
+//
+TInt CVtEngLocalVideo::CVtEngVFBitmapNGARender::AttachSurfaceL( 
+        RWsSession *aWs, 
+        RWindow *aWindow )
+    {
+    __VTPRINTENTER( "LocVid.NGARender.AttachSurfaceL" )
+    
+    if ( aWs == NULL || aWindow == NULL )
+        {
+        User::Leave( KErrArgument );
+        }
+        
+        if(iSurfaceCreated)
+        	return KErrNone;
+    
+    if ( !iSurfaceCreated )
+        {    
+        TInt err;
+            
+        err = iSurfaceUpdateSession.Connect();    
+        User::LeaveIfError(err);
+            
+        err = iSurfaceManager.Open();
+        User::LeaveIfError(err);
+        
+        RSurfaceManager::TSurfaceCreationAttributesBuf attributes;
+        attributes().iPixelFormat           = iSurfaceFormat; 
+        attributes().iSize.SetSize( KVtEngLocalVideoDefaultWidth, 
+                                    KVtEngLocalVideoDefaultHeight );
+        attributes().iBuffers               = EVtEngVFMaxBuffers;
+        attributes().iStride                = attributes().iSize.iWidth*4;
+        attributes().iOffsetToFirstBuffer   = 0;
+        attributes().iAlignment             = 4;
+        attributes().iContiguous            = EFalse;
+        attributes().iMappable              = ETrue;
+    
+        err = iSurfaceManager.CreateSurface( attributes, iSurfaceId );
+        User::LeaveIfError( err );  
+        
+        // Map to chunk
+        iSurfaceChunk = new RChunk();
+        User::LeaveIfNull( iSurfaceChunk );    
+        err = iSurfaceManager.MapSurface( iSurfaceId, *iSurfaceChunk );
+        User::LeaveIfError( err );    
+    
+        // Get the info from the surfaceManager
+        RSurfaceManager::TInfoBuf info;
+        err = iSurfaceManager.SurfaceInfo( iSurfaceId, info );
+        User::LeaveIfError( err );    
+    
+        TInt offset;
+        iSurfaceManager.GetBufferOffset( iSurfaceId, 0, offset );
+        iBuffer = iSurfaceChunk->Base() + offset;
+        
+        iSurfaceCreated = ETrue;
+        }
+    else
+        {
+        if ( iWs == NULL || iWindow == NULL )
+            {
+            User::Leave( KErrGeneral );
+            }
+        
+        iWindow->RemoveBackgroundSurface(ETrue);
+        iWs->UnregisterSurface(0, iSurfaceId);
+        
+        __VTPRINT( DEBUG_MEDIA, "LocVid.NGARender.Surface exists, detach first!" )
+        }
+
+    iWs = aWs;
+    iWindow = aWindow;
+    iWs->RegisterSurface( 0, iSurfaceId );
+    
+    TSurfaceConfiguration surfaceConfig;
+    surfaceConfig.SetSurfaceId( iSurfaceId );
+    surfaceConfig.SetOrientation( CFbsBitGc::EGraphicsOrientationRotated270);
+    iWindow->SetBackgroundSurface( surfaceConfig, ETrue );
+    //iWindow->SetBackgroundSurface( iSurfaceId );
+    
+    __VTPRINTEXIT( "LocVid.NGARender.AttachSurfaceL" )
+    
+    return KErrNone;
+    }
+
+// -----------------------------------------------------------------------------
+// CVtEngLocalVideo::CVtEngVFBitmapNGARender::~CVtEngVFBitmapNGARender
+// -----------------------------------------------------------------------------
+//
+CVtEngLocalVideo::CVtEngVFBitmapNGARender::CVtEngVFBitmapNGARender()
+    : CActive( CActive::EPriorityStandard ),
+      iSurfaceFormat( EUidPixelFormatXRGB_8888 )
+    {
+    iSurfaceCreated = EFalse;
+
+    CActiveScheduler::Add( this );        
+    }
+
+// -----------------------------------------------------------------------------
+// CVtEngLocalVideo::CVtEngVFBitmapNGARender::ConstructL
+// -----------------------------------------------------------------------------
+//
+void CVtEngLocalVideo::CVtEngVFBitmapNGARender::ConstructL( )
+    {
+    __VTPRINTENTER( "LocVid.NGARender.ConstructL" )  
+    __VTPRINTEXIT( "LocVid.NGARender.ConstructL" )
+    }
+
+// -----------------------------------------------------------------------------
+// CVtEngLocalVideo::CVtEngVFBitmapNGARender::RunL
+// -----------------------------------------------------------------------------
+//
+void CVtEngLocalVideo::CVtEngVFBitmapNGARender::RunL()
+    {
+    __VTPRINTENTER( "LocVid.NGARender.RunL" )  
+    __VTPRINTEXIT( "LocVid.NGARender.RunL" )
+    }
+
+// -----------------------------------------------------------------------------
+// CVtEngLocalVideo::CVtEngVFBitmapNGARender::DoCancel
+// -----------------------------------------------------------------------------
+//
+void CVtEngLocalVideo::CVtEngVFBitmapNGARender::DoCancel()
+    {
+    __VTPRINTENTER( "LocVid.NGARender.DoCancel" )  
+    __VTPRINTEXIT( "LocVid.NGARender.DoCancel" )
     }
 
 // -----------------------------------------------------------------------------

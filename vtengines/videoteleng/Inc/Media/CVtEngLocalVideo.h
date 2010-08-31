@@ -32,10 +32,22 @@
 #include "CVTEngPubSubsListener.h"
 #include "mvtengcamerapreferencesobserver.h"
 
+#include "graphics/surfacemanager.h"
+#include "graphics/surface.h"
+#include "graphics/surfaceupdateclient.h"
+
 // FORWARD DECLARATIONS
 class CVSDataProvider;
 class CVtEngMediaHandler;
 class CVtEngCameraPreferences;
+
+
+// LOCAL CONSTANTS
+// Default source width.
+static const TInt KVtEngLocalVideoDefaultWidth = 176;
+
+// Default source height.
+static const TInt KVtEngLocalVideoDefaultHeight = 144;
 
 // CLASS DECLARATION
 
@@ -176,6 +188,13 @@ NONSHARABLE_CLASS( CVtEngLocalVideo ) :
         * @param aDP DP configuration
         */
         void SetViewFinderParameters( const TVtEngRenderingOptionsDP& aDP );
+
+        
+        /**
+        * Sets NGA configuration for view finder.
+        * @param aNGA NGA configuration
+        */
+        void SetViewFinderParameters( const TVtEngRenderingOptionsNGA &aNGA );
 
         /**
         * Sets default still image.
@@ -539,6 +558,8 @@ NONSHARABLE_CLASS( CVtEngLocalVideo ) :
             /** changing still image */
             ERefreshing
             };
+
+	private: // inner classes
 
         /**
         * Provider information.
@@ -1010,6 +1031,81 @@ NONSHARABLE_CLASS( CVtEngLocalVideo ) :
 
         };
 
+		// class for NGA rendering viewfinder bitmap.
+		NONSHARABLE_CLASS( CVtEngVFBitmapNGARender ) : public CActive
+			{
+			
+		public: // constructor and destructor
+		
+			/**
+            * Two-phased constructor.
+            * @param aObserver call back interface to Display Sink
+            * @return instance of CVtEngDrawDSA
+            */
+			static CVtEngVFBitmapNGARender * NewL();
+
+			// Destructor.
+			~CVtEngVFBitmapNGARender();
+
+		public: // New mothod
+		
+			// update the buffer for bitmap, also activate this AO
+			TInt UpdateBitmapL( CFbsBitmap& aFrame );
+
+			// Initialize surface and set it to the background
+			TInt AttachSurfaceL( RWsSession *aWs, RWindow *aWindow );
+
+		private: // constructors
+		
+			// C++ constructor.
+			CVtEngVFBitmapNGARender();
+
+            /**
+            * By default Symbian 2nd phase constructor is private.
+            */
+            void ConstructL( );
+
+		private: // From CActive.
+
+		    /*
+            * @see CActive::RunL
+            */
+            virtual void RunL();
+
+            /**
+            * @see CActive::DoCancel()
+            */
+            virtual void DoCancel();
+
+        private:  // enumerations
+
+            enum { EVtEngVFMaxBuffers = 1 };
+            
+        private:    // Data
+        
+            RSurfaceManager iSurfaceManager;
+            RSurfaceUpdateSession iSurfaceUpdateSession;
+
+            //Surface pixel format
+            const TUidPixelFormat iSurfaceFormat;
+    
+            RChunk* iSurfaceChunk;
+
+            TUint8* iBuffer;
+    
+            //NGA surface id
+            TSurfaceId iSurfaceId;
+            
+            RWsSession *iWs;
+            RWindow *iWindow;
+    
+            //NGA surface has created
+            TBool iSurfaceCreated;
+            
+            TTimeStamp iTimeStamp;
+            
+            };
+		
         private:
 
         /**
@@ -1468,6 +1564,10 @@ NONSHARABLE_CLASS( CVtEngLocalVideo ) :
 
         // Number of cameras in the device
         TInt iNumSupportedCameras;
+
+		CVtEngVFBitmapNGARender *iNGARender; 
+		RWindow *iWindow;
+		RWsSession *iWs;
     };
 
 #endif      // CVTENGLOCALVIDEO_H

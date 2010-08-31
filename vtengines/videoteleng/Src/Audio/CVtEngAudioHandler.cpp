@@ -33,7 +33,7 @@
 // CONSTANTS
 
 // For DevSound initialization
-const TInt KVtEngUidControlHwDevice = 0x10206593;
+//const TInt KVtEngUidControlHwDevice = 0x10206593;
 
 // ============================ MEMBER FUNCTIONS ===============================
 
@@ -55,7 +55,7 @@ CVtEngAudioHandler::CVtEngAudioHandler()
 //
 void CVtEngAudioHandler::ConstructL()
     {
-    __VTPRINT( DEBUG_CONSTRUCT | DEBUG_AUDIO, "AH.ConstructL" )
+    __VTPRINT( DEBUG_CONSTRUCT | DEBUG_AUDIO, "AH.ConstructL<" )
 
     iAccHandler = &CVtEngUtility::AccessoryHandler();
     iAccHandler->RegisterObserverL( this );
@@ -67,7 +67,7 @@ void CVtEngAudioHandler::ConstructL()
     __VTPRINT2( DEBUG_AUDIO, "AH.iAccMode %d", ( TInt )iAccMode.iAccessoryMode )
 
     UpdateCurrentVolume();
-    __VTPRINT( DEBUG_CONSTRUCT | DEBUG_AUDIO, "AH.ConstructL<")
+    __VTPRINT( DEBUG_CONSTRUCT | DEBUG_AUDIO, "AH.ConstructL>")
     }
 
 // -----------------------------------------------------------------------------

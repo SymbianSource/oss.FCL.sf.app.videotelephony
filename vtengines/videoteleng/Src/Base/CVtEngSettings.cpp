@@ -24,8 +24,8 @@
 #include    "VtEngUtils.h"
 #include    "VtEngPanic.h"
 #include    <telincallvolcntrlcrkeys.h>
-#include    <RPhCltServer.h>
-#include    <CPhCltImageHandler.h>
+#include    <rphcltserver.h>
+#include    <cphcltimagehandler.h>
 #include    <videotelephonyinternalcrkeys.h>
 #include    <LogsDomainCRKeys.h>
 #include    <settingsinternalcrkeys.h>
@@ -897,6 +897,7 @@ void CVtEngSettings::SetCLI( const MVtEngSessionInfo::TCLI& aCLI )
     iCLI.iName = aCLI.iName;
     iCLI.iVoiceCallPossible = aCLI.iVoiceCallPossible;
     iCLI.iValid = ETrue;
+    iCLI.iCallNumber = aCLI.iCallNumber;
     __VTPRINT2( DEBUG_GEN, "iVoiceCallPossible=%d,", iCLI.iVoiceCallPossible )
     __VTPRINTEXIT( "Settings.SetCLI" ) 
     }
@@ -911,6 +912,7 @@ TBool CVtEngSettings::GetCLI( MVtEngSessionInfo::TCLI& aCLI ) const
     aCLI.iCallId = iCLI.iCallId;
     aCLI.iVoiceCallPossible = iCLI.iVoiceCallPossible;
     aCLI.iName = iCLI.iName;
+    aCLI.iCallNumber = iCLI.iCallNumber;
     return iCLI.iValid;
     }
 

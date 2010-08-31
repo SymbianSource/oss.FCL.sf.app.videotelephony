@@ -82,7 +82,7 @@ const TText KVtEngCharacterSpace( ' ' );
 const TInt KVtEngCharacterEndLine( 10 );
 
 // Multiplex delay in milliseconds
-const TInt KVtEngMultiplexingDelay = 150;
+//const TInt KVtEngMultiplexingDelay = 150;
 
 // TradeOff values
 const TInt KVtEngTradeOffDetailMax = 9;
@@ -802,10 +802,10 @@ void CVtEngMediaHandler::HandleL( CVtEngOperation& aOperation )
             break;
         case KVtEngPrepareViewFinder:
             {
-            const TPckgC<TVtEngRenderingOptions>& pckg =
-                static_cast< const TPckgC<TVtEngRenderingOptions>& >
+            const TPckgC<TVtEngRenderingOptionsNGA>& pckg =
+                static_cast< const TPckgC<TVtEngRenderingOptionsNGA>& >
                 ( *aOperation.Parameters() );
-            const TVtEngRenderingOptions& options = pckg();
+            const TVtEngRenderingOptionsNGA &options = pckg();
             iLocalVideo->SetViewFinderParameters( options );
             }
             break;
@@ -3891,21 +3891,19 @@ void CVtEngMediaHandler::HandleVideoEncoderCommandCompletedL(
     const TVtCommandResponse& aResponse )
     {
     __VTPRINTENTER( "MH.EncExtCommandCompleted" )
-    const TInt type( aResponse.iCmdType );
-    const TInt protoCmdId( aResponse.iCmdId );
-    const TInt protoResponse( aResponse.iCmdStatus );
-    __VTPRINT2( DEBUG_MEDIA, "MH.263 ComC type=%d", type )
+
+    __VTPRINT2( DEBUG_MEDIA, "MH.263 ComC type=%d", aResponse.iCmdType )
     __VTPRINT3( DEBUG_MEDIA, "MH.263 ComC cmdId=%d,response=%d",
-      protoCmdId, protoResponse )
+      aResponse.iCmdId, aResponse.iCmdStatus )
 
     // Find correct entry in iPendingOps based on TOperation because there can
     // be several entries with same Protocol cmd id since each Protocol interface has their
     // own id allocation and ids may overlap.
     TInt index( KErrNotFound );
     TOperation completedOp = ENone;
-    if ( MatchResponseToPendingOps( protoCmdId, ESendIntraframe, &index ) ||
-         MatchResponseToPendingOps( protoCmdId, ESetIFrameInterval, &index ) ||
-         MatchResponseToPendingOps( protoCmdId, ESetVideoQuality, &index ) )
+    if ( MatchResponseToPendingOps( aResponse.iCmdId, ESendIntraframe, &index ) ||
+         MatchResponseToPendingOps( aResponse.iCmdId, ESetIFrameInterval, &index ) ||
+         MatchResponseToPendingOps( aResponse.iCmdId, ESetVideoQuality, &index ) )
         {
         // TOperation entries in are unique in the array...
         const TCmdOpPair pair = (*iPendingOps)[ index ];
@@ -3922,13 +3920,13 @@ void CVtEngMediaHandler::HandleVideoEncoderCommandCompletedL(
         __VTPRINT( DEBUG_MEDIA, "MH.EECC ESetVideoQuality" )
         if( iPendingOp && ( iPendingOp->Command() == KVtEngSetVideoQuality ) )
             {
-            CompleteOp( protoResponse );
+            CompleteOp( aResponse.iCmdStatus );
             }
-        if( protoResponse == KErrNone )
+        if( aResponse.iCmdStatus == KErrNone )
             {
             TVtEngVideoQuality::TVQSParams vqp;
 
-            if ( iVideoQuality.SettingSucceeded( protoCmdId, vqp ) )
+            if ( iVideoQuality.SettingSucceeded( aResponse.iCmdId, vqp ) )
                 {
                 __VTPRINT( DEBUG_MEDIA, "MH.EECC sending vq indication" )
                 AddOperation( ESendVTSTO,
@@ -3944,7 +3942,7 @@ void CVtEngMediaHandler::HandleVideoEncoderCommandCompletedL(
             }
         else
             {
-            iVideoQuality.SettingFailed( protoCmdId );
+            iVideoQuality.SettingFailed( aResponse.iCmdId );
             }
         }
     if ( iProtoState == MVtProtocolCommand::EIdle )
@@ -3961,8 +3959,7 @@ void CVtEngMediaHandler::HandleVideoEncoderCommandCompletedL(
 void CVtEngMediaHandler::HandleVideoEncoderInformationalEventL(
     const TVtIndicationEvent& aEvent)
     {
-    const TInt type( aEvent.iEventType );
-    __VTPRINT2( DEBUG_MEDIA, "MH.263 infoevent=%d", type )
+    __VTPRINT2( DEBUG_MEDIA, "MH.263 infoevent=%d", aEvent.iEventType )
     }
 
 // -----------------------------------------------------------------------------
@@ -3974,20 +3971,17 @@ void CVtEngMediaHandler::HandleH324MConfigCommandCompletedL(
     const TVtCommandResponse& aResponse )
     {
 	__VTPRINTENTER( "MH.HandleH324MConfigCommandCompletedL" )
-	const TInt protoCmdId( aResponse.iCmdId );
-	const TInt protoResponse( aResponse.iCmdStatus );
-	const TInt type( aResponse.iCmdType );
 
-	__VTPRINT2( DEBUG_MEDIA, "MH.HandleH324MConfigCommandCompletedL type=%d", type )
-    __VTPRINT3( DEBUG_MEDIA, "MH.HandleH324MConfigCommandCompletedL cmdId=%d,response=%d", protoCmdId, protoResponse )
+	__VTPRINT2( DEBUG_MEDIA, "MH.HandleH324MConfigCommandCompletedL type=%d", aResponse.iCmdType )
+    __VTPRINT3( DEBUG_MEDIA, "MH.HandleH324MConfigCommandCompletedL cmdId=%d,response=%d", aResponse.iCmdId, aResponse.iCmdStatus )
     TInt index( KErrNotFound );
     // Find correct entry in iPendingOps based on TOperation because there can
     // be several entries with same Protocol cmd id since each Protocol interface has their
     // own id allocation and ids may overlap.
-    if ( MatchResponseToPendingOps( protoCmdId, ESetVendorId, &index ) ||
-         MatchResponseToPendingOps( protoCmdId, ESendVTSTO, &index ) ||
-         MatchResponseToPendingOps( protoCmdId, ESetSupportedResolutions, &index ) ||
-         MatchResponseToPendingOps( protoCmdId, ESetFastCsupOptions, &index ) )
+    if ( MatchResponseToPendingOps( aResponse.iCmdId, ESetVendorId, &index ) ||
+         MatchResponseToPendingOps( aResponse.iCmdId, ESendVTSTO, &index ) ||
+         MatchResponseToPendingOps( aResponse.iCmdId, ESetSupportedResolutions, &index ) ||
+         MatchResponseToPendingOps( aResponse.iCmdId, ESetFastCsupOptions, &index ) )
         {
         // TOperation entries in are unique in the array...
         const TCmdOpPair pair = (*iPendingOps)[ index ];
@@ -4002,10 +3996,10 @@ void CVtEngMediaHandler::HandleH324MConfigCommandCompletedL(
 
         	// Check does the received command ID match to command ID that was received
         	// from Protocol when DTMF was send.
-        	if( stateManager->Handlers().Dtmf().CheckCommandId( protoCmdId ) )
+        	if( stateManager->Handlers().Dtmf().CheckCommandId( aResponse.iCmdId ) )
         		{
         		__VTPRINT( DEBUG_MEDIA, "MH.Complete DTMF" )
-        		stateManager->Handlers().Dtmf().SendComplete( protoResponse );
+        		stateManager->Handlers().Dtmf().SendComplete( aResponse.iCmdStatus );
         		}
         	}
             break;

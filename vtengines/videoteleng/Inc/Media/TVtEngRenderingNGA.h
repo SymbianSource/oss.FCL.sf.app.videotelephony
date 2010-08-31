@@ -42,7 +42,6 @@ NONSHARABLE_CLASS( TVtEngRenderingOptionsNGA )
         * C++ constructor
         */
         inline TVtEngRenderingOptionsNGA(
-            MVtEngFrameObserver& aObserver,
             RWindow& aWindow, RWsSession& aWs );
 
         /**
@@ -60,9 +59,6 @@ NONSHARABLE_CLASS( TVtEngRenderingOptionsNGA )
         RWindow&    iWindow;
         
         RWsSession&      iWs;
-        
-        // Frame observer
-        MVtEngFrameObserver* iObserver;
     };
 
 #include <tvtengrenderingnga.inl>

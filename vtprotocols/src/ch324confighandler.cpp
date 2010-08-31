@@ -168,7 +168,7 @@ TInt CH324ConfigCommand::SetFastCsupOptions( )
 TInt CH324ConfigCommand::SendUserInputMessageL(MVTUserInput& user_input)
     {
     __IF_DEBUG(Print(_L("VTProto: CH324ConfigCommand::SendUserInputMessageL<")));	
-    if (user_input.GetType() == EVtUiiDTMF )
+    if ( user_input.GetType() == EVtUiiDTMF )
         {
         CVTUserInputDtmf* dtmf = static_cast<CVTUserInputDtmf*>(&user_input);
         return iH324Config->SendUserInputL(*dtmf->iUII);

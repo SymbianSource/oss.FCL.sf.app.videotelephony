@@ -24,11 +24,9 @@
 // -----------------------------------------------------------------------------
 //
 inline TVtEngRenderingOptionsNGA::TVtEngRenderingOptionsNGA(
-    MVtEngFrameObserver& aObserver,
     RWindow& aWindow, RWsSession& aWs) :
     iWindow( aWindow ),
-    iWs( aWs ),
-    iObserver( &aObserver )
+    iWs( aWs )
     {
     }
 
@@ -40,8 +38,7 @@ inline TVtEngRenderingOptionsNGA::TVtEngRenderingOptionsNGA(
 inline TVtEngRenderingOptionsNGA::TVtEngRenderingOptionsNGA(
     const TVtEngRenderingOptionsNGA& aOptions )
     : iWindow( aOptions.iWindow ),
-      iWs( aOptions.iWs),
-      iObserver( aOptions.iObserver )
+      iWs( aOptions.iWs)
     {
     }
 // End of File
