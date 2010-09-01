@@ -18,4 +18,5 @@
 
 
 
+#include "../video_telephony_control_mediator_api/group/bld.inf"
 #include "../video_telephony_media_configuration_api/group/bld.inf"

@@ -25,7 +25,7 @@ DEFAULT
 
 PRJ_EXPORTS
 
-../inc/cvtimageconverter.h      |../../../inc/cvtimageconverter.h
+../inc/CVtImageConverter.h      |../../../inc/cvtimageconverter.h
 ../inc/cvtimageconverter.inl    |../../../inc/cvtimageconverter.inl
 ../inc/mdisplaysink.h           |../../../inc/mdisplaysink.h
 ../inc/TDisplaySinkParamsDSA.h  |../../../inc/tdisplaysinkparamsdsa.h

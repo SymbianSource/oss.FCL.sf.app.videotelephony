@@ -243,16 +243,7 @@ NONSHARABLE_CLASS( CVtEngDrawNGA ) :
         /**
         * Create surface implementation
         */        
-        void DoCreateSurfaceL();
-
-        /**
-        *clearing a surface buffer to given colour
-        */
-        void ClearSurfacebuffer( 
-            TUint8* aStartAddr, 
-            TInt aOffset, 
-            const RSurfaceManager::TSurfaceInfoV01 aInfo, 
-            TRgb &aColor );
+        void DoCreateSurfaceL();        
         
         static TInt SurfaceBuffer0Ready(TAny* aAny);
         

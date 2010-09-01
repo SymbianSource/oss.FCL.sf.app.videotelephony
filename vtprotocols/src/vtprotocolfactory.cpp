@@ -177,7 +177,7 @@ EXPORT_C void VTProtocolFactory::DeleteCommServerL(MCommServer* aCommServer)
 EXPORT_C MVTUserInput* VTProtocolFactory::CreateUserInputIndication(TUserInputType aUIIType, TUint8 aTone)
     {
     __IF_DEBUG(Print(_L("VTProto: VTProtocolFactory::CreateUserInputIndication")));	
-    if ( aUIIType == EVtUiiDTMF )
+    if (aUIIType == EVtUiiDTMF )
         {
         CVTUserInputDtmf* uii = CVTUserInputDtmf::NewL(aTone);
         return uii;

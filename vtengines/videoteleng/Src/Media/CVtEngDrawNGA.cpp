@@ -110,10 +110,7 @@ CVtEngDrawNGA::~CVtEngDrawNGA()
             {
             iConfig.iRemoteWindow->RemoveBackgroundSurface(ETrue);
             iConfig.iWsSession->UnregisterSurface(0, iSurfaceId);
-            if ( iSurfaceChunk != NULL )
-                {
-                iSurfaceChunk->Close();
-                }
+            iSurfaceChunk->Close();
             delete iSurfaceChunk;
             iSurfaceChunk = NULL;
             iSurfaceManager->CloseSurface(iSurfaceId);
@@ -121,13 +118,10 @@ CVtEngDrawNGA::~CVtEngDrawNGA()
             iSurfaceUpdateSession.Close();
                        
              /* Close the surface manager handle */
-            if ( iSurfaceManager != NULL )
-                {
-                iSurfaceManager->Close();
-                }
+            iSurfaceManager->Close();
            
             delete iSurfaceManager;
-            iSurfaceManager = NULL;
+            iSurfaceManager = 0;
             }
            
         for ( TInt i = KVtEngMaxSurfaceBuffers-1; i >= 0 ; i-- )
@@ -146,7 +140,6 @@ CVtEngDrawNGA::~CVtEngDrawNGA()
         iSurfaceBuffer1.UnSet();
         }
     delete iBufferWaiter;   
-    iBufferWaiter = NULL;
     iWaitingBuffers.Reset();
     
     __VTPRINTEXIT( "RVD(NGA).~" )
@@ -440,12 +433,8 @@ void CVtEngDrawNGA::BaseVideoFrameSizeChangedL( const TSize& /*aTo*/ )
     iSurfaceManager->GetBufferOffset(iSurfaceId, 1, offset);
     iSurfaceBuffer1.Set(iSurfaceChunk->Base() + offset, 1 );
     
-    iConfig.iWsSession->RegisterSurface(0, iSurfaceId);  
-    TSurfaceConfiguration surfaceConfig;
-    surfaceConfig.SetSurfaceId( iSurfaceId );
-    surfaceConfig.SetOrientation( CFbsBitGc::EGraphicsOrientationRotated270);
-    iConfig.iRemoteWindow->SetBackgroundSurface( surfaceConfig, ETrue );
-    //iConfig.iRemoteWindow->SetBackgroundSurface(iSurfaceId);
+    iConfig.iWsSession->RegisterSurface(0, iSurfaceId);   
+    iConfig.iRemoteWindow->SetBackgroundSurface(iSurfaceId);
     
     iCallBackTable[0] = new(ELeave) CActiveCallBack(
             TCallBack(SurfaceBuffer0Ready, this), 
@@ -750,35 +739,20 @@ void CVtEngDrawNGA::DoCreateSurfaceL()
         User::LeaveIfError(err);    
         
         // Get the info from the surfaceManager
-        RSurfaceManager::TInfoBuf infoBuf;
-        err = iSurfaceManager->SurfaceInfo( iSurfaceId, infoBuf );
-        User::LeaveIfError(err);
-        RSurfaceManager::TSurfaceInfoV01 info = infoBuf();
-
-        __VTPRINT2( DEBUG_MEDIA, "chunk size=%d", iSurfaceChunk->Size() )
-
-        TRgb color( 0, 0, 0 );
-
-        TInt offset;
-
-        iSurfaceManager->GetBufferOffset( iSurfaceId, 0, offset );
-        __VTPRINT2( DEBUG_MEDIA, "offset0=%d", offset )
-        ClearSurfacebuffer( iSurfaceChunk->Base(), offset, info, color );
-        iSurfaceBuffer0.Set(iSurfaceChunk->Base() + offset, 0 );
+        RSurfaceManager::TInfoBuf info;
+        err = iSurfaceManager->SurfaceInfo(iSurfaceId, info);
+        User::LeaveIfError(err);    
         
-        iSurfaceManager->GetBufferOffset( iSurfaceId, 1, offset );
-        __VTPRINT2( DEBUG_MEDIA, "offset1=%d", offset )
-        ClearSurfacebuffer( iSurfaceChunk->Base(), offset, info, color );
+        TInt offset;
+        iSurfaceManager->GetBufferOffset(iSurfaceId, 0, offset);
+        iSurfaceBuffer0.Set(iSurfaceChunk->Base() + offset, 0 );
+        iSurfaceManager->GetBufferOffset(iSurfaceId, 1, offset);
         iSurfaceBuffer1.Set(iSurfaceChunk->Base() + offset, 1 );
         }
     
     iConfig.iWsSession->RegisterSurface(0, iSurfaceId);   
-    TSurfaceConfiguration surfaceConfig;
-    surfaceConfig.SetSurfaceId( iSurfaceId );
-    surfaceConfig.SetOrientation( CFbsBitGc::EGraphicsOrientationRotated270);
-    iConfig.iRemoteWindow->SetBackgroundSurface( surfaceConfig, ETrue );
-    //iConfig.iRemoteWindow->SetBackgroundSurface(iSurfaceId);
-
+    iConfig.iRemoteWindow->SetBackgroundSurface(iSurfaceId);
+    
     iConfig.iRemoteWindow->BeginRedraw();
     iConfig.iRemoteWindow->EndRedraw();
     
@@ -797,54 +771,6 @@ void CVtEngDrawNGA::DoCreateSurfaceL()
     ClearFlag( EInitializePostingSurfaceCalled );
     __VTPRINTEXIT( "RVD(NGA).DoCreateSurfaceL" )
     }
-
-// -----------------------------------------------------------------------------
-// CVtEngDrawNGA::ClearSurface
-// clearing a surface buffer to given colour
-// -----------------------------------------------------------------------------
-//
-void CVtEngDrawNGA::ClearSurfacebuffer( 
-    TUint8* aStartAddr, 
-    TInt aOffset, 
-    const RSurfaceManager::TSurfaceInfoV01 aInfo, 
-    TRgb &aColor )
-{
-    TUint8 red   = aColor.Red();
-    TUint8 green = aColor.Green();
-    TUint8 blue  = aColor.Blue();
-
-    // formulae borrowed from http://msdn.microsoft.com/en-us/library/ms893078.aspx
-    TUint8 yval = ( (  66 * (TInt32)red + 129 * (TInt32)green +  25 * (TInt32)blue + 128) >> 8) +  16;
-    TUint8 uval = ( ( -38 * (TInt32)red -  74 * (TInt32)green + 112 * (TInt32)blue + 128) >> 8) + 128;
-    TUint8 vval = ( ( 112 * (TInt32)red -  94 * (TInt32)green -  18 * (TInt32)blue + 128) >> 8) + 128;
-
-    TInt i = 0;
-
-    aStartAddr += aOffset;
-
-    while ( i < (aInfo.iSize.iHeight*aInfo.iSize.iWidth) )
-    {
-    *aStartAddr = yval;
-    aStartAddr++;
-    i++;
-    }
-    i=0;
-
-    while ( i < ((aInfo.iSize.iHeight*aInfo.iSize.iWidth)>>2) )
-        {
-        *aStartAddr = uval;
-        aStartAddr++;
-        i++;
-        }
-    i=0;
-
-    while ( i < ((aInfo.iSize.iHeight*aInfo.iSize.iWidth)>>2) )
-        {
-        *aStartAddr = vval;
-        aStartAddr++;
-        i++;
-        }
-}
     
 // -----------------------------------------------------------------------------
 // CVtEngDrawNGA::DoUpdateSinkParamsL

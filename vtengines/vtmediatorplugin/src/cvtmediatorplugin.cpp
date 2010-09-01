@@ -620,7 +620,6 @@ void CVtMediatorPlugin::SaveCallData( const TTelephonyCallDataParam& aData, TVtV
         {
         iVtCallInfo.iVoiceCallPossible = ETrue;
         }
-    iVtCallInfo.iPhoneNumText = aData.iRemotePhoneNumber;
     iVtCallInfo.iEventDataValidity |= 
         TVtVideoTelephonyCallInformation::EDisplayTextValid;
     TRACE2("CVtMediatorPlugin.SaveCallData data saved=%d>",

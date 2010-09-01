@@ -824,7 +824,7 @@ void CVSOnboardCameraDataProvider::HandleEvent( const TECAMEvent& aEvent )
 	{
 	__IF_DEBUG(Print(_L("VideoSource [%d]: CVSOnboardCameraDataProvider::HandleEvent() event %d>>"),
     	RThread().Id().operator TUint(), aEvent.iEventType  ));
-    __IF_DEBUG(Print(_L("VideoSource [%d]: CVSOnboardCameraDataProvider::HandleEvent() iErrorCode %d>"),
+  __IF_DEBUG(Print(_L("VideoSource [%d]: CVSOnboardCameraDataProvider::HandleEvent() iErrorCode %d>"),
     	RThread().Id().operator TUint(), aEvent.iErrorCode  ));
   //Needs to handled first
   if( aEvent.iEventType == KUidECamEventCameraNoLongerReserved )

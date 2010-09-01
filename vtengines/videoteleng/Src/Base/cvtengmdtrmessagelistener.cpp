@@ -160,7 +160,6 @@ void CVtEngMdtrMessageListener::MediatorEventL( TUid /*aDomain*/,
             cli.iCallId = data.iCallId;
             cli.iName = data.iDisplayText.Left( cli.iName.MaxLength() );
             cli.iVoiceCallPossible = data.iVoiceCallPossible;
-            cli.iCallNumber = data.iPhoneNumText.Left( cli.iCallNumber.MaxLength() );
             settings.SetCLI( cli );
             
             // ready == call is answered (allows setting app to foreground)

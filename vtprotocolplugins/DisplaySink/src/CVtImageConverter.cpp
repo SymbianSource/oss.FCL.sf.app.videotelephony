@@ -20,7 +20,7 @@
 
 #include <e32svr.h>
 #include <fbs.h>
-#include "cvtimageconverter.h"
+#include "CVtImageConverter.h"
 
 // LOCAL CONSTANTS AND MACROS
 

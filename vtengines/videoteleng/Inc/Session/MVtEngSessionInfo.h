@@ -85,12 +85,8 @@ class MVtEngSessionInfo
             };
         
         enum { KCallNameLength = 50 };
-        enum { KCallNumberLength = 50 };
         
         typedef TBuf<KCallNameLength> TCallName;
-        
-        typedef TBuf<KCallNumberLength> TCallNumber;
-        
         /**
         * CLI data related to a call
         */
@@ -103,8 +99,6 @@ class MVtEngSessionInfo
             
             // indicates if voice call can be made to peer
             TBool iVoiceCallPossible;
-            
-            TCallNumber iCallNumber;
             };
         
         /**
