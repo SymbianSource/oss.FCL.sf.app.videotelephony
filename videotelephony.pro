@@ -27,6 +27,6 @@ symbian: {
     :BLD_INF_RULES.prj_mmpfiles += $$LITERAL_HASH"include \"videotelephony_plat/group/bld.inf\""
 }
 
-//SUBDIRS += vtuis/lcvtindicatorplugin
-//SUBDIRS += vtuis/lcvtindicatorcontroller
+SUBDIRS += vtuis/lcvtindicatorplugin
+SUBDIRS += vtuis/lcvtindicatorcontroller
 SUBDIRS += vtuis/lcvtapp

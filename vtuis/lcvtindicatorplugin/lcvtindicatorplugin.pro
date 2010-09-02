@@ -15,7 +15,6 @@
 #
 
 TEMPLATE = lib
-TARGET = lcvtindicatorplugin
 CONFIG += plugin hb
 
 # directories

@@ -16,7 +16,7 @@
 */
 #include "ut_lcvtindicatorplugin.h"
 #include "lcvtindicatorplugin.h"
-#include "symbianstubs_helper.h"
+#include "qprocess.h"
 
 #include <QtTest/QtTest>
 
@@ -78,16 +78,15 @@ void UT_LcVtIndicatorPlugin::testHandleInteraction()
                  HbIndicatorInterface::NoInteraction) );
     QCOMPARE( spy.count(), 0 );
     
-    //Indicator activated, no VT running => deactivating
-    SymbianStubHelper::setVtTaskExists(false);
+    //Indicator activated, no VT running => deactivating    
     QVERIFY( !mLcVtIndicatorPlugin->handleInteraction(
                      HbIndicatorInterface::InteractionActivated) );
     QCOMPARE( spy.count(), 1 );
     
-    //Indicator activated, VT running => bringing to FG
-    SymbianStubHelper::setVtTaskExists(true);
+    //Indicator activated, VT running => bringing to FG    
     spy.clear();
     QVERIFY( mLcVtIndicatorPlugin->bringVtToForeground() );    
+    QVERIFY( QProcess::isRunning );    
     QCOMPARE( spy.count(), 0 );   
 }
 
@@ -164,10 +163,8 @@ void UT_LcVtIndicatorPlugin::testHandleClientRequest()
 }
 
 void UT_LcVtIndicatorPlugin::testBringVtToForeground()
-{
-    SymbianStubHelper::setVtTaskExists(false);
+{    
     QVERIFY( !mLcVtIndicatorPlugin->bringVtToForeground() );
-    
-    SymbianStubHelper::setVtTaskExists(true);
-    QVERIFY( mLcVtIndicatorPlugin->bringVtToForeground() );    
+    QVERIFY( QProcess::isRunning );    
 }
+

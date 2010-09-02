@@ -21,5 +21,9 @@
 #include <data_caging_paths_for_iby.hrh>
 
 file=ABI_DIR\UREL\lcvtindicatorplugin.dll               SHARED_LIB_DIR\lcvtindicatorplugin.dll 
-data=\epoc32\data\z\resource\plugins\indicators\lcvtindicatorplugin.qtplugin   \resource\plugins\indicators\lcvtindicatorplugin.qtplugin
+data=\epoc32\data\z\resource\plugins\indicators\lcvtindicatorplugin.qtplugin   RESOURCE_FILES_DIR\plugins\indicators\lcvtindicatorplugin.qtplugin
+
+// Enabler for eclipsing ROM binaries
+data=ZSYSTEM\install\lcvtindicatorplugin_stub.sis           system\install\lcvtindicatorplugin_stub.sis
+
 #endif

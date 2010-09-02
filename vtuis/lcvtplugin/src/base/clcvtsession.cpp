@@ -25,6 +25,7 @@
 #include <eikenv.h>
 #include <eikappui.h>
 #include <apgcli.h>
+#include <centralrepository.h> 
 
 #include "clcvtsession.h"
 
@@ -38,6 +39,10 @@
 #include "mlcvtenginecommandmanager.h"
 #include "lcvtplugincommand.h"
 #include "lcvtutility.h"
+
+// User selectable Call answer status values
+const TInt KAllwaysQuery = 0;
+const TInt KAllwaysAllow = 2;
 
 // Default call index.
 const TInt KVtUiDefaultCallId = 1;
@@ -266,8 +271,20 @@ void CLcVtSession::ConstructL()
             TCallBack( &DelayedHandleLayoutChanged, this ),
             CActive::EPriorityStandard );   
 #endif    
+    CRepository* repository = CRepository::NewL( KCRUidTelephonySettings );
 
-    //iIndicatorCtr = new  ( ELeave ) LcVtIndicatorController();
+    if ( repository->Get( KSettingsVTVideoSending, VideoSendingKey ) == KErrNone )
+        {
+        __VTPRINT2( DEBUG_GEN, "CLcVtSession.IsFeatureSupported get key=%d", VideoSendingKey )
+        }
+    else
+        {
+        __VTPRINT( DEBUG_GEN, "CLcVtSession.IsFeatureSupported set key to default KAllwaysAllow" )
+        VideoSendingKey = KAllwaysAllow;
+        }
+    delete repository;
+    
+    iIndicatorCtr = new  ( ELeave ) LcVtIndicatorController();
     __VTPRINTEXIT( "CLcVtSession.ConstructL" )
     
     }
@@ -303,10 +320,10 @@ CLcVtSession::~CLcVtSession()
     
     delete iRemoteDisplayName;
     delete iRemoteDetails;
-//    if (iIndicatorCtr) {
-//        iIndicatorCtr->disableActiveCallIndicator();
-//        delete iIndicatorCtr;
-//    }    
+    if (iIndicatorCtr) {
+        iIndicatorCtr->disableActiveCallIndicator();
+        delete iIndicatorCtr;
+    }    
     __VTPRINTEXIT( "CLcVtSession.~CLcVtSession" )
     FeatureManager::UnInitializeLib();  
     }
@@ -844,13 +861,13 @@ void CLcVtSession::CmdDisableVideoL()
     TInt err = KErrNotFound;
     if ( LcVtUtility::HasStillImage( iModel->Media() ) )
         {
-        __VTPRINT( DEBUG_GEN, "VtUi.:CmdDisableVideoL.HasStill" )
+        __VTPRINT( DEBUG_GEN, "CLcVtSession.CmdDisableVideoL.HasStill" )
         MVtEngMedia::TMediaSource source = MVtEngMedia::EMediaStillImage;
         TRAP( err, ExecuteCmdL( KVtEngSetSource, source ) );
         }
     if ( ( err != KErrNone ) )
         {
-        __VTPRINT( DEBUG_GEN, "VtUi.:CmdDisableVideoL.MediaNone" )
+        __VTPRINT( DEBUG_GEN, "CLcVtSession.CmdDisableVideoL.MediaNone" )
         MVtEngMedia::TMediaSource source = MVtEngMedia::EMediaNone;
         ExecuteCmdL( KVtEngSetSource, source );
         }
@@ -946,12 +963,13 @@ TInt CLcVtSession::SetForegroundStatus( TBool aIsForeground )
         iLocalVideoWindow->SetOrdinalPosition( 1 , priority );
         iRwSession.Flush();
         }
-//    if ( aIsForeground ) {
-//            iIndicatorCtr->disableActiveCallIndicator();
-//        }
-//    else  {
-//            iIndicatorCtr->enableActiveCallIndicator();
-//        }
+    if ( aIsForeground )
+       {
+       iIndicatorCtr->disableActiveCallIndicator();
+       }
+    else {
+       iIndicatorCtr->enableActiveCallIndicator();
+       }
 
     __VTPRINTEXIT( "CLcVtSession.SetForegroundStatus" )
     
@@ -1175,13 +1193,32 @@ TBool CLcVtSession::ActiveExecInitExecuteL(
             ActiveExecInitExecuteCommandL( KVtEngStartRenderRemote, aRequest );
             //TRequestStatus* status = &aRequest;
             //User::RequestComplete( status, KErrNone );            
+
+            MVtEngSessionInfo::TDirection direction;
+            if ( iModel->Session().GetDirection( direction ) != KErrNone )
+                {
+                direction = MVtEngSessionInfo::EDirectionMT;
+                }
             
-            MVtEngSessionInfo& session = iModel->Session();
             MVtEngMedia& media = iModel->Media();    
             if ( LcVtUtility::HasCameras( media ) )
                 {
-                //aNextState = EVtSessionAnsweredDoPrepareCamera;
-                aNextState = EVtSessionAnsweredSetlectNone;
+                if ( direction == MVtEngSessionInfo::EDirectionMT )
+                    {
+                        if ( VideoSendingKey == KAllwaysAllow)
+                            {
+                            aNextState = EVtSessionAnsweredDoPrepareCamera;
+                            }
+                        else
+                            {
+                            aNextState = EVtSessionAnsweredSetlectNone;
+                            }
+                    }
+                else
+                    {
+                    //MVtEngSessionInfo::EDirectionMO
+                    aNextState = EVtSessionAnsweredDoPrepareCamera;
+                    }
                 }
             else
                 {
@@ -2198,17 +2235,24 @@ TBool CLcVtSession::IsFeatureSupported( CLcEngine::TLcFeature aLcFeature )
 {
     __VTPRINT2( DEBUG_GEN, "CLcVtSession.IsFeatureSupported feature=%d", aLcFeature)
     TBool flag = EFalse;
+
     switch ( aLcFeature )
         {
         case CLcEngine::ELcSendVideoQuery:
             {
+            //MO call: return false; MT call: return true if key = Ask first, return false if key = No or Yes.
             MVtEngSessionInfo::TDirection direction;
             if ( iModel->Session().GetDirection( direction ) != KErrNone )
                 {
                 direction = MVtEngSessionInfo::EDirectionMT;
                 }
             __VTPRINT2( DEBUG_GEN, "CLcVtSession.IsFeatureSupported direction=%d", direction )
-            flag = ( direction == MVtEngSessionInfo::EDirectionMT );
+
+            if ( direction == MVtEngSessionInfo::EDirectionMT 
+                 && VideoSendingKey == KAllwaysQuery )
+                {
+                flag = ETrue;
+                }
             }
             break;
 

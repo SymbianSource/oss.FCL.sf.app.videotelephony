@@ -38,8 +38,7 @@ symbian: {
         "DEFFILE eabi/lcvtindicatorcontroller.def" \
         "$${LITERAL_HASH}endif"
     MMP_RULES += defFiles
-    :BLD_INF_RULES.prj_exports += "$${LITERAL_HASH}include <platform_paths.hrh>"           
-    :BLD_INF_RULES.prj_exports += "./inc/lcvtindicatorcontroller.h /epoc32/include/lcvtindicatorcontroller.h"
+    :BLD_INF_RULES.prj_exports += "$${LITERAL_HASH}include <platform_paths.hrh>"               
     :BLD_INF_RULES.prj_exports += "rom/lcvtindctr.iby CORE_APP_LAYER_IBY_EXPORT_PATH(lcvtindctr.iby)"
 }
 # Input

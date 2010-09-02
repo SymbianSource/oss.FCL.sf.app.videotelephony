@@ -74,7 +74,6 @@ private: // Constructors
 private: // Data
     
     TVtCameraHandler& iCameraHandler;
-    TBool           iIsPlaying;
     TBool           iOrientationChanged;
     
     };
