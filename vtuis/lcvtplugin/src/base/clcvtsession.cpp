@@ -285,6 +285,9 @@ void CLcVtSession::ConstructL()
     delete repository;
     
     iIndicatorCtr = new  ( ELeave ) LcVtIndicatorController();
+    
+    iForeGroundStatus = EFalse;
+    
     __VTPRINTEXIT( "CLcVtSession.ConstructL" )
     
     }
@@ -954,10 +957,12 @@ TInt CLcVtSession::SetForegroundStatus( TBool aIsForeground )
 {
     __VTPRINTENTER( "CLcVtSession.SetForegroundStatus" )
     __VTPRINT2( DEBUG_MEDIA , "    foreground: %d", aIsForeground )
+    
+    iForeGroundStatus = aIsForeground;
 
     if ( iRwGroup )
         {
-        TInt priority = aIsForeground ? ECoeWinPriorityNormal : ECoeWinPriorityNeverAtFront;
+        TInt priority = iForeGroundStatus ? ECoeWinPriorityNormal : ECoeWinPriorityNeverAtFront;
         iRwGroup->SetOrdinalPosition( 1 , priority );
         iRemoteVideoWindow->SetOrdinalPosition( 1 , priority );
         iLocalVideoWindow->SetOrdinalPosition( 1 , priority );
@@ -1235,7 +1240,6 @@ TBool CLcVtSession::ActiveExecInitExecuteL(
             break;
         case EVtSessionAnsweredDoPrepareCamera:
             {
-            MVtEngMedia& media = iModel->Media();
             MVtEngMedia::TMediaSource source = MVtEngMedia::EMediaCamera;
             ActiveExecInitPrepareCameraL( source, aRequest );
             aNextState = EVtSessionAnsweredSetlectCamera;
@@ -1888,12 +1892,14 @@ void CLcVtSession::DoHandleLayoutChangedL()
 void CLcVtSession::UpdateRenderingParametersL()
     {
     __VTPRINTENTER( "CLcVtSession.UpdateRenderingParametersL" )
+            
+    TInt priority = iForeGroundStatus ? ECoeWinPriorityNormal : ECoeWinPriorityNeverAtFront;
     
-    iRwGroup->SetOrdinalPosition( 1 , ECoeWinPriorityNormal );
+    iRwGroup->SetOrdinalPosition( 1 , priority );
     
     TRect RMRect = RemoteVideoPlayer()->LcWindow()->LcWindowRect();
     iRemoteVideoWindow->SetExtent( RMRect.iTl, RMRect.Size() ); 
-    iRemoteVideoWindow->SetOrdinalPosition( 1 , ECoeWinPriorityNeverAtFront );
+    iRemoteVideoWindow->SetOrdinalPosition( 1 , priority );
     iRemoteVideoWindow->SetTransparencyAlphaChannel();
     
     __VTPRINT2( DEBUG_MEDIA , "    RemoteVideoPlayer.RMRect.iTl.iX: %d", RMRect.iTl.iX )
@@ -1904,7 +1910,7 @@ void CLcVtSession::UpdateRenderingParametersL()
     
     TRect VFRect = LocalVideoPlayer()->LcWindow()->LcWindowRect();
     iLocalVideoWindow->SetExtent( VFRect.iTl, VFRect.Size() );
-    iLocalVideoWindow->SetOrdinalPosition( 1, ECoeWinPriorityNeverAtFront );
+    iLocalVideoWindow->SetOrdinalPosition( 1, priority );
     iLocalVideoWindow->SetTransparencyAlphaChannel();
     
     __VTPRINT2( DEBUG_MEDIA , "    LocalVideoPlayer.VFRect.iTl.iX: %d", VFRect.iTl.iX )

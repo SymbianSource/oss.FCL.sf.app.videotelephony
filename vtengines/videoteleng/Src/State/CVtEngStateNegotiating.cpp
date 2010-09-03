@@ -57,7 +57,7 @@ void CVtEngStateNegotiating::UpdateL()
     const MVtProtocolCommand::TVtProtocolState state( MediaHandler().ProtoState() );
     CVtEngStateBase* newState = NULL;
 
-    if ( bearerstate != MVtCtlCallControl::EConnected ||
+    if ( bearerstate != MVtCtlCallControl::EConnected &&
          state == MVtProtocolCommand::ESetup ) // <- connect failed
         {
         newState = NewStateL( MVtEngSessionInfo::EClearing );
