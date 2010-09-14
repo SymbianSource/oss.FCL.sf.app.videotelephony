@@ -20,12 +20,16 @@
 #define C_VTUIDIALERCONTAINER_H
 
 #include    <coecntrl.h>
+#include    <CPhCltEmergencyCall.h>
+#include    <RPhCltServer.h>
+#include    <MPhCltEmergencyCallObserver.h>
 #include    "CVtUiAppUi.h"
 #include    "mvtuicomponent.h"
 #include    "mvtuiresourcechangeobserver.h"
 #include    "mvtuikeyeventobserver.h"
 #include    "mvtuinumbersource.h"
 #include    "tvtuicomponentstate.h"
+#include    "cvtuidtmfbuffer.h"
 
 // FORWARD DECLARATIONS
 class MVtUiVideoWindow;
@@ -69,8 +73,12 @@ public:
  *  @since S60 v5.0
  */
 class CVtUiDialerContainer : public CCoeControl,
-    public MVtUiResourceChangeObserver, public MVtUiComponent,
-    public MVtUiNumberSource, public MVtUiKeyEventObserver
+                             public MVtUiResourceChangeObserver, 
+                             public MVtUiComponent,
+                             public MVtUiNumberSource, 
+                             public MVtUiKeyEventObserver,
+                             public MVtUiDTMFBufferObserver,
+                             private MPhCltEmergencyCallObserver
     {
 
 public:
@@ -157,6 +165,18 @@ private: // from MVtUiKeyEventObserver
      */
     TKeyResponse OfferKeyEventL( const TKeyEvent& aEvent,
         TEventCode aCode );
+    
+private: // from MPhCltEmergencyCallObserver       
+    /**
+     * @see  MPhCltEmergencyCallObserver::HandleEmergencyDialL
+     */
+    virtual void HandleEmergencyDialL( const TInt aStatus );
+    
+private: // from MVtUiDTMFBufferObserver
+    /**
+     * @see MVtUiDTMFBufferObserver::NotifyDTMFBufferChanged
+     */
+    virtual void NotifyDTMFBufferChangedL();
 
 private: // from CCoeControl
 
@@ -257,6 +277,12 @@ private:
 
     // Owned: background context.
     CAknsBasicBackgroundControlContext* iBgContext;
+    
+    // Phone Server session
+    RPhCltServer          iServer;
+    
+    // Emergency call handler
+    CPhCltEmergencyCall*  iEmergency;
 
     };
 

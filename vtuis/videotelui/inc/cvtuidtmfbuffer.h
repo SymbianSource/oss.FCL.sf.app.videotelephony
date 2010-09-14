@@ -29,12 +29,28 @@ class TKeyEvent;
 const TInt KVtUiDTMFBufferSize = 64;
 
 /**
-*  TVtUiBaseComponentState
+*  MVtUiDTMFBufferObserver
+*
+*  Observer of DTMF chaning.
+*/
+
+class MVtUiDTMFBufferObserver
+    {
+public:
+    /*
+     * Buffer changed callback
+     */
+    virtual void NotifyDTMFBufferChangedL() = 0;
+    };
+    
+/**
+*  CVtUiDTMFBuffer
 *
 *  Base componentstate definition.
 *
 *  @since S60 v5.0
 */
+
 class CVtUiDTMFBuffer : public CActive, public MVtUiNumberSource
     {
 
@@ -46,6 +62,14 @@ public:
     * @return Pointer to newly created instance of CVtUiDTMFBuffer.
     */
     static CVtUiDTMFBuffer* NewL( const CCoeEnv& aCoeEnv );
+
+    /**
+    * Static construction method.
+    * @param aCoeEnv Reference to CoeEnv object.
+    * @param aObserver Pointer to buffer observer
+    * @return Pointer to newly created instance of CVtUiDTMFBuffer.
+    */
+    static CVtUiDTMFBuffer* NewL( const CCoeEnv& aCoeEnv, MVtUiDTMFBufferObserver* aObserver );
 
     /**
     * C++ destructor.
@@ -99,6 +123,11 @@ private:
     * C++ constructor
     */
     CVtUiDTMFBuffer( const CCoeEnv& aCoeEnv );
+    
+    /**
+    * C++ constructor
+    */
+    CVtUiDTMFBuffer( const CCoeEnv& aCoeEnv, MVtUiDTMFBufferObserver* aObserver );
 
     /**
     * 2nd constructor, may leave.
@@ -132,6 +161,9 @@ private:
 
     // DTMF buffer
     TBuf< KVtUiDTMFBufferSize > iBuffer;
+    
+    // DTMF buffer observer
+    MVtUiDTMFBufferObserver* iObserver;
 
     };
 

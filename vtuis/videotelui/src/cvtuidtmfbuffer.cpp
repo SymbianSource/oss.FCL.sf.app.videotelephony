@@ -41,6 +41,21 @@ CVtUiDTMFBuffer* CVtUiDTMFBuffer::NewL( const CCoeEnv& aCoeEnv )
     }
 
 // ---------------------------------------------------------------------------
+// CVtUiDTMFBuffer::NewL
+// ---------------------------------------------------------------------------
+//
+CVtUiDTMFBuffer* CVtUiDTMFBuffer::NewL( const CCoeEnv& aCoeEnv, MVtUiDTMFBufferObserver* aObserver )
+    {
+    __VTPRINTENTER( "CVtUiDTMFBuffer.NewL" )
+    CVtUiDTMFBuffer* self = new ( ELeave ) CVtUiDTMFBuffer( aCoeEnv, aObserver );
+    CleanupStack::PushL( self );
+    self->ConstructL();
+    CleanupStack::Pop(); // self
+    __VTPRINTEXIT( "CVtUiDTMFBuffer.NewL" )
+    return self;
+    }
+
+// ---------------------------------------------------------------------------
 // CVtUiDTMFBuffer::~CVtUiDTMFBuffer
 // ---------------------------------------------------------------------------
 //
@@ -67,6 +82,10 @@ TBool CVtUiDTMFBuffer::Append( TChar aChar )
             iBuffer = iBuffer.Right( 1 );
             }
         iBuffer.Append( aChar );
+        if ( iObserver )
+            {
+            iObserver->NotifyDTMFBufferChangedL();
+            }
         StartTimer();
         result = ETrue;
         }
@@ -169,6 +188,18 @@ CVtUiDTMFBuffer::CVtUiDTMFBuffer( const CCoeEnv& aCoeEnv ) :
     }
 
 // ---------------------------------------------------------------------------
+// CVtUiDTMFBuffer::CVtUiDTMFBuffer
+// ---------------------------------------------------------------------------
+//
+CVtUiDTMFBuffer::CVtUiDTMFBuffer( const CCoeEnv& aCoeEnv, MVtUiDTMFBufferObserver* aObserver ) :
+    CActive( EPriorityStandard ), iCoeEnv( aCoeEnv ), iObserver( aObserver )
+    {
+    __VTPRINTENTER( "CVtUiDTMFBuffer.ctor" )
+    CActiveScheduler::Add( this );
+    __VTPRINTEXIT( "CVtUiDTMFBuffer.ctor" )
+    }
+
+// ---------------------------------------------------------------------------
 // CVtUiDTMFBuffer::ConstructL
 // ---------------------------------------------------------------------------
 //
@@ -214,5 +245,9 @@ void CVtUiDTMFBuffer::ResetBuffer()
     {
     __VTPRINTENTER( "CVtUiDTMFBuffer.ResetBuffer" )
     iBuffer.Zero();
+    if ( iObserver )
+        {
+        iObserver->NotifyDTMFBufferChangedL();
+        }
     __VTPRINTEXIT( "CVtUiDTMFBuffer.ResetBuffer" )
     }

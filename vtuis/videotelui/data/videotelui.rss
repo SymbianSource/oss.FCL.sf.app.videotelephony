@@ -1761,6 +1761,35 @@ RESOURCE CBA r_videotelui_softkeys_empty_dialerexit
         {
         CBA_BUTTON
             {
+            id = EAknSoftkeyEmpty;
+            txt = text_softkey_empty;
+            },
+        CBA_BUTTON
+            {
+            id = EVtUiDialerExit;
+            txt = text_softkey_back;
+            },
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyEmpty;
+            txt = text_softkey_empty;
+            }
+        };
+    }
+
+// -----------------------------------------------------------------------------
+//
+// r_videotelui_softkeys_emergcall_dialerexit
+// Dialer softkeys
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE CBA r_videotelui_softkeys_emergcall_dialerexit
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
             id = EVtUiCmdDialerEmergencyCall;
             txt = qtn_incal_softk_emergency_call;
             },

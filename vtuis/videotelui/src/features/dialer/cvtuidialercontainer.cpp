@@ -27,6 +27,7 @@
 #include    <AknsBasicBackgroundControlContext.h>
 #include    <akntoolbar.h>
 
+#include    <videotelui.rsg>
 #include    "VtUiUtility.h"
 #include    "VtUiLayout.h"
 #include    "mvtuicomponentmanager.h"
@@ -90,6 +91,9 @@ CVtUiDialerContainer* CVtUiDialerContainer::NewL(
 CVtUiDialerContainer::~CVtUiDialerContainer()
     {
     __VTPRINTENTER( "DialContainer.~" )
+    delete iEmergency;
+    iServer.Close();    
+        
     delete iAsyncDeactivate;
     delete iVideoControl;
     delete iDialer;
@@ -360,7 +364,7 @@ void CVtUiDialerContainer::ConstructL( CVtUiBitmapManager& aBitmapManager )
     SetExtent( TPoint(), TSize() );
     ActivateL();
     MakeVisible( EFalse );
-    iInputBuffer = CVtUiDTMFBuffer::NewL( *iCoeEnv );
+    iInputBuffer = CVtUiDTMFBuffer::NewL( *iCoeEnv, this );
     iVideoControl = CVtUiDialerVideoControl::NewL( aBitmapManager );
     iDialer = CVideoDTMFDialer::NewL( *this, *iVideoControl, DialerRect() );
     
@@ -372,6 +376,10 @@ void CVtUiDialerContainer::ConstructL( CVtUiBitmapManager& aBitmapManager )
         }
     iAsyncDeactivate = new ( ELeave ) CAsyncCallBack(
         TCallBack( ASyncDoDeactivate, this ), CActive::EPriorityLow );
+    
+    // PhClt initialization
+    User::LeaveIfError( iServer.Connect() );
+    iEmergency = CPhCltEmergencyCall::NewL( this );
     __VTPRINTEXIT( "DialContainer.ConstructL" )
     }
 
@@ -504,17 +512,17 @@ void CVtUiDialerContainer::AppendDigit( TChar aDigit )
 // ---------------------------------------------------------------------------
 //
 TTypeUid::Ptr CVtUiDialerContainer::MopSupplyObject( TTypeUid aId )
- {
+    {
      __VTPRINTENTER( "CVtUiDialerContainer.MopSupplyObject" )
- // Required during rendering of the background skin in Draw()
- if (aId.iUid == MAknsControlContext::ETypeId)
-     {
-      __VTPRINTEXIT( "CVtUiDialerContainer.MopSupplyObject.1" )
-     return MAknsControlContext::SupplyMopObject( aId, iBgContext );
-     }
+    // Required during rendering of the background skin in Draw()
+    if (aId.iUid == MAknsControlContext::ETypeId)
+        {
+        __VTPRINTEXIT( "CVtUiDialerContainer.MopSupplyObject.1" )
+        return MAknsControlContext::SupplyMopObject( aId, iBgContext );
+        }
     __VTPRINTEXIT( "CVtUiDialerContainer.MopSupplyObject.2" )
- return CCoeControl::MopSupplyObject( aId );
- }
+    return CCoeControl::MopSupplyObject( aId );
+    }
 
 // ---------------------------------------------------------------------------
 // CVtUiDialerContainer::ASyncDoDeactivate
@@ -532,4 +540,76 @@ TInt CVtUiDialerContainer::ASyncDoDeactivate( TAny* aSelf )
         self->Window().WindowGroupId(), renderingEvent );
     __VTPRINTEXIT( "DialContainer.ASyncDoDeactivate" )
     return KErrNone;
+    }
+
+// -----------------------------------------------------------------------------
+// CVtUiDialerContainer::HandleEmergencyDialL
+// -----------------------------------------------------------------------------
+//
+void CVtUiDialerContainer::HandleEmergencyDialL(
+    const TInt )
+    {
+    __VTPRINTENTER( "CVtUiDialerContainer.HandleEmergencyDialL" )
+    // do nothing
+    __VTPRINTEXIT( "CVtUiDialerContainer.HandleEmergencyDialL" )
+    }
+
+// -----------------------------------------------------------------------------
+// CVtUiDialerContainer::NotifyDTMFBufferChanged
+// -----------------------------------------------------------------------------
+//
+void CVtUiDialerContainer::NotifyDTMFBufferChangedL()
+    {
+    __VTPRINTENTER( "CVtUiDialerContainer.NotifyDTMFBufferChanged" )
+    CEikButtonGroupContainer* cba = CEikButtonGroupContainer::Current();
+    
+    // Get the buffer
+    TBuf<KVtUiDTMFBufferSize> dtmfBuffer;
+    GetContents( dtmfBuffer );
+    
+    // If buffer is empty
+    if ( !dtmfBuffer.Length() )
+        {
+        __VTPRINT( DEBUG_GEN, "CVtUiDialerContainer.NotifyDTMFBufferChanged, buffer is emtpy")
+        cba->SetCommandSetL( R_VIDEOTELUI_SOFTKEYS_EMPTY_DIALEREXIT );
+        }
+    else
+        {
+        // First we have to see if current buffer is a EC number
+        AknTextUtils::ConvertDigitsTo( dtmfBuffer, EDigitTypeWestern );
+        if ( !iEmergency )
+            {
+            iEmergency = CPhCltEmergencyCall::NewL( this );
+            }
+        TBool isEmergencyNumber = EFalse;
+        const TInt err =
+            iEmergency->FindEmergencyPhoneNumber( dtmfBuffer, isEmergencyNumber );
+        
+        __VTPRINT3( DEBUG_GEN, 
+                "CVtUiDialerContainer.NotifyDTMFBufferChanged, err=%d, isEC=%d",
+                err, isEmergencyNumber )
+        
+        // No error and It's EC number
+        if ( err == KErrNone && isEmergencyNumber )
+            {
+            __VTPRINT( DEBUG_GEN, "CVtUiDialerContainer.NotifyDTMFBufferChanged, is EC")
+            // change CBA to 'EC-Back'
+            cba->SetCommandSetL( R_VIDEOTELUI_SOFTKEYS_EMERGCALL_DIALEREXIT );
+            }
+        // Error happened, but it's EC number
+        else if ( err != KErrNone && isEmergencyNumber )
+            {
+            __VTPRINT( DEBUG_GEN, "CVtUiDialerContainer.NotifyDTMFBufferChanged, err happened")
+            cba->SetCommandSetL( R_VIDEOTELUI_SOFTKEYS_EMPTY_DIALEREXIT );
+            }
+        else // not EC number and we don't care about the error
+            {
+            __VTPRINT( DEBUG_GEN, "CVtUiDialerContainer.NotifyDTMFBufferChanged, not EC")
+            // change CBA to digitl we have on hand
+            // but at the moment we dont need this, so comment it out
+            //cba->SetCommandL( EAknSoftkeyEmpty, dtmfBuffer );
+            }
+        }
+    cba->DrawNow();
+    __VTPRINTEXIT( "CVtUiDialerContainer.NotifyDTMFBufferChanged" )
     }
