@@ -48,6 +48,10 @@ NONSHARABLE_CLASS( CPVCameraSourceNodeProxy ) : public CBase,
          * Constructor.
          */
         CPVCameraSourceNodeProxy();
+        /**
+         * destructor.
+         */
+        ~CPVCameraSourceNodeProxy();//add for memory leak
         
         /**
          * Set consumer object.
@@ -292,6 +296,12 @@ NONSHARABLE_CLASS( CVideoSourceProxy ) : public CBase,
          * Constructor.
          */
         CVideoSourceProxy(MVTVideoSource* aVideoSource);
+        
+        /**
+         * destructor.
+         */
+        ~CVideoSourceProxy();//add for memory leak
+        
         /**
          * ConstructL.
          */

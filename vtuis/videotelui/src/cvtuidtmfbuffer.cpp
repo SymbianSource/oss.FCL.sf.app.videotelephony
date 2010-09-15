@@ -84,7 +84,7 @@ TBool CVtUiDTMFBuffer::Append( TChar aChar )
         iBuffer.Append( aChar );
         if ( iObserver )
             {
-            iObserver->NotifyDTMFBufferChangedL();
+            TRAP_IGNORE( iObserver->NotifyDTMFBufferChangedL() );//could be leave
             }
         StartTimer();
         result = ETrue;
@@ -247,7 +247,7 @@ void CVtUiDTMFBuffer::ResetBuffer()
     iBuffer.Zero();
     if ( iObserver )
         {
-        iObserver->NotifyDTMFBufferChangedL();
+        TRAP_IGNORE( iObserver->NotifyDTMFBufferChangedL() );
         }
     __VTPRINTEXIT( "CVtUiDTMFBuffer.ResetBuffer" )
     }

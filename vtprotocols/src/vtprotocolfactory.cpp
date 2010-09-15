@@ -220,4 +220,15 @@ EXPORT_C MVtAudioConfigCommand* VTProtocolFactory::GetAudioConfigCommandL(MVTAud
     return audioConfigCommand;
     }
 
+// -----------------------------------------------------------------------------
+// VTProtocolFactory::GetAudioConfigCommandL
+// Get one instance.
+// -----------------------------------------------------------------------------
+//
+EXPORT_C void VTProtocolFactory::DeleteAudioConfigCommandL(MVtAudioConfigCommand* aAudioConfigCommand)
+    {
+    CAudioConfigCommand* audioConfigCommand = static_cast<CAudioConfigCommand*>(aAudioConfigCommand);
+    delete audioConfigCommand;
+    }
+
 // end of file

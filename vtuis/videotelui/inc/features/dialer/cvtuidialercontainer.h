@@ -40,7 +40,6 @@ class CVideoDTMFDialer;
 class TVtUiStates;
 class CVtUiDialerSKModifier;
 class CVtUiFeatureManager;
-class CVtUiDTMFBuffer;
 class CAknsBasicBackgroundControlContext;
 
 // CONSTANTS
@@ -276,7 +275,7 @@ private:
     CAsyncCallBack* iAsyncDeactivate;
 
     // Owned: background context.
-    CAknsBasicBackgroundControlContext* iBgContext;
+    CAknsBasicBackgroundControlContext* iBgContext;        
     
     // Phone Server session
     RPhCltServer          iServer;

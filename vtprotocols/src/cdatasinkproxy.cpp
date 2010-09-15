@@ -60,6 +60,64 @@ CPVDisplaySinkNodeProxy::CPVDisplaySinkNodeProxy() : MVTVideoSource(KNullUid)
     }
 
 // -----------------------------------------------------------------------------
+// CPVDisplaySinkNodeProxy::~CPVDisplaySinkNodeProxy
+// destructor.add for memory leak
+// -----------------------------------------------------------------------------
+//
+CPVDisplaySinkNodeProxy::~CPVDisplaySinkNodeProxy()
+    {
+    __IF_DEBUG(Print( _L( "VTProto: CPVDisplaySinkNodeProxy::~CPVDisplaySinkNodeProxy<" ) ));
+    __IF_DEBUG(Print( _L( "VTProto: ~CPVDisplaySinkNodeProxy = %x"), (TInt)this) );
+    __IF_DEBUG(Print( _L( "VTProto: CPVDisplaySinkNodeProxy::~CPVDisplaySinkNodeProxy>" ) ));
+    }
+
+// ============================ CVSVideoOutput =================================
+
+// -----------------------------------------------------------------------------
+// CVSVideoOutput::CVSVideoOutput
+// -----------------------------------------------------------------------------
+//
+CVSVideoOutput::CVSVideoOutput( CDisplaySinkProxy* aSink )
+: iSink( aSink )
+    {
+    __IF_DEBUG(Print(_L("VideoSource[%d]: CVSVideoOutput::CVSVideoOutput()<"), RThread().Id().operator TUint()));
+    __IF_DEBUG(Print(_L("VideoSource[%d]: CVSVideoOutput::CVSVideoOutput()>"), RThread().Id().operator TUint()));
+    }
+
+// -----------------------------------------------------------------------------
+// CVSVideoOutput::SetFormatL
+// -----------------------------------------------------------------------------
+//
+void CVSVideoOutput::SetFormatL( const TDesC8& aFormat )
+    {
+    __IF_DEBUG(Print(_L("VideoSource[%d]: CVSVideoOutput::SetFormatL()<"), RThread().Id().operator TUint()));
+    iSink->SetFormatL( aFormat );
+    __IF_DEBUG(Print(_L("VideoSource[%d]: CVSVideoOutput::SetFormatL()>"), RThread().Id().operator TUint()));
+    }
+
+// -----------------------------------------------------------------------------
+// CVSVideoOutput::SetVideoFrameSizeL
+// -----------------------------------------------------------------------------
+//
+void CVSVideoOutput::SetVideoFrameSizeL( const TSize& aSize )
+    {
+    __IF_DEBUG(Print(_L("VideoSource[%d]: CVSVideoOutput::SetVideoFrameSizeL()<"), RThread().Id().operator TUint()));
+    iSink->SetVideoFrameSizeL( aSize );
+    __IF_DEBUG(Print(_L("VideoSource[%d]: CVSVideoOutput::SetVideoFrameSizeL()>"), RThread().Id().operator TUint()));
+    }
+
+// -----------------------------------------------------------------------------
+// CVSVideoOutput::GetVideoFrameSizeL
+// -----------------------------------------------------------------------------
+//
+void CVSVideoOutput::GetVideoFrameSizeL( TSize& aSize ) const
+    {
+    __IF_DEBUG(Print(_L("VideoSource[%d]: CVSVideoOutput::GetVideoFrameSizeL()<"), RThread().Id().operator TUint()));
+    iSink->GetVideoFrameSizeL( aSize );
+    __IF_DEBUG(Print(_L("VideoSource[%d]: CVSVideoOutput::GetVideoFrameSizeL()>"), RThread().Id().operator TUint()));
+    }
+
+// -----------------------------------------------------------------------------
 // CDisplaySinkProxy::CDisplaySinkProxy
 // Constructor.
 // -----------------------------------------------------------------------------
@@ -71,6 +129,19 @@ CDisplaySinkProxy::CDisplaySinkProxy(MVTVideoSink* aDisplaySink) : MPVDataSink(K
     }
 
 // -----------------------------------------------------------------------------
+// CDisplaySinkProxy::~CDisplaySinkProxy
+// destructor.add for memory leak
+// -----------------------------------------------------------------------------
+//
+CDisplaySinkProxy::~CDisplaySinkProxy()
+    {
+    __IF_DEBUG(Print( _L( "VTProto: CDisplaySinkProxy::~CDisplaySinkProxy<" ) ));
+    __IF_DEBUG(Print( _L( "VTProto: ~CDisplaySinkProxy = %x"), (TInt)this) );
+    delete iVideoOutputInterface;
+    delete iDSNodeProxy;
+    __IF_DEBUG(Print( _L( "VTProto: CDisplaySinkProxy::~CDisplaySinkProxy>" ) ));
+    }
+// -----------------------------------------------------------------------------
 // CDisplaySinkProxy::ConstructL
 // -----------------------------------------------------------------------------
 //
@@ -78,6 +149,7 @@ void CDisplaySinkProxy::ConstructL()
     {
     __IF_DEBUG(Print( _L( "VTProto: CDisplaySinkProxy::ConstructL<" ) ));
     iDSNodeProxy = new (ELeave)CPVDisplaySinkNodeProxy();
+    iVideoOutputInterface = new (ELeave) CVSVideoOutput( this );
     __IF_DEBUG(Print( _L( "VTProto: CDisplaySinkProxy::ConstructL>" ) ));
     }
 
@@ -107,14 +179,14 @@ void CDisplaySinkProxy::QueryInterface( const TPVUuid& aUuid, TPVInterfacePtr& a
     __IF_DEBUG(Print( _L( "VTProto: CDisplaySinkProxy::QueryInterface<" ) ));
     if ( aUuid == KPVUidVideoOutputInterface )
         {
-        MPVVideoInput* interfaceP = (MPVVideoInput*) this;
+        MPVVideoInput* interfaceP = (MPVVideoInput*) iVideoOutputInterface;
         aInterfacePtr = (TPVInterfacePtr) interfaceP;
         }
     else
         {
         aInterfacePtr = NULL;
         }
-    __IF_DEBUG(Print( _L( "VTProto: CDisplaySinkProxy::QueryInterface aInterfacePtr %d>" ), aInterfacePtr ));  
+    __IF_DEBUG(Print( _L( "VTProto: CDisplaySinkProxy::QueryInterface aInterfacePtr %x>" ), aInterfacePtr ));  
     }
 
 // -----------------------------------------------------------------------------

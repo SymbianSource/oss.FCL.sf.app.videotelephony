@@ -32,7 +32,18 @@
 // -----------------------------------------------------------------------------
 //
 CPVCameraSourceNodeProxy::CPVCameraSourceNodeProxy() : MVTVideoSink(KNullUid) 
-    { 
+    {
+    }
+
+// -----------------------------------------------------------------------------
+// CPVCameraSourceNodeProxy::~CPVCameraSourceNodeProxy
+// destructor.add for memory leak
+// -----------------------------------------------------------------------------
+//
+CPVCameraSourceNodeProxy::~CPVCameraSourceNodeProxy()
+    {
+    __IF_DEBUG(Print(_L("VTProto: CPVCameraSourceNodeProxy::~CPVCameraSourceNodeProxy<")));
+    __IF_DEBUG(Print(_L("VTProto: CPVCameraSourceNodeProxy::~CPVCameraSourceNodeProxy>")));
     }
 
 // -----------------------------------------------------------------------------
@@ -82,6 +93,18 @@ CVideoSourceProxy::CVideoSourceProxy(MVTVideoSource* aDataSource) : MPVDataSourc
     {
     __IF_DEBUG(Print(_L("VTProto: CVideoSourceProxy::CVideoSourceProxy<")));
     __IF_DEBUG(Print(_L("VTProto: CVideoSourceProxy::CVideoSourceProxy iVideoSource %d>"), iVideoSource));	
+    }
+
+// -----------------------------------------------------------------------------
+// CVideoSourceProxy::~CVideoSourceProxy
+// destructor.add for memory leak
+// -----------------------------------------------------------------------------
+//
+CVideoSourceProxy::~CVideoSourceProxy() 
+    {
+    __IF_DEBUG(Print(_L("VTProto: CVideoSourceProxy::~CVideoSourceProxy<")));
+    delete iCameraSourceNodeProxy;
+    __IF_DEBUG(Print(_L("VTProto: CVideoSourceProxy::~CVideoSourceProxy>"))); 
     }
 
 // -----------------------------------------------------------------------------

@@ -1008,6 +1008,9 @@ CVtUiAppUi::~CVtUiAppUi()
     FeatureManager::UnInitializeLib();
     __VTPRINTEXIT( "VtUi.~" )
     VTLOGUNINIT
+    
+	// Directly exit with all allocated resources cleaned
+    User::Exit( EEikCmdExit );
     }
 
 // -----------------------------------------------------------
@@ -7130,6 +7133,18 @@ void CVtUiAppUi::CEventObserver::HandleVTCommandPerformedL(
              iAppUi.iState->HandleVTCommandPerformedL( aCommand, aError ) ==
              TVtUiAppStateBase::EEventHandled )
             {
+            if( aCommand == KVtEngTerminateSession )//add for memory leak
+                {
+                const TInt count1 = iCommandObservers.Count();
+                for ( TInt index = 0; index < count1; index++ )
+                    {
+                    MVtEngCommandObserver* obs = iCommandObservers[ index ];
+                    if ( obs )
+                        {
+                        TRAP_IGNORE( obs->HandleVTCommandPerformedL( aCommand, aError ) );
+                        }
+                    }
+                }
             // state didn't allow further processing of command completion
             __VTPRINTEXITR( "VtUiComms.HandleVTCommandPerformedL %d", 0 )
             return;

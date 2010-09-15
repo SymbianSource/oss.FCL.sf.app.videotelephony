@@ -1124,6 +1124,12 @@ class VTProtocolFactory
          * @param aAudioSink
          */
         IMPORT_C static MVtAudioConfigCommand* GetAudioConfigCommandL(MVTAudioSink* aAudioSink);
+        
+        /**
+         * Delete instance.
+         * add for memory leak
+         */
+        IMPORT_C static void DeleteAudioConfigCommandL(MVtAudioConfigCommand* aAudioConfigCommand);
     };
 
 #endif

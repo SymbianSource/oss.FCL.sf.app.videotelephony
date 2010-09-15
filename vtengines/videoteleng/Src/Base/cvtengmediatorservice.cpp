@@ -251,7 +251,9 @@ void CVtEngMediatorService::StartOperationL( const TVtEngCommandId aCommand )
         aCommand,
         iUtils.StateManager()->Handlers(),
         *this );        
-    iOperation->ExecuteL();
+    CleanupStack::PushL( iOperation );//add for memory leak
+    iOperation->ExecuteL();//it could be leave
+    CleanupStack::Pop(); // iOperation 
     iServiceStatus = KRequestPending;
     __VTPRINTEXIT( "CVtEngMediatorService.StartOperationL" )
     }

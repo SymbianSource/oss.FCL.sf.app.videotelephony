@@ -2522,6 +2522,7 @@ void CVtEngMediaHandler::FinalizeUninitialization()
     __VTPRINTENTER( "MH.FinalUninit" )
     if ( iSessionCommand )
         {
+        VTProtocolFactory::DeleteAudioConfigCommandL(iAudioCtrl);//add for memory leak
         iAudioCtrl = NULL;
         TInt err( KErrNone );
 
