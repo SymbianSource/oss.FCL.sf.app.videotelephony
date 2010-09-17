@@ -69,6 +69,7 @@ void CVtEngSettings::ConstructL()
 
     // Ear volume CR listener.
     iCRProxy = &CVtEngUtility::CRProxy();
+#if 0
     CreateDataObserverL( this, KCRUidInCallVolume, KTelIncallEarVolume, 
         CCenRepNotifyHandler::EIntKey );   
     
@@ -76,7 +77,7 @@ void CVtEngSettings::ConstructL()
     CreateDataObserverL( 
         this, KCRUidInCallVolume, KTelIncallLoudspeakerVolume,
         CCenRepNotifyHandler::EIntKey );
-    
+#endif    
     // Call duration listener.
     CreateDataObserverL( this, KCRUidLogs, KLogsShowCallDuration, 
         CCenRepNotifyHandler::EIntKey );
@@ -273,7 +274,7 @@ TInt CVtEngSettings::GetVolume(
     const TBool aHandsfree,
     const TBool aInternal ) const
     {
-    __VTPRINTEXIT( "Settings.GetVolume" )
+    __VTPRINTENTER( "Settings.GetVolume" )
     TInt res( KErrNone );
     if ( aInternal )
         {
