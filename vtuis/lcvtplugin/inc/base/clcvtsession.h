@@ -560,6 +560,8 @@ private:
     TInt VideoSendingKey;
     
     LcVtIndicatorController* iIndicatorCtr;
+    
+    TBool iForeGroundStatus;
     };
     
 

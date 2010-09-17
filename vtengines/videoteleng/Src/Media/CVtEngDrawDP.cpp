@@ -1511,7 +1511,7 @@ TBool CVtEngDrawDP::SupportsContrast() const
 //
 TInt CVtEngDrawDP::GetFrameBufferSize( const TSize& aSize ) const
     {
-    TInt size( -1 );
+    TInt size( 0 );
     __VTPRINTENTER( "RVD(DP).GetFrameBufferSize" )
     switch( iPostingFormat )
         {

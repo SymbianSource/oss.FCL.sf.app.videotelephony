@@ -58,25 +58,23 @@ TBool TLcVtStates::IsColorToneSettingAvailable() const
     // Get supported whitebalance modes
     if ( iCameraPref )
         {
-        if ( iCameraPref->GetSupportedColorTones( supportedModes ) )
+        if ( iCameraPref->GetSupportedColorTones( supportedModes ) == KErrNone )
             {
-            // error occured
-            __VTPRINTEXIT( "TLcVtStates.IsColorToneSettingAvailableErr" )
-            return EFalse;
+            // Clean the flag, flags that are possible are
+            // A bitfield of suported colortones
+            // ENormal         = 0x00,
+            // ESepia          = 0x01,
+            // EGrayscale      = 0x02,
+            // ENegative       = 0x04
+            supportedModes &= 0x07;
+            __VTPRINTEXITR( "TLcVtStates.IsColorToneSettingAvailable mode=%d", 
+                supportedModes )
+            return supportedModes;
             }
         }
 
-    // Clean the flag, flags that are possible are
-    // A bitfield of suported colortones
-    // ENormal         = 0x00,
-    // ESepia          = 0x01,
-    // EGrayscale      = 0x02,
-    // ENegative       = 0x04
-    supportedModes &= 0x07;
-
-    // If supported modes is 0 automatic,then return EFalse
-    __VTPRINTEXIT( "TLcVtStates.IsColorToneSettingAvailable" )
-    return supportedModes;
+    __VTPRINTEXIT( "TLcVtStates.IsColorToneSettingAvailableErr" )
+    return EFalse;
     }
 
 // -----------------------------------------------------------------------------
@@ -90,17 +88,16 @@ TBool TLcVtStates::IsWhiteBalanceSettingAvailable() const
     // Get supported whitebalance modes
     if ( iCameraPref )
         {
-        if ( iCameraPref->GetSupportedWhiteBalanceModes( supportedModes ) )
+        if ( iCameraPref->GetSupportedWhiteBalanceModes( supportedModes ) == KErrNone )
             {
-            // error occured
-            __VTPRINTEXIT( "TLcVtStates.IsWhiteBalanceSettingAvailableErr" )
-            return EFalse;
+            __VTPRINTEXITR( "TLcVtStates.IsWhiteBalanceSettingAvailable mode=%d", 
+                supportedModes )
+            return supportedModes;
             }
         }
-    __VTPRINT2( DEBUG_GEN, "IsWhiteBalanceSettingAvailable=%d", supportedModes )
-    // If supported modes is 0 ,then return EFalse
-    __VTPRINTEXIT( "TLcVtStates.IsWhiteBalanceSettingAvailable2" )
-    return supportedModes;
+
+    __VTPRINTEXIT( "TLcVtStates.IsWhiteBalanceSettingAvailableErr" )
+    return EFalse;
     }
 
 // -----------------------------------------------------------------------------

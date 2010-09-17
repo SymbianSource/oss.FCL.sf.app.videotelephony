@@ -233,16 +233,23 @@ void TLcVtStateRunning::CreateVoiceCallL()
 //
 void TLcVtStateRunning::ShutdownWithEngineCommandL( const TInt aCommand )
     {
-    __VTPRINTENTER(
-        "TLcVtStateRunning.ShutdownWithEngineCommandL" )
+    __VTPRINTENTER( "TLcVtStateRunning.ShutdownWithEngineCommandL" )
+
     TLcVtStateBase* resetState =
         TLcVtStateResetting::InstanceL( iCtx, iUiStates, aCommand ); 
     CLcVtAppShutter* shutter = CLcVtAppShutter::InstanceL( *resetState );
 
-    // open resetting state, handles engine command request/reply
-    ChangeStateL( *resetState );
-
-    __VTPRINTEXIT( "TLcVtStateRunning.ShutdownWithEngineCommandL" )
+    if ( shutter )
+    {
+        // open resetting state, handles engine command request/reply
+        ChangeStateL( *resetState );
+#ifdef _DEBUG
+        __VTPRINTEXIT( "TLcVtStateRunning.ShutdownWithEngineCommandL 1" )
+        return;
+#endif
+    }    
+   
+    __VTPRINTEXIT( "TLcVtStateRunning.ShutdownWithEngineCommandL 0" )
     }
 
 // -----------------------------------------------------------------------------

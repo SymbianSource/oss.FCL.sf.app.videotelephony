@@ -2615,14 +2615,19 @@ void CVtEngLocalVideo::UpdateState()
     if ( iActiveProvider )
         {
         CVSDataProvider* provider = iActiveProvider->iProvider;
-        __VTPRINT2 ( DEBUG_MEDIA, "LocVideo.UpdateState, provider active",
-            provider->ViewFinderActive() )
-        if ( provider && provider->ViewFinderActive())
+        
+        if ( provider )
             {
-            iViewFinderState = ( iRenderingMethod == EWindowServer ) ?
-                EVFReceivingBitmaps : EVFRenderingDsa;
+            __VTPRINT2 ( DEBUG_MEDIA, "LocVideo.UpdateState, provider active",
+                provider->ViewFinderActive() )
+            if ( provider->ViewFinderActive() )
+                {
+                iViewFinderState = ( iRenderingMethod == EWindowServer ) ?
+                    EVFReceivingBitmaps : EVFRenderingDsa;
+                }
             }
         }
+    
     ClearFlag( EFlagInitializeOnly );
     __VTPRINT2( DEBUG_MEDIA | DEBUG_RETURN,
         "LocVideo.UpdateState iViewFinderState %d", iViewFinderState )
