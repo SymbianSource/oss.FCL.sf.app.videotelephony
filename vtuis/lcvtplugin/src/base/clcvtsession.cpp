@@ -649,19 +649,24 @@ void CLcVtSession::SetLcVolumeL( TInt aValue )
     {   
     __VTPRINTENTER( "CLcVtSession.SetLcVolumeL" )
     MVtEngAudio& audio = iModel->Audio();
-    const TInt HandsetVolume( audio.OutputVolume(ETrue) );    
-    const TInt HandsfreeVolume( audio.OutputVolume(EFalse) );    
+    const TInt HandsetVolume( audio.OutputVolume( ETrue ) );    
+    const TInt HandsfreeVolume( audio.OutputVolume( EFalse ) );    
+    
     MVtEngAudio::TVtEngOutputVolume volume;
     volume.iHandsetVolume = HandsetVolume;
     volume.iHandsfreeVolume = HandsfreeVolume;
 
     MVtEngAudio::TAudioRoutingState audioRouting;
     User::LeaveIfError( audio.GetRoutingState( audioRouting ) );    
-    if(audioRouting == MVtEngAudio::EAudioHandset)
+    if ( audioRouting == MVtEngAudio::EAudioHandset )
+        {
         volume.iHandsetVolume = aValue;
+        }
     else
+        {
         volume.iHandsfreeVolume = aValue;    
-    
+        }
+
     ExecuteCmdL( KVtEngSetAudioVolume, volume );
     __VTPRINTEXIT( "CLcVtSession.SetLcVolumeL" )
     }
@@ -2149,10 +2154,15 @@ void CLcVtSession::CEventObserver::HandleVtEventL( TInt aEvent )
             iSession.iState->HandleVtEventL( aEvent )
             == TLcVtStateBase::EEventHandled )
         {
-        __VTPRINTEXITR( "CEventObserver.HandleVtEventL %d", 0 )
+        __VTPRINTEXITR( "CEventObserver.HandleVtEventL %d skipped", aEvent )
         return;
         }
-    
+
+    if ( aEvent == KVtEngAudioOutputVolumeChanged )
+        {
+        __VTPRINTEXITR( "CEventObserver.HandleVtEventL %d skipped", aEvent )
+        return;
+        }
     iSession.iLcVtStates->Update();
     
     iSession.iObserver->Updated(*(iSession.iLocalVideoPlayer));

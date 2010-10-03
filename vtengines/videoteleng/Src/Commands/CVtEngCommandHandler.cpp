@@ -390,7 +390,7 @@ void CVtEngCommandHandler::CheckAsynchronity(
         case KVtEngSetAudioRouting:
         case KVtEngMuteOutgoingAudio:
         case KVtEngUnmuteOutgoingAudio:
-        case KVtEngSetAudioVolume:
+        //case KVtEngSetAudioVolume:
         case KVtEngHandleLayoutChange:
         case KVtEngUnfreeze:
 
