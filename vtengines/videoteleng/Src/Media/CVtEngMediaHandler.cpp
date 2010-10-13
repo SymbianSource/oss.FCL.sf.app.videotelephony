@@ -2522,7 +2522,6 @@ void CVtEngMediaHandler::FinalizeUninitialization()
     __VTPRINTENTER( "MH.FinalUninit" )
     if ( iSessionCommand )
         {
-        VTProtocolFactory::DeleteAudioConfigCommandL(iAudioCtrl);//add for memory leak
         iAudioCtrl = NULL;
         TInt err( KErrNone );
 
@@ -3866,7 +3865,7 @@ void CVtEngMediaHandler::SetVideoQualityL(
     TInt protoOperId( iH263Encoder->SetVideoFrameRate(
         iVideoQuality.ToFrameRate( aVideoQuality ) ) );
     AddOperation( ESetVideoQuality, protoOperId );
-    iVideoQuality.SettingVideoQualityL( protoOperId,
+    iVideoQuality.SettingVideoQuality( protoOperId,
         aVideoQuality, aSetPeerVideoQuality );
     __VTPRINTEXIT( "MH.SetVideoQualityL" )
     }
@@ -4223,7 +4222,7 @@ CVtEngMediaHandler::TVtEngVideoQuality::~TVtEngVideoQuality()
 // CVtEngMediaHandler::TVtEngVideoQuality::SettingVideoQuality
 // -----------------------------------------------------------------------------
 //
-void CVtEngMediaHandler::TVtEngVideoQuality::SettingVideoQualityL(
+void CVtEngMediaHandler::TVtEngVideoQuality::SettingVideoQuality(
     TInt aId, const TVideoQuality aValue, TBool aSetPeer )
     {
     __VTPRINTENTER( "MH.VQ.SettingVideoQuality" )

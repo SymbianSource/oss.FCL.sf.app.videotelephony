@@ -18,9 +18,6 @@
 
 #ifndef CDATASINKPROXY_H
 #define CDATASINKPROXY_H
-
-class CDisplaySinkProxy;
-
 NONSHARABLE_CLASS( CPVDisplaySinkNodeProxy ) : public CBase,
                                                public MVTVideoSource
     {
@@ -29,11 +26,6 @@ NONSHARABLE_CLASS( CPVDisplaySinkNodeProxy ) : public CBase,
          * Constructor .
          */
         CPVDisplaySinkNodeProxy();
-        
-        /**
-         * destructor .
-         */
-        ~CPVDisplaySinkNodeProxy();//add for memory leak
         /**
          * Set new supplier.
          * @param aSupplier
@@ -55,47 +47,6 @@ NONSHARABLE_CLASS( CPVDisplaySinkNodeProxy ) : public CBase,
     private:
         MPVDataSourceBase* iSupplier;
     };
-
-/**
-*  CVSVideoOutput
-*
-*  Base componentstate definition.
-*
-*  @since S60 v5.0
-*/
-
-NONSHARABLE_CLASS( CVSVideoOutput ) : public CBase, public MPVVideoOutput
-    {
-public: // Constructors and destructor
-
-    /**
-    * C++ default constructor.
-    * @param "aSink" Pointer to CDisplaySink object.
-    */
-    CVSVideoOutput( CDisplaySinkProxy* aSink );
-
-public: // Functions from base classes
-
-    /**
-    * From MPVVideoOutput. See MPVVideoOutput for description.
-    */
-    virtual void SetFormatL( const TDesC8& aFormat );
-
-    /**
-    * From MPVVideoOutput. See MPVVideoOutput for description.
-    */
-    virtual void SetVideoFrameSizeL( const TSize& aSize );
-
-    /**
-     * From MPVVideoOutput. See MPVVideoOutput for description.
-      */
-    virtual void GetVideoFrameSizeL( TSize& aSize ) const;
-
-private:    // Data
-
-    // Sink object to which calls are forwarded
-    CDisplaySinkProxy* iSink;
-};
 
 NONSHARABLE_CLASS( CDisplaySinkProxy ) : public CBase,
                                          public MPVDataSink,
@@ -288,11 +239,6 @@ NONSHARABLE_CLASS( CDisplaySinkProxy ) : public CBase,
         CDisplaySinkProxy(MVTVideoSink* aDisplaySink);
         
         /**
-         * destructor.
-         */
-        ~CDisplaySinkProxy();
-        
-        /**
          * ConstructL
          */
         void ConstructL();
@@ -309,8 +255,6 @@ NONSHARABLE_CLASS( CDisplaySinkProxy ) : public CBase,
     private:
         MVTVideoSink* iDisplaySink;
         CPVDisplaySinkNodeProxy* iDSNodeProxy;
-        // Extension interface for sink
-        CVSVideoOutput* iVideoOutputInterface;
         
     };
 

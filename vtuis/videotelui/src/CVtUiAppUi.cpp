@@ -1008,9 +1008,6 @@ CVtUiAppUi::~CVtUiAppUi()
     FeatureManager::UnInitializeLib();
     __VTPRINTEXIT( "VtUi.~" )
     VTLOGUNINIT
-    
-	// Directly exit with all allocated resources cleaned
-    User::Exit( EEikCmdExit );
     }
 
 // -----------------------------------------------------------
@@ -5068,7 +5065,7 @@ void CVtUiAppUi::DoHandleLayoutChangedL()
     UpdateRenderingParametersL();
     // Notify engine about layout change
     iLayoutChg = ETrue;
-    if( iDisableVideoOngoing || iShareImageOngoing )
+    if( iDisableVideoOngoing )
         {
         error = KErrNotReady;
         }
@@ -5103,7 +5100,6 @@ void CVtUiAppUi::DoHandleLayoutChangedL()
                 pendingCommand  == KVtEngSetSource ||
                 pendingCommand  == KVtEngPrepareCamera ||
                 pendingCommand  == KVtEngUnfreeze ||
-                pendingCommand  == KVtEngStopShareImage ||
                 invalidCommand  == KVtEngHandleLayoutChange )
             {
             iPendingCmd = pendingCommand;
@@ -5112,11 +5108,6 @@ void CVtUiAppUi::DoHandleLayoutChangedL()
         if( iDisableVideoOngoing && pendingCommand == KVtEngCommandNone )
             {
             iPendingCmd = KVtEngSetSource;
-            iUiStates->SetLayoutChangeNeeded( ETrue );
-            }
-        if( iShareImageOngoing && pendingCommand == KVtEngCommandNone )
-            {
-            iPendingCmd = KVtEngStartShareImage;
             iUiStates->SetLayoutChangeNeeded( ETrue );
             }
         }
@@ -7133,18 +7124,6 @@ void CVtUiAppUi::CEventObserver::HandleVTCommandPerformedL(
              iAppUi.iState->HandleVTCommandPerformedL( aCommand, aError ) ==
              TVtUiAppStateBase::EEventHandled )
             {
-            if( aCommand == KVtEngTerminateSession )//add for memory leak
-                {
-                const TInt count1 = iCommandObservers.Count();
-                for ( TInt index = 0; index < count1; index++ )
-                    {
-                    MVtEngCommandObserver* obs = iCommandObservers[ index ];
-                    if ( obs )
-                        {
-                        TRAP_IGNORE( obs->HandleVTCommandPerformedL( aCommand, aError ) );
-                        }
-                    }
-                }
             // state didn't allow further processing of command completion
             __VTPRINTEXITR( "VtUiComms.HandleVTCommandPerformedL %d", 0 )
             return;
@@ -7198,8 +7177,6 @@ void CVtUiAppUi::CEventObserver::HandleVTCommandPerformedL(
         {
         __VTPRINT3( DEBUG_GEN,
             "VtUi.HandleVTCommandPerformedL cmd=%d err=%d", aCommand, aError );
-        
-        iAppUi.iShareImageOngoing = EFalse;
         if( aError != KErrNone )
             {
             // stop toolbar feature to prevent drawing over error dialog
@@ -7226,21 +7203,11 @@ void CVtUiAppUi::CEventObserver::HandleVTCommandPerformedL(
                     TCallBack( &AsyncShare, &iAppUi ) );
                 }
             iAppUi.iAsyncCallback->CallBack();
-            iAppUi.iShareImageOngoing = ETrue;
-            }
-        else if( iAppUi.iUiStates->IsLayoutChangeNeeded() && 
-                aCommand == KVtEngStartShareImage && 
-                aCommand == iAppUi.iPendingCmd )
-            {
-            iAppUi.iPendingCmd = KVtEngCommandNone;
-            iAppUi.iUiStates->SetLayoutChangeNeeded( EFalse );
-            iAppUi.DoHandleLayoutChangedL();
             }
         }
     else if ( iAppUi.iUiStates->IsLayoutChangeNeeded() && 
             ( aCommand  == KVtEngSetSource ||
             aCommand  == KVtEngPrepareCamera ||
-            aCommand  == KVtEngStopShareImage ||
             aCommand  == KVtEngUnfreeze ||
             aCommand  == KVtEngHandleLayoutChange ) ||
             ( ( aCommand  == KVtEngMuteOutgoingAudio || 

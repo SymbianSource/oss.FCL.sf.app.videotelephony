@@ -275,7 +275,7 @@ private:
     CAsyncCallBack* iAsyncDeactivate;
 
     // Owned: background context.
-    CAknsBasicBackgroundControlContext* iBgContext;        
+    CAknsBasicBackgroundControlContext* iBgContext;
     
     // Phone Server session
     RPhCltServer          iServer;

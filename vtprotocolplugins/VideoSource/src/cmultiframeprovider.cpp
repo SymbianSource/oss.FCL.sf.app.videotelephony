@@ -623,10 +623,10 @@ void CMultiframeProvider::BMSScalingFinished( TInt aError )
     }
 
 // -----------------------------------------------------------------------------
-// CMultiframeProvider::AddBitmapToFreeQueueL( CVtImageBitmap* aBitmap )
+// CMultiframeProvider::AddBitmapToFreeQueue( CVtImageBitmap* aBitmap )
 // -----------------------------------------------------------------------------
 //
-void CMultiframeProvider::AddBitmapToFreeQueueL()
+void CMultiframeProvider::AddBitmapToFreeQueue()
     {
     __IF_DEBUG(Print(_L("VideoSource[%d]: CMultiframeProvider::AddBitmapToFreeQueue() >>"), RThread().Id().operator TUint()));
     if ( iOldBM )

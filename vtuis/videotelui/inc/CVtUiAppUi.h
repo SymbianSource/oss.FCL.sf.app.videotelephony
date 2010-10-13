@@ -1495,8 +1495,6 @@ private:
         TInt iDelayedCmd;
         //disable video process
         TBool iDisableVideoOngoing;
-        //disable video process
-        TBool iShareImageOngoing;
     };
 
 #endif      // CVTUIAPPUI_H

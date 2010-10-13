@@ -119,7 +119,6 @@ CVtEngMdtrCommandSender::~CVtEngMdtrCommandSender()
     {
     iUtils.EventManager().RemoveObserver( this );
     delete iMediatorInitiator;
-    delete iSenderState;//add for memory leak
     }
 
 // -----------------------------------------------------------------------------

@@ -10,5 +10,4 @@ EXPORTS
 	?DeleteCommServerL@VTProtocolFactory@@SAXPAVMCommServer@@@Z @ 9 NONAME ; void VTProtocolFactory::DeleteCommServerL(class MCommServer *)
 	?DeleteUserInputIndication@VTProtocolFactory@@SAXPAVMVTUserInput@@@Z @ 10 NONAME ; void VTProtocolFactory::DeleteUserInputIndication(class MVTUserInput *)
 	?DeleteSessionCommand@VTProtocolFactory@@SAXPAVMVtSessionCommand@@@Z @ 11 NONAME ; void VTProtocolFactory::DeleteSessionCommand(class MVtSessionCommand *)
-	?DeleteAudioConfigCommandL@VTProtocolFactory@@SAXPAVMVtAudioConfigCommand@@@Z @ 12 NONAME ; void VTProtocolFactory::DeleteAudioConfigCommandL(class MVtAudioConfigCommand *)
 

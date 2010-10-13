@@ -1067,7 +1067,7 @@ public: // New functions.
             * @param aSetPeer ETrue if peer video quality needs to be set,
             * EFalse otherwise.
             */
-            void SettingVideoQualityL( TInt aId, const TVideoQuality aValue,
+            void SettingVideoQuality( TInt aId, const TVideoQuality aValue,
                 TBool aSetPeer );
 
             /**
