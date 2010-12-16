@@ -558,6 +558,71 @@ class CVtUiAppUi::CInstance
     };
 
 /**
+* Type definition for CCustomPeriodic
+* @since 9.2
+*/
+class CCustomPeriodic
+    : public CTimer
+    {
+public:            
+    /**
+    * Allocates and constructs a CCustomPeriodic object - leaving.
+    * 
+    * @param aPriority The priority of the active object. If timing is 
+    * critical, it should be higher than that of all other active 
+    * objects owned by the scheduler.
+    *                              
+    * @return Pointer to new CCustomPeriodic object. The object is 
+    * initialised and added to the active scheduler. This value is 
+    * NULL if there is insufficient memory.
+    */
+    static CCustomPeriodic* NewL( TInt aPriority );
+    
+    /**
+    * Destructor
+    */
+    ~CCustomPeriodic();
+    
+    /**
+    * Starts generating periodic events.
+    * 
+    * @param aDelay     The delay from the Start() function to the 
+    * generation of the first event, in microseconds.
+    * 
+    * @param anInterval The interval between events generated after the 
+    * initial delay, in microseconds.
+    * 
+    * @param aCallBack  A callback specifying a function to be called when
+    * the CPeriodic is scheduled after a timer event.
+    */
+    void Start( TTimeIntervalMicroSeconds32 aDelay,
+            TTimeIntervalMicroSeconds32 anInterval,
+            TCallBack aCallBack );
+    
+protected:
+    /**
+    * Constructor
+    * 
+    * @param aPriority The priority of the active object. If timing is 
+    * critical, it should be higher than that of all other active 
+    * objects owned by the scheduler.
+    */
+    CCustomPeriodic( TInt aPriority );
+
+    /**
+    * @see CActive::RunL()
+    */
+    void RunL();
+    
+private:
+    // Interval between two iCallback() 
+    TTimeIntervalMicroSeconds32 iInterval;
+    
+    // Call back function pointer 
+    TCallBack iCallBack;
+    };
+
+/**
 * Encapsulates event handling.
 * @since Series 60 2.6
 */
@@ -754,7 +819,7 @@ class CVtUiAppUi::CEventObserver
         CRemConCoreApiTarget* iRemConCoreApiTarget;
 
         // Owned timer for volume repeat handling.
-        CPeriodic* iRemConVolumeRepeatTimer;
+        CCustomPeriodic* iRemConVolumeRepeatTimer;
 
         // Rencon operation id
         TRemConCoreApiOperationId iRCCAOperationId;
@@ -6682,6 +6747,62 @@ CVtUiAppUi::CInstance::~CInstance()
     delete iEndCallButtonPane;
     }
 
+//Implementation of CCustomPeriodic
+
+// -----------------------------------------------------------------------------
+// CCustomPeriodic::NewL(TInt aPriority)
+// -----------------------------------------------------------------------------
+//
+CCustomPeriodic* CCustomPeriodic::NewL( TInt aPriority )
+    {
+    CCustomPeriodic* cp = new (ELeave) CCustomPeriodic( aPriority );
+    CleanupStack::PushL( cp );
+    cp->ConstructL();
+    CleanupStack::Pop( cp );
+    CActiveScheduler::Add( cp );
+    return cp;
+    }
+
+// -----------------------------------------------------------------------------
+// CCustomPeriodic::CCustomPeriodic( TInt aPriority )
+// -----------------------------------------------------------------------------
+//
+CCustomPeriodic::CCustomPeriodic( TInt aPriority )
+    : CTimer( aPriority )
+    {    
+    }
+
+// -----------------------------------------------------------------------------
+// CCustomPeriodic::~CCustomPeriodic()
+// -----------------------------------------------------------------------------
+//
+CCustomPeriodic::~CCustomPeriodic()
+    {
+    }
+
+// -----------------------------------------------------------------------------
+// CCustomPeriodic::Start()
+// -----------------------------------------------------------------------------
+//
+void CCustomPeriodic::Start( TTimeIntervalMicroSeconds32 aDelay,
+                            TTimeIntervalMicroSeconds32 anInterval,
+                            TCallBack aCallBack )
+    {
+    iInterval = anInterval.Int();
+    iCallBack = aCallBack;
+    After( aDelay );
+    }
+
+// -----------------------------------------------------------------------------
+// CCustomPeriodic::RunL()
+// -----------------------------------------------------------------------------
+//
+void CCustomPeriodic::RunL()
+    {
+    iCallBack.CallBack();
+    After( iInterval );
+    }
+
 // Implementation of CVtUiAppUi::CEventObserver
 
 // -----------------------------------------------------------------------------
@@ -6765,7 +6886,7 @@ void CVtUiAppUi::CEventObserver::CreateRemConSessionL()
         CleanupStack::PushL( coreApiTarget );
         interfaceSelector->OpenTargetL();
 
-        iRemConVolumeRepeatTimer = CPeriodic::NewL( CActive::EPriorityHigh );
+        iRemConVolumeRepeatTimer = CCustomPeriodic::NewL( CActive::EPriorityHigh );
 
         CleanupStack::Pop( coreApiTarget );
         CleanupStack::Pop( interfaceSelector );
